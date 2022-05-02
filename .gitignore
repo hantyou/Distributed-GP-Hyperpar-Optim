@@ -1,6 +1,6 @@
 *.asv
 *.nc
-SSTdata\
+SSTdata/
 *.nfs*
-results\
+results/
 workspaceForDebug.mat
