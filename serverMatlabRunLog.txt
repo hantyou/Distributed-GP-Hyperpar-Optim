@@ -33,7 +33,7 @@ The method(s) to be evaluated in this experiment is(are):
 pxADMM_async_realSimu
 
 Time of pxADMM_{fd,realSimu}
-Elapsed time is 26.074750 seconds.
+Elapsed time is 27.285120 seconds.
    10.0010
 
    10.0010
@@ -94,27 +94,27 @@ BCM
 rBCM
 png file saved
 No-Agg
-Elapsed time is 9.851044 seconds.
+Elapsed time is 10.311651 seconds.
 png file saved
 png file saved
 DEC-PoE
-Elapsed time is 9.910727 seconds.
+Elapsed time is 10.765471 seconds.
 png file saved
 png file saved
 DEC-gPoE
-Elapsed time is 9.159728 seconds.
+Elapsed time is 10.339612 seconds.
 png file saved
 png file saved
 DEC-BCM
-Elapsed time is 10.733324 seconds.
+Elapsed time is 11.506443 seconds.
 png file saved
 png file saved
 DEC-rBCM
-Elapsed time is 10.861465 seconds.
+Elapsed time is 12.638122 seconds.
 png file saved
 png file saved
 DEC-NPAE
-Elapsed time is 37.293294 seconds.
+Elapsed time is 41.542696 seconds.
 png file saved
 png file saved
 all code ended
