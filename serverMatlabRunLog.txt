@@ -1,0 +1,120 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+              R2019b Update 5 (9.7.0.1319299) 64-bit (glnxa64)
+                             February 19, 2020
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 9).
+
+ans = 
+
+ Pool with properties: 
+
+            Connected: true
+           NumWorkers: 9
+              Cluster: local
+        AttachedFiles: {}
+    AutoAddClientPath: true
+          IdleTimeout: 30 minutes (30 minutes remaining)
+          SpmdEnabled: true
+
+This exp is down with real dataset loaded
+Reading Sea Surface Temperature (SST) dataset
+latitudes read
+longitude read
+temperature read
+error read
+The method(s) to be evaluated in this experiment is(are):
+pxADMM_async_realSimu
+
+Time of pxADMM_{fd,realSimu}
+Elapsed time is 26.074750 seconds.
+   10.0010
+
+   10.0010
+
+   10.0010
+
+   10.0010
+
+   10.0010
+
+   10.0010
+
+   10.0010
+
+   10.0010
+
+   10.0010
+
+    1.4268
+
+    1.4268
+
+    1.4268
+
+    1.4268
+
+    1.4268
+
+    1.4268
+
+    1.4268
+
+    1.4268
+
+    1.4268
+
+    1.3439
+
+    1.3439
+
+    1.3439
+
+    1.3439
+
+    1.3439
+
+    1.3439
+
+    1.3439
+
+    1.3439
+
+    1.3439
+
+PoE
+gPoE
+BCM
+rBCM
+png file saved
+No-Agg
+Elapsed time is 9.851044 seconds.
+png file saved
+png file saved
+DEC-PoE
+Elapsed time is 9.910727 seconds.
+png file saved
+png file saved
+DEC-gPoE
+Elapsed time is 9.159728 seconds.
+png file saved
+png file saved
+DEC-BCM
+Elapsed time is 10.733324 seconds.
+png file saved
+png file saved
+DEC-rBCM
+Elapsed time is 10.861465 seconds.
+png file saved
+png file saved
+DEC-NPAE
+Elapsed time is 37.293294 seconds.
+png file saved
+png file saved
+all code ended
