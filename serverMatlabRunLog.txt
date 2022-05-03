@@ -30,10 +30,78 @@ longitude read
 temperature read
 error read
 The method(s) to be evaluated in this experiment is(are):
+pxADMM_fd_sync
+pxADMM_fd_async
 pxADMM_async_realSimu
 
+Time of pxADMM_{fd}
+
+gcf = 
+
+  Figure (1) with properties:
+
+      Number: 1
+        Name: ''
+       Color: [0.9400 0.9400 0.9400]
+    Position: [232 246 560 420]
+       Units: 'pixels'
+
+  Use GET to show all properties
+
+
+gcf = 
+
+  Figure (1) with properties:
+
+      Number: 1
+        Name: ''
+       Color: [0.9400 0.9400 0.9400]
+    Position: [232 246 560 420]
+       Units: 'pixels'
+
+  Use GET to show all properties
+
+Elapsed time is 14.945925 seconds.
+Time of pxADMM_{fd}
+
+gcf = 
+
+  Figure (1) with properties:
+
+      Number: 1
+        Name: ''
+       Color: [0.9400 0.9400 0.9400]
+    Position: [232 246 560 420]
+       Units: 'pixels'
+
+  Use GET to show all properties
+
+
+fname =
+
+    'results/pxADMM_fd_async_cvg_values_direct_display'
+
+
+gcf = 
+
+  Figure (2) with properties:
+
+      Number: 2
+        Name: ''
+       Color: [0.9400 0.9400 0.9400]
+    Position: [232 246 560 420]
+       Units: 'pixels'
+
+  Use GET to show all properties
+
+
+fname =
+
+    'results/pxADMM_fd_async_steps_direct_display'
+
+Elapsed time is 15.985582 seconds.
 Time of pxADMM_{fd,realSimu}
-Elapsed time is 27.285120 seconds.
+Elapsed time is 60.420271 seconds.
    10.0010
 
    10.0010
@@ -94,27 +162,27 @@ BCM
 rBCM
 png file saved
 No-Agg
-Elapsed time is 10.311651 seconds.
+Elapsed time is 10.730240 seconds.
 png file saved
 png file saved
 DEC-PoE
-Elapsed time is 10.765471 seconds.
+Elapsed time is 10.915486 seconds.
 png file saved
 png file saved
 DEC-gPoE
-Elapsed time is 10.339612 seconds.
+Elapsed time is 10.441376 seconds.
 png file saved
 png file saved
 DEC-BCM
-Elapsed time is 11.506443 seconds.
+Elapsed time is 11.413188 seconds.
 png file saved
 png file saved
 DEC-rBCM
-Elapsed time is 12.638122 seconds.
+Elapsed time is 11.633054 seconds.
 png file saved
 png file saved
 DEC-NPAE
-Elapsed time is 41.542696 seconds.
+Elapsed time is 40.671039 seconds.
 png file saved
 png file saved
 all code ended

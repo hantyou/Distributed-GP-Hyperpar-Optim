@@ -290,13 +290,13 @@ else
         for m=1:M
             plot(Zs{m}(i,:));
             cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
-            ylim([4 6.2])
+            %ylim([4 6.2])
         end
         else
         for m=1:M
             plot(Zs{m}(i,:));
             cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
-            ylim([-2 2])
+            %ylim([-2 2])
         end
         end
         lgd=yline(cvgValue(i),'-.b');

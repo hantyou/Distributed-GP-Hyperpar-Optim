@@ -148,7 +148,7 @@ if realDataSet==0||temp_data==3
     end
     if temp_data==3
        imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(2),range_x2(1),reso_n),F_true);
-       contour(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m),F_true,linspace(0,25,10),'--r','LineWidth',0.7);
+       contour(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m),F_true,linspace(0,25,10),'-k','LineWidth',0.6);
     end
     scatter(X1,X2,'k*');
     scatter(Agents_Posi(1,:),Agents_Posi(2,:))
@@ -158,9 +158,9 @@ if realDataSet==0||temp_data==3
                 posi=[Agents(m).Position,Agents(n).Position];
                 Posi_dim=length(Agents(m).Position);
                 if Posi_dim==2
-                    plot(posi(1,:),posi(2,:),'r');
+                    plot(posi(1,:),posi(2,:),'r','LineWidth',1);
                 elseif Posi_dim==3
-                    plot(posi(1,:),posi(2,:),posi(3,:),'r');
+                    plot(posi(1,:),posi(2,:),posi(3,:),'r','LineWidth',1);
                 end
             end
         end
@@ -178,14 +178,45 @@ if realDataSet==0||temp_data==3
     fname='results/topology_background';
     saveas(gcf,fname,'png');
     close gcf;
+
+
+
+    gcf=figure('visible','off');
+    hold on;
+    scatter(Agents_Posi(1,:),Agents_Posi(2,:))
+    for m=1:M
+        for n=m:M
+            if A_full(m,n)>0
+                posi=[Agents(m).Position,Agents(n).Position];
+                Posi_dim=length(Agents(m).Position);
+                if Posi_dim==2
+                    plot(posi(1,:),posi(2,:),'r','LineWidth',1);
+                elseif Posi_dim==3
+                    plot(posi(1,:),posi(2,:),posi(3,:),'r','LineWidth',1);
+                end
+            end
+        end
+    end
+    scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
+%     % colormap("jet")
+%     xlim([range_x1(1) range_x1(2)])
+%     ylim([range_x2(1) range_x2(2)])
+
+    xlabel('x1')
+    ylabel('x2')
+    title('network topology')
+    hold off
+    fname='results/just_topology';
+    saveas(gcf,fname,'png');
+    close gcf;
 end
 %% Experiment group setup
 run_GD=0;
 run_ADMM=0;
 run_pxADMM=0;
 run_ADMM_fd=0;
-run_pxADMM_fd_sync=0;
-run_pxADMM_fd_async=0;
+run_pxADMM_fd_sync=1;
+run_pxADMM_fd_async=1;
 run_pxADMM_async_realSimu=1;
 
 run_flags =    [run_GD;
@@ -373,7 +404,7 @@ end
 %% Perform pxADMM_fd_async
 if run_pxADMM_fd_async
     % initialize pxADMM_fd
-    maxIter=6000;
+    maxIter=10000;
     initial_z=[initial_sigma_f;initial_l'];
     initial_beta = 1*[1;ones(length(initial_l),1)];
     for m=1:M
@@ -423,7 +454,7 @@ if run_pxADMM_fd_async
 end
 %% Perform pxADMM_async_realSimu
 if run_pxADMM_async_realSimu
-    maxIter=2000;
+    maxIter=5000;
     initial_z=[initial_sigma_f;initial_l'];
     initial_beta = [1;ones(length(initial_l),1)];
     for m=1:M
