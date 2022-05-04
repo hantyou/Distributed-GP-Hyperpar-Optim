@@ -379,13 +379,8 @@ classdef agent
             for n=1:obj.N_size
                 obj.z_mn(:,n) =((obj.beta_mn(:,n))/obj.rho +([obj.sigma_f;obj.l])+obj.beta_nm(:,n)/obj.rho+obj.theta_n(:,n))/2;
             end
-            % % % % % %             for n=1:obj.N_size
-            % % % % % %                 new_z=new_z+obj.theta_n(:,n)+obj.beta_n(:,n)/obj.rho;
-            % % % % % %             end
-            % % % % % %             new_z=(new_z+old_z+obj.beta/obj.rho)/(1+obj.N_size);
             new_z=mean([obj.z,obj.z_mn],2);
-            %             new_z=mean([[obj.sigma_f;obj.l]+1/obj.rho*obj.beta,obj.theta_n+obj.beta_n/obj.rho],2);
-            %             new_z=mean([obj.rho*[obj.sigma_f;obj.l]+obj.beta,obj.rho*obj.theta_n+obj.beta_n],2)/(obj.rho);
+            
             % update theta_m
             old_sigma=new_z(1);
             old_l=new_z(2:end);
@@ -395,13 +390,11 @@ classdef agent
 
             K_n=obj.sigma_n^2*eye(obj.N_m);
             distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
-            %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
             K_s=old_sigma^(2)*exp(-0.5*distX);
             obj.K=K_s+K_n;
 
             choL = chol(obj.K, 'lower');
             alpha = choL'\(choL\obj.Z);
-            %             invK=inv(obj.K);
             try
                 invChoL=inv(choL);
             catch
@@ -412,86 +405,24 @@ classdef agent
 
             constant_1=invChoL'*invChoL-alpha*alpha';
             K_div_sigma_f=2/old_sigma*K_s;
-            %             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
             obj.pd_sigma_f =0.5* trace(constant_1*K_div_sigma_f);
-
-            %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
-
-            %             K_div_l_1=obj.distX1.*K_s*old_l(1)^(-3);
-            %             obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1);
-            %
-            %             K_div_l_2=obj.distX2.*K_s*old_l(2)^(-3);
-            %             obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2);
-            %
-            %             K_div_l=[obj.pd_l(1);obj.pd_l(2)];
-            %             obj.pd_l=K_div_l;
 
             pd = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
             old_beta=mean([obj.beta,obj.beta_mn],2);
 
-            %             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l]+obj.beta)/((obj.rho+obj.L));
             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
             
             
             obj.sigma_f=new_theta(1);
             obj.l=new_theta(2:end);
             % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-            % % % % % %             old_sigma=new_z(1);
-            % % % % % %             old_l=new_z(2:3);
-            % % % % % %             obj.z(1)=old_sigma;
-            % % % % % %             obj.z(2:3)=old_l;
-            % % % % % %
-            % % % % % %             K_n=obj.sigma_n^2*eye(obj.N_m);
-            % % % % % %             %%%%local update START%%%%
-            % % % % % %             distX = dist((diag(old_l)\eye(2))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
-            % % % % % %             %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
-            % % % % % %             K_s=old_sigma^(2)*exp(-0.5*distX);
-            % % % % % %             obj.K=K_s+K_n;
-            % % % % % %
-            % % % % % %             choL = chol(obj.K, 'lower');
-            % % % % % %             alpha = choL'\(choL\obj.Z);
-            % % % % % %             %             invK=inv(obj.K);
-            % % % % % %             invChoL=inv(choL);
-            % % % % % %             constant_1=invChoL'*invChoL-alpha*alpha';
-            % % % % % %             K_div_sigma_f=2/old_sigma*K_s;
-            % % % % % %             %             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
-            % % % % % %             obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f);
-            % % % % % %
-            % % % % % %             %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
-            % % % % % %
-            % % % % % %             K_div_l_1=obj.distX1.*K_s*old_l(1)^(-3);
-            % % % % % %             obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1);
-            % % % % % %
-            % % % % % %             K_div_l_2=obj.distX2.*K_s*old_l(2)^(-3);
-            % % % % % %             obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2);
-            % % % % % %
-            % % % % % %             K_div_l=[obj.pd_l(1);obj.pd_l(2)];
-            % % % % % %             obj.pd_l=K_div_l;
-            % % % % % %
-            % % % % % %             % update hyperparameters
-            % % % % % %             new_sigma=obj.z(1)-(obj.pd_sigma_f+obj.beta(1))/(obj.rho+obj.L);
-            % % % % % %             new_l=obj.z(2:3)-(obj.pd_l+obj.beta(2:3))/(obj.rho+obj.L);
-            % % % % % %
-            % % % % % %
-            % % % % % %             % update hyperparameters
-            % % % % % %
-            % % % % % %             obj.sigma_f=new_sigma;
-            % % % % % %             obj.l=new_l;
-            % after hyperparameter update, update the beta
-            %             for n=1:obj.N_size
-            %                 obj.beta_mn(:,n) = obj.beta_nm(:,n) + ...
-            %                     obj.rho * ([obj.sigma_f;obj.l]-obj.z_mn(:,n));
-            %             end
+            % beta update
             for n=1:obj.N_size
                 obj.beta_mn(:,n) = obj.beta_mn(:,n) + ...
                     obj.rho * ([obj.sigma_f;obj.l]-obj.z_mn(:,n));
             end
-            %             obj.beta=mean([obj.beta_mn,obj.beta],2);
             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l]-new_z);
-
-            % % % % % %             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l]-obj.z);
-            % the local update end
         end
 
     end
