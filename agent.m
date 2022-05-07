@@ -372,6 +372,59 @@ classdef agent
 
         end
 
+%         function obj=runPxADMM_fd(obj)
+%             obj.action_status=0;
+%             obj.updatedVars=0*obj.updatedVars;
+%             % update z_mn
+%             for n=1:obj.N_size
+%                 obj.z_mn(:,n) =((obj.beta_mn(:,n))/obj.rho +([obj.sigma_f;obj.l])+obj.beta_nm(:,n)/obj.rho+obj.theta_n(:,n))/2;
+%             end
+%             new_z=mean([obj.z,obj.z_mn],2);
+%             
+%             % update theta_m
+%             old_sigma=new_z(1);
+%             old_l=new_z(2:end);
+%             inputDim=length(old_l);
+%             obj.z(1)=old_sigma;
+%             obj.z(2:end)=old_l;
+% 
+%             K_n=obj.sigma_n^2*eye(obj.N_m);
+%             distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
+%             K_s=old_sigma^(2)*exp(-0.5*distX);
+%             obj.K=K_s+K_n;
+% 
+%             choL = chol(obj.K, 'lower');
+%             alpha = choL'\(choL\obj.Z);
+%             try
+%                 invChoL=inv(choL);
+%             catch
+%                 invChoL=pinv(choL);
+%                 disp("A non-PSD K matrix exists, now changed to psudo inverse mood.")
+%             end
+% 
+% 
+%             constant_1=invChoL'*invChoL-alpha*alpha';
+%             K_div_sigma_f=2/old_sigma*K_s;
+%             obj.pd_sigma_f =0.5* trace(constant_1*K_div_sigma_f);
+% 
+%             pd = getDiv(obj,obj.z);
+%             obj.pd_l=pd(2:end);
+%             old_beta=mean([obj.beta,obj.beta_mn],2);
+% 
+%             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
+%             
+%             
+%             obj.sigma_f=new_theta(1);
+%             obj.l=new_theta(2:end);
+%             % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%             % beta update
+%             for n=1:obj.N_size
+%                 obj.beta_mn(:,n) = obj.beta_mn(:,n) + ...
+%                     obj.rho * ([obj.sigma_f;obj.l]-obj.z_mn(:,n));
+%             end
+%             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l]-new_z);
+%         end
+
         function obj=runPxADMM_fd(obj)
             obj.action_status=0;
             obj.updatedVars=0*obj.updatedVars;
@@ -382,8 +435,13 @@ classdef agent
             new_z=mean([obj.z,obj.z_mn],2);
             
             % update theta_m
-            old_sigma=new_z(1);
-            old_l=new_z(2:end);
+%             old_sigma=new_z(1);
+%             old_l=new_z(2:end);
+            old_sigma=obj.sigma_f;
+            old_l=obj.l;
+            old_theta=[old_sigma;old_l];
+
+
             inputDim=length(old_l);
             obj.z(1)=old_sigma;
             obj.z(2:end)=old_l;
@@ -410,8 +468,10 @@ classdef agent
             pd = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
             old_beta=mean([obj.beta,obj.beta_mn],2);
+            pd_theta=[obj.pd_sigma_f;obj.pd_l];
 
-            new_theta=new_z-([obj.pd_sigma_f;obj.pd_l]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
+%             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
+            new_theta=(1/(obj.L+obj.rho*obj.N_size)) * (sum( (obj.rho*obj.z_mn-obj.beta_mn) ,2) + obj.L * old_theta-pd_theta) ;
             
             
             obj.sigma_f=new_theta(1);
@@ -424,7 +484,7 @@ classdef agent
             end
             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l]-new_z);
         end
-
+        
     end
 end
 

@@ -32,7 +32,6 @@ error read
 The method(s) to be evaluated in this experiment is(are):
 pxADMM_fd_sync
 pxADMM_fd_async
-pxADMM_async_realSimu
 
 Time of pxADMM_{fd}
 
@@ -61,7 +60,7 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 14.945925 seconds.
+Elapsed time is 1620.197277 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
@@ -81,6 +80,8 @@ fname =
 
     'results/pxADMM_fd_async_cvg_values_direct_display'
 
+IdleTimeout has been reached.
+Parallel pool using the 'local' profile is shutting down.
 
 gcf = 
 
@@ -99,90 +100,66 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 15.985582 seconds.
-Time of pxADMM_{fd,realSimu}
-Elapsed time is 60.420271 seconds.
-   10.0010
-
-   10.0010
-
-   10.0010
-
-   10.0010
-
-   10.0010
-
-   10.0010
-
-   10.0010
-
-   10.0010
-
-   10.0010
-
-    1.4268
-
-    1.4268
-
-    1.4268
-
-    1.4268
-
-    1.4268
-
-    1.4268
-
-    1.4268
-
-    1.4268
-
-    1.4268
-
-    1.3439
-
-    1.3439
-
-    1.3439
-
-    1.3439
-
-    1.3439
-
-    1.3439
-
-    1.3439
-
-    1.3439
-
-    1.3439
-
+Elapsed time is 883.550005 seconds.
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 32).
 PoE
 gPoE
 BCM
 rBCM
 png file saved
 No-Agg
-Elapsed time is 10.730240 seconds.
-png file saved
+Elapsed time is 5.764229 seconds.
 png file saved
 DEC-PoE
-Elapsed time is 10.915486 seconds.
-png file saved
+Elapsed time is 9.563735 seconds.
 png file saved
 DEC-gPoE
-Elapsed time is 10.441376 seconds.
-png file saved
+Elapsed time is 9.548703 seconds.
 png file saved
 DEC-BCM
-Elapsed time is 11.413188 seconds.
-png file saved
+Elapsed time is 10.228815 seconds.
 png file saved
 DEC-rBCM
-Elapsed time is 11.633054 seconds.
-png file saved
+Elapsed time is 10.096751 seconds.
 png file saved
 DEC-NPAE
-Elapsed time is 40.671039 seconds.
-png file saved
+Elapsed time is 39.117360 seconds.
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 43)
+  In Main (line 964)] 
 png file saved
 all code ended

@@ -148,7 +148,7 @@ if realDataSet==0||temp_data==3
     end
     if temp_data==3
        imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(2),range_x2(1),reso_n),F_true);
-       contour(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m),F_true,linspace(0,25,10),'-k','LineWidth',0.6);
+%        contour(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m),F_true,linspace(0,25,10),'-k','LineWidth',0.6);
     end
     scatter(X1,X2,'k*');
     scatter(Agents_Posi(1,:),Agents_Posi(2,:))
@@ -217,7 +217,7 @@ run_pxADMM=0;
 run_ADMM_fd=0;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
-run_pxADMM_async_realSimu=1;
+run_pxADMM_async_realSimu=0;
 
 run_flags =    [run_GD;
     run_ADMM;
@@ -244,8 +244,8 @@ fprintf("%s\n",show_txt);
 fprintf("\n");
 
 % initialize theta and other parameters
-initial_sigma_f=10;
-initial_l=1.5*ones(1,inputDim);
+initial_sigma_f=9;
+initial_l=2*ones(1,inputDim);
 epsilon = 1e-5; % used for stop criteria
 
 rho_glb=3000;
@@ -360,7 +360,7 @@ end
 %% Perform pxADMM_fd_sync
 if run_pxADMM_fd_sync
     % initialize pxADMM_fd
-    maxIter=6000;
+    maxIter=15000;
     initial_z=[initial_sigma_f;initial_l'];
     initial_beta = 2*[1;ones(length(initial_l),1)];
     for m=1:M
@@ -404,7 +404,7 @@ end
 %% Perform pxADMM_fd_async
 if run_pxADMM_fd_async
     % initialize pxADMM_fd
-    maxIter=10000;
+    maxIter=15000;
     initial_z=[initial_sigma_f;initial_l'];
     initial_beta = 1*[1;ones(length(initial_l),1)];
     for m=1:M
@@ -454,7 +454,7 @@ if run_pxADMM_fd_async
 end
 %% Perform pxADMM_async_realSimu
 if run_pxADMM_async_realSimu
-    maxIter=5000;
+    maxIter=10000;
     initial_z=[initial_sigma_f;initial_l'];
     initial_beta = [1;ones(length(initial_l),1)];
     for m=1:M
@@ -480,7 +480,7 @@ if run_pxADMM_async_realSimu
         Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).updatedVars=ones(1,Agents(m).N_size);
-        Agents(m).updatedVarsNumberThreshold=10;
+        Agents(m).updatedVarsNumberThreshold=2;
         Agents(m).updatedVarsNumberThreshold=min(Agents(m).updatedVarsNumberThreshold,Agents(m).N_size);
         Agents(m).slowSync=zeros(M,1);
         Agents(m).slowSyncThreshold=10;
@@ -871,7 +871,7 @@ else
     close(gcf)
 
     %% No aggregation
-    contour=1;
+    contour=0;
     method='NoAg';
     
     tic

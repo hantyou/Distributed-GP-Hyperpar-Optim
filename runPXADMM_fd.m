@@ -85,7 +85,11 @@ if sync
             plot(Zs{m}(i,:));
             cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
         end
-        yline(cvgValue(i),'-.b');
+        lgd=yline(cvgValue(i),'-.b');
+        if i==1
+            legend(lgd,'converged value', 'Location','northwest')
+        end
+        set(gca, 'XScale', 'log')
         hold off
         
         %     set(gca,'XScale','log')
@@ -301,7 +305,7 @@ else
         end
         lgd=yline(cvgValue(i),'-.b');
         if i==1
-            legend(lgd,'converged value')
+            legend(lgd,'converged value', 'Location','northwest')
         end
         set(gca, 'XScale', 'log')
         hold off
