@@ -246,7 +246,7 @@ fprintf("%s\n",show_txt);
 fprintf("\n");
 
 % initialize theta and other parameters
-initial_sigma_f=1;
+initial_sigma_f=4;
 initial_l=0.5*ones(1,inputDim);
 epsilon = 1e-6; % used for stop criteria
 
@@ -612,6 +612,7 @@ else
     %% GPR1
     % theta=[Agents(1).sigma_f;Agents(1).l];
     theta=[sigma_pxADMM_fd_sync;l_pxADMM_fd_sync];
+theta
       
     plotFlag=1;
     [Mean_total,Uncertainty_total] = GPR_predict(X,Z,theta,[range_x1;range_x2],sigma_n,plotFlag);
@@ -627,8 +628,8 @@ else
         hold off
     end
     %% Pre
-    reso_x=50;
-    reso_y=50;
+    reso_x=64;
+    reso_y=64;
     ts_1=linspace(range_x1(1),range_x1(2),reso_x);
     ts_2=linspace(range_x2(1),range_x2(2),reso_y);
     [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
@@ -668,7 +669,7 @@ else
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
-	clim(ax1,[6,18]);
+	caxis(ax1,[6,18]);
 
         view(0,90);
     %     subplot(245),
@@ -718,7 +719,7 @@ else
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
-    clim(ax2,[6,18])
+    caxis(ax2,[6,18])
     %     subplot(246),
         view(0,90);
     nexttile(6)
@@ -768,7 +769,7 @@ else
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
-    clim(ax3,[6,18])
+    caxis(ax3,[6,18])
 
     %     subplot(247),
         view(0,90);
@@ -820,7 +821,7 @@ else
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
-    clim(ax4,[6,18])
+    caxis(ax4,[6,18])
 
     %     subplot(248),
         view(0,90);

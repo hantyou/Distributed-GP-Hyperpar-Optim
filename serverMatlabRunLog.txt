@@ -44,18 +44,7 @@ pxADMM_fd_sync
 pxADMM_fd_async
 
 Time of pxADMM_{fd}
-
-gcf = 
-
-  Figure (1) with properties:
-
-      Number: 1
-        Name: ''
-       Color: [0.9400 0.9400 0.9400]
-    Position: [232 246 560 420]
-       Units: 'pixels'
-
-  Use GET to show all properties
+   250
 
 
 gcf = 
@@ -70,7 +59,20 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 17.332918 seconds.
+
+gcf = 
+
+  Figure (1) with properties:
+
+      Number: 1
+        Name: ''
+       Color: [0.9400 0.9400 0.9400]
+    Position: [232 246 560 420]
+       Units: 'pixels'
+
+  Use GET to show all properties
+
+Elapsed time is 30.066393 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
@@ -108,8 +110,76 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 18.288776 seconds.
+Elapsed time is 33.201296 seconds.
+
+theta =
+
+  3x1 single column vector
+
+    4.3902
+    1.0256
+    0.6918
+
 PoE
-The identifier was:
-MATLAB:UndefinedFunctionThere was an error! The message was:
-Undefined function 'clim' for input arguments of type 'double'.
+
+ax5 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.0857 0.0550 0.1992 0.3972]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+gPoE
+BCM
+rBCM
+png file saved
+No-Agg
+Elapsed time is 6.550283 seconds.
+png file saved
+DEC-PoE
+Elapsed time is 5.209495 seconds.
+png file saved
+DEC-gPoE
+Elapsed time is 5.032254 seconds.
+png file saved
+DEC-BCM
+Elapsed time is 5.419143 seconds.
+png file saved
+DEC-rBCM
+Elapsed time is 5.271309 seconds.
+png file saved
+DEC-NPAE
+Elapsed time is 17.262671 seconds.
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 974)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 974)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 974)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 974)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 974)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 974)] 
+png file saved
+all code ended
