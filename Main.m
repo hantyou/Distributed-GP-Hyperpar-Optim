@@ -20,7 +20,7 @@ reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
 everyAgentsSampleNum=300;
-Agents_measure_range=2.5;
+Agents_measure_range=3;
 realDataSet=1;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
@@ -575,7 +575,7 @@ save('workspaceForDebug.mat');
 realDataSet=0;
 range_x1=[min(X(1,:)),max(X(1,:))];
 range_x2=[min(X(2,:)),max(X(2,:))];
-if realDataSet
+if 0
     sigma_f=Agents(1).sigma_f;
     l=Agents(1).l;
     vacantdata=[];
@@ -613,6 +613,9 @@ else
     % theta=[Agents(1).sigma_f;Agents(1).l];
     theta=[sigma_pxADMM_fd_sync;l_pxADMM_fd_sync];
 theta
+for m=1:M
+[Agents(m).sigma_f;Agents(m).l]
+end
       
     plotFlag=1;
     [Mean_total,Uncertainty_total] = GPR_predict(X,Z,theta,[range_x1;range_x2],sigma_n,plotFlag);

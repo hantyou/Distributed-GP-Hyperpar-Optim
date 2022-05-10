@@ -173,10 +173,11 @@ q_sigma_new=zeros(M,N_newX);
 k_star_star=zeros(M,N_newX);
 sigma_f=zeros(M,1);
 
-parfor m=1:M
+for m=1:M
     sigma_f(m)=Agents(m).sigma_f;
     X1=Agents(m).X;
     theta=[Agents(m).sigma_f;Agents(m).l];
+    theta=[Agents(1).sigma_f;Agents(1).l];
     for n=1:N_newX
         k_star_star(m,n)=kernelFunc(newX(:,n),newX(:,n),theta,sigma_n,'RBF');
     end
@@ -188,20 +189,29 @@ parfor m=1:M
 end
 % K_A_m=cell(M,1);
 
-parfor m=1:M
+for m=1:M
 %     K_A_m{m}=zeros(1,M,N_newX);
     K_A_m=zeros(M,N_newX);
 %     theta=[Agents(m).sigma_f;Agents(m).l];
     k_m=k_ms{m};
-    k_A(m,:)=diag(k_m*invKs{m}*k_m');
+%     k_A(m,:)=diag(k_m*invKs{m}*k_m');
+invKs_m=invKs{m};
+    for n=1:N_newX
+        k_A(m,n)=k_m(n,:)*invKs_m*k_m(n,:)';
+    end
     for n=1:M
         k_n=k_ms{n};
-        K_A_m(n,:)=diag(k_m*invKs{m}*C_mn{m,n}*invKs{n}'*k_n')';
+        
+        for num=1:N_newX
+            K_A_m(n,num)=k_m(num,:)*invKs_m*C_mn{m,n}*invKs{n}*k_n(num,:)';
+            K_A(m,n,num)=k_m(num,:)*invKs_m*C_mn{m,n}*invKs{n}*k_n(num,:)';
+        end
+
     end
     % pre initial JOR
     q_mu_old(m,:)=subMean(m,:)./K_A_m(m,:);
     q_sigma_old(m,:)=k_A(m,:)./K_A_m(m,:);
-    K_A(m,:,:)=K_A_m;
+%     K_A(m,:,:)=K_A_m;
 end
 % JOR initial
 q_mu_direct=zeros(M,N_newX);
@@ -245,10 +255,18 @@ while maxIterJOR>0
 end
 % calculation of q is not very accuarate
 q_mu=q_mu_direct;
-q_sigma=q_sigma_direct;
+q_sigma=q_sigma_new;
 % JOR part end
 
 %%%
+
+direct_output_mu=zeros(1,N_newX);
+for n=1:N_newX
+    direct_output_mu(n)=k_A(:,n)'*inv(K_A(:,:,n))*subMean(:,n);
+end
+direct_output_mu=reshape(direct_output_mu,[64,64]);
+% gcf=figure('visible','on');
+% imshow(direct_output_mu,[]),colormap('jet');
 
 % initial DAC
 maxIterDAC=30;
