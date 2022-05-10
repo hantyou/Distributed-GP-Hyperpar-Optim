@@ -205,11 +205,13 @@ parfor m=1:M
 end
 % JOR initial
 q_mu_direct=zeros(M,N_newX);
+q_sigma_direct=zeros(M,N_newX);
 parfor n=1:N_newX
     q_mu_direct(:,n)=inv(K_A(:,:,n))*subMean(:,n);
+    q_sigma_direct(:,n)=inv(K_A(:,:,n))*k_A(:,n);
 end
 maxIterJOR=200;
-w=0.1;
+w=0.15;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
     for i=1:M
@@ -242,8 +244,8 @@ while maxIterJOR>0
     q_sigma_old=q_sigma_new;
 end
 % calculation of q is not very accuarate
-q_mu=q_mu_new;
-q_sigma=q_sigma_new;
+q_mu=q_mu_direct;
+q_sigma=q_sigma_direct;
 % JOR part end
 
 %%%

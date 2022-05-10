@@ -24,6 +24,7 @@ for m=1:M
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
+	clim([6,18]);
     if m==M
         colorbar;
     end
@@ -49,7 +50,7 @@ for m=1:M
     if m==M
         colorbar;
     end
-    view(0,90);
+    %view(0,90);
 end
 
 sname='DEC predict plot';

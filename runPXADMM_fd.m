@@ -39,6 +39,11 @@ if sync
     end
     while pxADMM_fd_flag>0
         iterCount=iterCount+1;
+        
+        if mod(iterCount,250)==0
+           disp(iterCount); 
+        end
+        
         Agents=Agents.obtain_data_from_Neighbor_ADMM_fd;
         old_z=updated_z;
         updated_z=zeros(inputDim+1,1);
@@ -80,6 +85,12 @@ if sync
     cvgValue=Inf*ones(1,inputDim+1);
     for i=1:inputDim+1
         subplot(inputDim+1,1,i)
+        if i==1
+            ylabel('s_f')
+        else
+            txt=strcat('l_',num2str(i-1));
+            ylabel(txt)
+        end
         hold on
         for m=1:M
             plot(Zs{m}(i,:));

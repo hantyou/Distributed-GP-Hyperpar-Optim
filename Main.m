@@ -12,15 +12,15 @@ range_x2=[-5,5];
 range=[range_x1;range_x2];
 rng(990611,'twister')
 rand(17+16+16,1);
-M=9;
+M=6;
 parpool(M)
 region=[];
 %% Generate/Load dataset
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=170;
-Agents_measure_range=4;
+everyAgentsSampleNum=300;
+Agents_measure_range=2.5;
 realDataSet=1;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
@@ -78,6 +78,7 @@ subDataSetsX=idxedX;
 
 
 % Generate agents
+subSize
 Agents=agent.empty(M,0);
 for m=1:M
     Agents(m).Code=m;
@@ -87,7 +88,8 @@ for m=1:M
     Agents(m).N_m=localDataSetsSize(m);
     Agents(m).M=M;
     Agents(m).action_status=1;
-    Agents(m).commuRange=4.5;
+%     Agents(m).commuRange=3.2;
+    Agents(m).commuRange=3;
 
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
@@ -244,12 +246,12 @@ fprintf("%s\n",show_txt);
 fprintf("\n");
 
 % initialize theta and other parameters
-initial_sigma_f=9;
+initial_sigma_f=1;
 initial_l=2*ones(1,inputDim);
-epsilon = 1e-5; % used for stop criteria
+epsilon = 1e-6; % used for stop criteria
 
-rho_glb=3000;
-L_glb=6000;
+rho_glb=500;
+L_glb=1500;
 
 % rng('shuffle')
 %% Perform naive GD
@@ -360,9 +362,9 @@ end
 %% Perform pxADMM_fd_sync
 if run_pxADMM_fd_sync
     % initialize pxADMM_fd
-    maxIter=15000;
+    maxIter=4000;
     initial_z=[initial_sigma_f;initial_l'];
-    initial_beta = 2*[1;ones(length(initial_l),1)];
+    initial_beta = 0.1*[1;ones(length(initial_l),1)];
     for m=1:M
         Agents(m).communicationAbility=1;
         Agents(m).beta=initial_beta;
@@ -375,8 +377,8 @@ if run_pxADMM_fd_sync
 
         Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_mn=ones(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_nm=ones(inputDim+1,Agents(m).N_size);
+        Agents(m).beta_mn=0.1*ones(inputDim+1,Agents(m).N_size);
+        Agents(m).beta_nm=0.1*ones(inputDim+1,Agents(m).N_size);
 
         Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+1,Agents(m).N_size);
@@ -404,9 +406,9 @@ end
 %% Perform pxADMM_fd_async
 if run_pxADMM_fd_async
     % initialize pxADMM_fd
-    maxIter=15000;
+    maxIter=4000;
     initial_z=[initial_sigma_f;initial_l'];
-    initial_beta = 1*[1;ones(length(initial_l),1)];
+    initial_beta = 0.1*[1;ones(length(initial_l),1)];
     for m=1:M
         Agents(m).communicationAbility=1;
 
@@ -424,8 +426,8 @@ if run_pxADMM_fd_async
 
         Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_mn=ones(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_nm=ones(inputDim+1,Agents(m).N_size);
+        Agents(m).beta_mn=0.1*ones(inputDim+1,Agents(m).N_size);
+        Agents(m).beta_nm=0.1*ones(inputDim+1,Agents(m).N_size);
 
         Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+1,Agents(m).N_size);
@@ -566,6 +568,9 @@ legend(lgd_txt);
 hold off;
 pause(0.01)
 save('workspaceForDebug.mat');
+
+
+
 %% GPR real
 realDataSet=0;
 range_x1=[min(X(1,:)),max(X(1,:))];
@@ -605,8 +610,9 @@ if realDataSet
 else
 
     %% GPR1
-    theta=[Agents(1).sigma_f;Agents(1).l];
-
+    % theta=[Agents(1).sigma_f;Agents(1).l];
+    theta=[sigma_pxADMM_fd_sync;l_pxADMM_fd_sync];
+      
     plotFlag=1;
     [Mean_total,Uncertainty_total] = GPR_predict(X,Z,theta,[range_x1;range_x2],sigma_n,plotFlag);
     if temp_data==2
@@ -621,8 +627,8 @@ else
         hold off
     end
     %% Pre
-    reso_x=100;
-    reso_y=100;
+    reso_x=128;
+    reso_y=128;
     ts_1=linspace(range_x1(1),range_x1(2),reso_x);
     ts_2=linspace(range_x2(1),range_x2(2),reso_y);
     [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
@@ -656,12 +662,13 @@ else
     ax = gca;
     ax.YDir = 'normal';
     for m=1:M
-        scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
+        % scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
+	clim([6,18]);
 
         view(0,90);
     %     subplot(245),
@@ -685,7 +692,7 @@ else
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
 
-        view(0,90);
+        %view(0,90);
     %% gPoE
     method='gPoE';
 
@@ -705,12 +712,13 @@ else
     ax = gca;
     ax.YDir = 'normal';
     for m=1:M
-        scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
+        %scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
+	clim([6,18]);
 
     %     subplot(246),
         view(0,90);
@@ -733,7 +741,7 @@ else
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
-        view(0,90);
+        %view(0,90);
 
     %% BCM
     method='BCM';
@@ -755,12 +763,13 @@ else
     ax = gca;
     ax.YDir = 'normal';
     for m=1:M
-        scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
+        %scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
+	clim([6,18]);
 
     %     subplot(247),
         view(0,90);
@@ -783,7 +792,7 @@ else
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
-        view(0,90);
+       % view(0,90);
 
 
     %% rBCM
@@ -806,12 +815,13 @@ else
     ax = gca;
     ax.YDir = 'normal';
     for m=1:M
-        scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
+       % scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
+	clim([6,18]);
 
     %     subplot(248),
         view(0,90);
@@ -834,7 +844,7 @@ else
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
-        view(0,90);
+      %  view(0,90);
 
 
 

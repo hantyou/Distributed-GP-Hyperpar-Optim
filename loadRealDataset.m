@@ -129,16 +129,27 @@ elseif  temp_data==2
 elseif temp_data==3
     disp('Reading Sea Surface Temperature (SST) dataset')
     SSTdataRead;
+    % seaSurfaceTemperature=(seaSurfaceTemperature-273)./(max(seaSurfaceTemperature(:))-min(seaSurfaceTemperature(:)));
     seaSurfaceTemperature=seaSurfaceTemperature-273;
     latitudes=flip(latitudes,2);
-    lon=[143.8,150.5;
-        -93.2,-85.4;
-        -50.4,-43.6;
-        -61.5,-51.7];
-    lat=[36.0,41.9;
+%     lon=[143.8,150.5;
+%         -93.2,-85.4;
+%         -50.4,-43.6;
+%         -61.5,-51.7];
+
+    lon=[145,150.5;
+    -93.2,-85.4;
+    -50.4,-43.6;
+    -61.5,-51.7];
+
+%     lat=[36.0,41.9;
+%         21.9,28.5
+%         39.5,45.9;
+%         -50,-40.1];
+      lat=[37.0,40;
         21.9,28.5
         39.5,45.9;
-        -50,-40.1];
+        -50,-40.1];  
     where=["Japan";
         "Caribbean";
         "North Atlantic";
@@ -219,7 +230,7 @@ end
 %     saveas(gcf,"./results/SSTregion/where_are_these_regions",'png');
     close gcf;
 
-    r_select=4;
+    r_select=1;
     region=where(r_select);
     F_true=Zs{r_select};
     range_x1=lon(r_select,:);
@@ -235,12 +246,12 @@ end
     %% Decide sample points
     method=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     subSize=ones(M,1)*everyAgentsSampleNum;
-%     Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,M)*0.9;
-%         unifrnd(range_x2(1),range_x2(2),1,M)*0.9];
+%     Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,M)*0.8;
+%         unifrnd(range_x2(1),range_x2(2),1,M)*0.8];
     L_x1=range_x1(2)-range_x1(1);
     L_x2=range_x2(2)-range_x2(1);
-    Agents_Posi=[unifrnd(-L_x1/2,L_x1/2,1,M)*0.9+(range_x1(1)+range_x1(2))/2;
-        unifrnd(-L_x2/2,L_x2/2,1,M)*0.9+(range_x2(1)+range_x2(2))/2];
+    Agents_Posi=[unifrnd(-L_x1/2,L_x1/2,1,M)*0.8+(range_x1(1)+range_x1(2))/2;
+        unifrnd(-L_x2/2,L_x2/2,1,M)*0.8+(range_x2(1)+range_x2(2))/2];
     [X,subSize,sampleIdx] = decideSamplePoints(method,subSize,range,Agents_Posi,Agents_measure_range);
     sampleSize=sum(subSize);
     X1=X(1,:);

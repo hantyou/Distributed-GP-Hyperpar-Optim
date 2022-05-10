@@ -9,14 +9,14 @@ To get started, type doc.
 For product information, visit www.mathworks.com.
  
 Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 9).
+Connected to the parallel pool (number of workers: 6).
 
 ans = 
 
  Pool with properties: 
 
             Connected: true
-           NumWorkers: 9
+           NumWorkers: 6
               Cluster: local
         AttachedFiles: {}
     AutoAddClientPath: true
@@ -29,6 +29,16 @@ latitudes read
 longitude read
 temperature read
 error read
+
+subSize =
+
+   186
+   146
+   206
+   158
+   157
+   200
+
 The method(s) to be evaluated in this experiment is(are):
 pxADMM_fd_sync
 pxADMM_fd_async
@@ -60,7 +70,7 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 1620.197277 seconds.
+Elapsed time is 17.332918 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
@@ -80,8 +90,6 @@ fname =
 
     'results/pxADMM_fd_async_cvg_values_direct_display'
 
-IdleTimeout has been reached.
-Parallel pool using the 'local' profile is shutting down.
 
 gcf = 
 
@@ -100,66 +108,8 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 883.550005 seconds.
-Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 32).
+Elapsed time is 18.288776 seconds.
 PoE
-gPoE
-BCM
-rBCM
-png file saved
-No-Agg
-Elapsed time is 5.764229 seconds.
-png file saved
-DEC-PoE
-Elapsed time is 9.563735 seconds.
-png file saved
-DEC-gPoE
-Elapsed time is 9.548703 seconds.
-png file saved
-DEC-BCM
-Elapsed time is 10.228815 seconds.
-png file saved
-DEC-rBCM
-Elapsed time is 10.096751 seconds.
-png file saved
-DEC-NPAE
-Elapsed time is 39.117360 seconds.
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 43)
-  In Main (line 964)] 
-png file saved
-all code ended
+The identifier was:
+MATLAB:UndefinedFunctionThere was an error! The message was:
+Undefined function 'clim' for input arguments of type 'double'.
