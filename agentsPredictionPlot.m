@@ -21,10 +21,11 @@ for m=1:M
     ax.YDir = 'normal';
     scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     scatter3(Agents(m).Position(1),Agents(m).Position(1),agentsPosiY(m)+1,'k^','filled')
-    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
+    % hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
+    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title('mean');
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
-	clim(axm,[6,18]);
+	caxis(axm,[6,18]);
     if m==M
         colorbar;
     end
@@ -46,7 +47,8 @@ for m=1:M
     ylim([range_x2(1),range_x2(2)]);
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
-    title({strcat(method,' GPR result'),'variance (in log plot)'})
+    % title({strcat(method,' GPR result'),'variance (in log plot)'})
+    title({'variance (in log plot)'})
     if m==M
         colorbar;
     end
@@ -56,7 +58,7 @@ end
 sname='DEC predict plot';
 s=hgexport('readstyle',sname);
 s.Resolution=fig_export_pix;
-s.Width=22/8*M;
+s.Width=24/8*M;
 if eps_export==1
     s.Format='eps';
     fname=fname0;

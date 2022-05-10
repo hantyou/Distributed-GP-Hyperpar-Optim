@@ -251,7 +251,7 @@ q_sigma=q_sigma_direct;
 %%%
 
 % initial DAC
-maxIterDAC=20;
+maxIterDAC=30;
 % w_mu_old=k_A.*q_mu;
 w_mu_old=k_A.*q_mu;
 w_sigma_old=k_A.*q_sigma;
