@@ -210,7 +210,7 @@ parfor n=1:N_newX
     q_mu_direct(:,n)=inv(K_A(:,:,n))*subMean(:,n);
     q_sigma_direct(:,n)=inv(K_A(:,:,n))*k_A(:,n);
 end
-maxIterJOR=200;
+maxIterJOR=100;
 w=0.2;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
@@ -251,7 +251,7 @@ q_sigma=q_sigma_direct;
 %%%
 
 % initial DAC
-maxIterDAC=20;
+maxIterDAC=30;
 % w_mu_old=k_A.*q_mu;
 w_mu_old=k_A.*q_mu;
 w_sigma_old=k_A.*q_sigma;
