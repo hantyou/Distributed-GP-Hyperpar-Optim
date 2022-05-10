@@ -211,7 +211,7 @@ parfor n=1:N_newX
     q_sigma_direct(:,n)=inv(K_A(:,:,n))*k_A(:,n);
 end
 maxIterJOR=200;
-w=0.15;
+w=0.2;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
     for i=1:M

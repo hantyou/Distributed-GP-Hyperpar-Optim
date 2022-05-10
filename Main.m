@@ -247,7 +247,7 @@ fprintf("\n");
 
 % initialize theta and other parameters
 initial_sigma_f=1;
-initial_l=2*ones(1,inputDim);
+initial_l=0.5*ones(1,inputDim);
 epsilon = 1e-6; % used for stop criteria
 
 rho_glb=500;
@@ -627,8 +627,8 @@ else
         hold off
     end
     %% Pre
-    reso_x=128;
-    reso_y=128;
+    reso_x=50;
+    reso_y=50;
     ts_1=linspace(range_x1(1),range_x1(2),reso_x);
     ts_2=linspace(range_x2(1),range_x2(2),reso_y);
     [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
@@ -655,7 +655,7 @@ else
     gcf=figure('visible','off');
     tiledlayout(2,4,'TileSpacing','Compact','Padding','Compact');
 
-    nexttile(1)
+    ax1=nexttile(1);
 
     surf(mesh_x,mesh_y,(Mean),'edgecolor','none','FaceAlpha',0.9);
     hold on,
@@ -668,11 +668,11 @@ else
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
-	clim([6,18]);
+	clim(ax1,[6,18]);
 
         view(0,90);
     %     subplot(245),
-    nexttile(5)
+    ax5=nexttile(5)
 
     surf(mesh_x,mesh_y,(Var)/1,'edgecolor','none','FaceAlpha',0.9);
     hold on,
@@ -705,7 +705,7 @@ else
     Mean=MeangPoE;
     Var=VargPoE;
 
-    nexttile(2)
+    ax2=nexttile(2);
 
     surf(mesh_x,mesh_y,(Mean),'edgecolor','none','FaceAlpha',0.9);
     hold on,
@@ -718,8 +718,7 @@ else
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
-	clim([6,18]);
-
+    clim(ax2,[6,18])
     %     subplot(246),
         view(0,90);
     nexttile(6)
@@ -757,7 +756,7 @@ else
 
     %     figure,subplot(121)
     %     subplot(243)
-    nexttile(3)
+    ax3=nexttile(3);
     surf(mesh_x,mesh_y,(Mean),'edgecolor','none','FaceAlpha',0.9);
     hold on,
     ax = gca;
@@ -769,7 +768,7 @@ else
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
-	clim([6,18]);
+    clim(ax3,[6,18])
 
     %     subplot(247),
         view(0,90);
@@ -808,7 +807,7 @@ else
     Var=VarrBCM;
 
     %     subplot(244)
-    nexttile(4)
+    ax4=nexttile(4);
 
     surf(mesh_x,mesh_y,(Mean),'edgecolor','none','FaceAlpha',0.9);
     hold on,
@@ -821,7 +820,7 @@ else
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
 	xlim([range_x1(1),range_x1(2)]);
 	ylim([range_x2(1),range_x2(2)]);
-	clim([6,18]);
+    clim(ax4,[6,18])
 
     %     subplot(248),
         view(0,90);
@@ -916,7 +915,7 @@ else
     method='DEC-gPoE';
 
     A=A_full(1:M,1:M);
-    maxIter=20;
+    maxIter=30;
 
     tic
     [~,~,meanDEC_gPoE,varDEC_gPoE] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
@@ -932,7 +931,7 @@ else
     method='DEC-BCM';
 
     A=A_full(1:M,1:M);
-    maxIter=20;
+    maxIter=30;
 
     tic
     [~,~,meanDEC_BCM,varDEC_BCM] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
@@ -948,7 +947,7 @@ else
     method='DEC-rBCM';
 
     A=A_full(1:M,1:M);
-    maxIter=20;
+    maxIter=30;
 
     tic
     [~,~,meanDEC_rBCM,varDEC_rBCM] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
@@ -964,7 +963,7 @@ else
     method='DEC-NPAE';
 
     A=A_full(1:M,1:M);
-    maxIter=20;
+    maxIter=30;
 
     tic
     [~,~,meanDEC_NPAE,varDEC_NPAE] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);

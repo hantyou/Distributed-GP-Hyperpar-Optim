@@ -13,7 +13,7 @@ for m=1:M
     Mean=reshape(mean(m,:),reso_x,reso_y);
     Var=reshape(var(m,:),reso_x,reso_y);
     
-    nexttile(m)
+    axm=nexttile(m);
     
     surf(mesh_x,mesh_y,(Mean),'edgecolor','none','FaceAlpha',0.9);
     hold on,
@@ -24,7 +24,7 @@ for m=1:M
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
-	clim([6,18]);
+	clim(axm,[6,18]);
     if m==M
         colorbar;
     end
