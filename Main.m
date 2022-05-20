@@ -20,7 +20,7 @@ reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
 everyAgentsSampleNum=300;
-Agents_measure_range=3;
+Agents_measure_range=1.75;
 realDataSet=1;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
@@ -89,7 +89,7 @@ for m=1:M
     Agents(m).M=M;
     Agents(m).action_status=1;
 %     Agents(m).commuRange=3.2;
-    Agents(m).commuRange=3;
+    Agents(m).commuRange=2.5;
 
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
@@ -168,6 +168,9 @@ if realDataSet==0||temp_data==3
         end
     end
     scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
+    for m=1:M
+text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
+end
 %     % colormap("jet")
 %     xlim([range_x1(1) range_x1(2)])
 %     ylim([range_x2(1) range_x2(2)])
@@ -200,6 +203,9 @@ if realDataSet==0||temp_data==3
         end
     end
     scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
+    for m=1:M
+text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
+end
 %     % colormap("jet")
 %     xlim([range_x1(1) range_x1(2)])
 %     ylim([range_x2(1) range_x2(2)])
@@ -246,8 +252,8 @@ fprintf("%s\n",show_txt);
 fprintf("\n");
 
 % initialize theta and other parameters
-initial_sigma_f=4;
-initial_l=0.5*ones(1,inputDim);
+initial_sigma_f=1;
+initial_l=1*ones(1,inputDim);
 epsilon = 1e-6; % used for stop criteria
 
 rho_glb=500;
@@ -397,7 +403,7 @@ if run_pxADMM_fd_sync
     disp('Time of pxADMM_{fd}')
 
     tic
-    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
+    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
 
     pause(0.1)
@@ -447,7 +453,7 @@ if run_pxADMM_fd_async
     disp('Time of pxADMM_{fd}')
 
     tic
-    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
+    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
     Agents(1).sigma_f=sigma_pxADMM_fd_async;
     Agents(1).l=l_pxADMM_fd_async;
@@ -614,6 +620,9 @@ else
     theta=[sigma_pxADMM_fd_sync;l_pxADMM_fd_sync];
 theta
 for m=1:M
+Agents(m).sigma_f=thetas_pxADMM_fd_sync(1,m);
+Agents(m).l=thetas_pxADMM_fd_sync(2:end,m);
+
 [Agents(m).sigma_f;Agents(m).l]
 end
       
@@ -631,8 +640,9 @@ end
         hold off
     end
     %% Pre
-    reso_x=64;
-    reso_y=64;
+    reso_x=100;
+    reso_y=100;
+sigma_n
     ts_1=linspace(range_x1(1),range_x1(2),reso_x);
     ts_2=linspace(range_x2(1),range_x2(2),reso_y);
     [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);

@@ -1,9 +1,13 @@
-function [sigma_pxADMM_fd,l_pxADMM_fd,outSteps,Zs] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync)
+function [sigma_pxADMM_fd,l_pxADMM_fd,outSteps,Zs,thetas] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync)
 %RUNPXADMM_FD Summary of this function goes here
 %   Detailed explanation goes here
 if sync
     inputDim=size(Agents(1).X,1);
     
+	
+	thetas=zeros(inputDim+1,M);
+
+
     sampleSize=M*length(Agents(1).Z);
     pxADMM_fd_flag=1;
     Sigmas=[];
@@ -134,9 +138,13 @@ if sync
     saveas(gcf,fname,'png');
     close gcf;
 
+for m=1:M
+thetas(:,m)=[Agents(m).sigma_f;Agents(m).l];
+end
     %delete(wb);
 else
     inputDim=size(Agents(1).X,1);
+	thetas=zeros(inputDim+1,M);
     sampleSize=M*length(Agents(1).Z);
     pxADMM_fd_flag=1;
     Sigmas=[];
@@ -367,6 +375,9 @@ else
     saveas(gcf,fname,'png');
     close gcf;
 %     delete(wb);
+for m=1:M
+thetas(:,m)=[Agents(m).sigma_f;Agents(m).l];
+end
 end
 end
 

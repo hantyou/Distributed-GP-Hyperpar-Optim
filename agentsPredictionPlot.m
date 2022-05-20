@@ -58,7 +58,7 @@ end
 sname='DEC predict plot';
 s=hgexport('readstyle',sname);
 s.Resolution=fig_export_pix;
-s.Width=24/8*M;
+s.Width=26/8*M;
 if eps_export==1
     s.Format='eps';
     fname=fname0;

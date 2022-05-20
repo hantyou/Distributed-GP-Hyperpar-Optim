@@ -32,20 +32,18 @@ error read
 
 subSize =
 
-   186
-   146
-   206
-   158
-   157
-   200
+   210
+   177
+   266
+   198
+   199
+   270
 
 The method(s) to be evaluated in this experiment is(are):
 pxADMM_fd_sync
 pxADMM_fd_async
 
 Time of pxADMM_{fd}
-   250
-
 
 gcf = 
 
@@ -72,7 +70,7 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 30.066393 seconds.
+Elapsed time is 22.545898 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
@@ -110,15 +108,64 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 33.201296 seconds.
+Elapsed time is 38.853970 seconds.
 
 theta =
 
   3x1 single column vector
 
-    4.3902
-    1.0256
-    0.6918
+    2.8524
+    0.9075
+    0.5496
+
+
+ans =
+
+    2.8524
+    0.9075
+    0.5495
+
+
+ans =
+
+    2.8524
+    0.9075
+    0.5496
+
+
+ans =
+
+    2.8524
+    0.9075
+    0.5495
+
+
+ans =
+
+    2.8524
+    0.9075
+    0.5496
+
+
+ans =
+
+    2.8524
+    0.9075
+    0.5496
+
+
+ans =
+
+    2.8524
+    0.9075
+    0.5496
+
+
+sigma_n =
+
+  single
+
+    0.3860
 
 PoE
 
@@ -141,45 +188,21 @@ BCM
 rBCM
 png file saved
 No-Agg
-Elapsed time is 6.550283 seconds.
+Elapsed time is 16.743379 seconds.
 png file saved
 DEC-PoE
-Elapsed time is 5.209495 seconds.
+Elapsed time is 17.691958 seconds.
 png file saved
 DEC-gPoE
-Elapsed time is 5.032254 seconds.
+Elapsed time is 17.311298 seconds.
 png file saved
 DEC-BCM
-Elapsed time is 5.419143 seconds.
+Elapsed time is 18.303215 seconds.
 png file saved
 DEC-rBCM
-Elapsed time is 5.271309 seconds.
+Elapsed time is 17.814384 seconds.
 png file saved
 DEC-NPAE
-Elapsed time is 17.262671 seconds.
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 974)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 974)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 974)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 974)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 974)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 974)] 
+Elapsed time is 194.311422 seconds.
 png file saved
 all code ended

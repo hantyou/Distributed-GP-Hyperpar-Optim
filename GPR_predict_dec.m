@@ -177,7 +177,7 @@ for m=1:M
     sigma_f(m)=Agents(m).sigma_f;
     X1=Agents(m).X;
     theta=[Agents(m).sigma_f;Agents(m).l];
-    theta=[Agents(1).sigma_f;Agents(1).l];
+    %theta=[Agents(1).sigma_f;Agents(1).l];
     for n=1:N_newX
         k_star_star(m,n)=kernelFunc(newX(:,n),newX(:,n),theta,sigma_n,'RBF');
     end
@@ -220,8 +220,8 @@ parfor n=1:N_newX
     q_mu_direct(:,n)=inv(K_A(:,:,n))*subMean(:,n);
     q_sigma_direct(:,n)=inv(K_A(:,:,n))*k_A(:,n);
 end
-maxIterJOR=100;
-w=0.2;
+maxIterJOR=200;
+w=0.15;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
     for i=1:M
@@ -254,7 +254,7 @@ while maxIterJOR>0
     q_sigma_old=q_sigma_new;
 end
 % calculation of q is not very accuarate
-q_mu=q_mu_direct;
+q_mu=q_mu_new;
 q_sigma=q_sigma_new;
 % JOR part end
 
@@ -264,7 +264,7 @@ direct_output_mu=zeros(1,N_newX);
 for n=1:N_newX
     direct_output_mu(n)=k_A(:,n)'*inv(K_A(:,:,n))*subMean(:,n);
 end
-direct_output_mu=reshape(direct_output_mu,[64,64]);
+%direct_output_mu=reshape(direct_output_mu,[64,64]);
 % gcf=figure('visible','on');
 % imshow(direct_output_mu,[]),colormap('jet');
 
