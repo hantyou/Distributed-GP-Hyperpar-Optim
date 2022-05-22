@@ -324,7 +324,12 @@ else
         end
         lgd=yline(cvgValue(i),'-.b');
         if i==1
-            legend(lgd,'converged value', 'Location','northwest')
+            lgd2=yline(5,'-.r')
+            legend([lgd,lgd2],{'converged value','real value'}, 'Location','northeast')
+            ylim([4.5,6])
+        else
+            yline(1,'-.r')
+            ylim([0.5,2.1])
         end
         set(gca, 'XScale', 'log')
         hold off

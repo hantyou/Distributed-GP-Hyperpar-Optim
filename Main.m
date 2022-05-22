@@ -4,23 +4,23 @@ close all;
 F = findall(0,'type','figure','tag','TMWWaitbar');
 delete(F);
 opengl software
-set(0,'DefaultFigureVisible','off')
+set(0,'DefaultFigureVisible','on')
 %% Define field for monitoring
 delete(gcp('nocreate'))
 range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
 rng(990611,'twister')
-rand(17+16+16,1);
-M=6;
+rand(17+16,1);
+M=8;
 parpool(M)
 region=[];
 %% Generate/Load dataset
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=300;
-Agents_measure_range=1.75;
+everyAgentsSampleNum=70;
+Agents_measure_range=3;
 realDataSet=1;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
@@ -88,7 +88,7 @@ for m=1:M
     Agents(m).N_m=localDataSetsSize(m);
     Agents(m).M=M;
     Agents(m).action_status=1;
-%     Agents(m).commuRange=3.2;
+%         Agents(m).commuRange=4;
     Agents(m).commuRange=2.5;
 
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
@@ -146,11 +146,11 @@ if realDataSet==0||temp_data==3
     gcf=figure('visible','off');
     hold on;
     if realDataSet==0
-    imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n),F_true);
+        imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n),F_true);
     end
     if temp_data==3
-       imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(2),range_x2(1),reso_n),F_true);
-%        contour(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m),F_true,linspace(0,25,10),'-k','LineWidth',0.6);
+        imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(2),range_x2(1),reso_n),F_true);
+        %        contour(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m),F_true,linspace(0,25,10),'-k','LineWidth',0.6);
     end
     scatter(X1,X2,'k*');
     scatter(Agents_Posi(1,:),Agents_Posi(2,:))
@@ -168,16 +168,16 @@ if realDataSet==0||temp_data==3
         end
     end
     scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
-    for m=1:M
-text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
-end
-%     % colormap("jet")
-%     xlim([range_x1(1) range_x1(2)])
-%     ylim([range_x2(1) range_x2(2)])
+%     for m=1:M
+%         text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
+%     end
+    %     % colormap("jet")
 
     xlabel('x1')
     ylabel('x2')
     colorbar
+        xlim([range_x1(1) range_x1(2)])
+        ylim([range_x2(1) range_x2(2)])
     title('network topology on 2D field')
     hold off
     fname='results/topology_background';
@@ -204,11 +204,11 @@ end
     end
     scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
     for m=1:M
-text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
-end
-%     % colormap("jet")
-%     xlim([range_x1(1) range_x1(2)])
-%     ylim([range_x2(1) range_x2(2)])
+        text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
+    end
+    %     % colormap("jet")
+    %     xlim([range_x1(1) range_x1(2)])
+    %     ylim([range_x2(1) range_x2(2)])
 
     xlabel('x1')
     ylabel('x2')
@@ -252,12 +252,12 @@ fprintf("%s\n",show_txt);
 fprintf("\n");
 
 % initialize theta and other parameters
-initial_sigma_f=1;
-initial_l=1*ones(1,inputDim);
-epsilon = 1e-6; % used for stop criteria
+initial_sigma_f=5.5;
+initial_l=2*ones(1,inputDim);
+epsilon = 1e-8; % used for stop criteria
 
-rho_glb=500;
-L_glb=1500;
+rho_glb=40;
+L_glb=500;
 
 % rng('shuffle')
 %% Perform naive GD
@@ -368,7 +368,7 @@ end
 %% Perform pxADMM_fd_sync
 if run_pxADMM_fd_sync
     % initialize pxADMM_fd
-    maxIter=4000;
+    maxIter=8000;
     initial_z=[initial_sigma_f;initial_l'];
     initial_beta = 0.1*[1;ones(length(initial_l),1)];
     for m=1:M
@@ -412,7 +412,7 @@ end
 %% Perform pxADMM_fd_async
 if run_pxADMM_fd_async
     % initialize pxADMM_fd
-    maxIter=4000;
+    maxIter=8000;
     initial_z=[initial_sigma_f;initial_l'];
     initial_beta = 0.1*[1;ones(length(initial_l),1)];
     for m=1:M
@@ -618,14 +618,14 @@ else
     %% GPR1
     % theta=[Agents(1).sigma_f;Agents(1).l];
     theta=[sigma_pxADMM_fd_sync;l_pxADMM_fd_sync];
-theta
-for m=1:M
-Agents(m).sigma_f=thetas_pxADMM_fd_sync(1,m);
-Agents(m).l=thetas_pxADMM_fd_sync(2:end,m);
+    theta
+    for m=1:M
+        Agents(m).sigma_f=thetas_pxADMM_fd_sync(1,m);
+        Agents(m).l=thetas_pxADMM_fd_sync(2:end,m);
 
-[Agents(m).sigma_f;Agents(m).l]
-end
-      
+        [Agents(m).sigma_f;Agents(m).l]
+    end
+
     plotFlag=1;
     [Mean_total,Uncertainty_total] = GPR_predict(X,Z,theta,[range_x1;range_x2],sigma_n,plotFlag);
     if temp_data==2
@@ -642,7 +642,7 @@ end
     %% Pre
     reso_x=100;
     reso_y=100;
-sigma_n
+    sigma_n
     ts_1=linspace(range_x1(1),range_x1(2),reso_x);
     ts_2=linspace(range_x2(1),range_x2(2),reso_y);
     [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
@@ -680,11 +680,11 @@ sigma_n
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
-	xlim([range_x1(1),range_x1(2)]);
-	ylim([range_x2(1),range_x2(2)]);
-	caxis(ax1,[6,18]);
+    xlim([range_x1(1),range_x1(2)]);
+    ylim([range_x2(1),range_x2(2)]);
+    caxis(ax1,[6,18]);
 
-        view(0,90);
+    view(0,90);
     %     subplot(245),
     ax5=nexttile(5)
 
@@ -701,12 +701,12 @@ sigma_n
     hold off;
     xlabel('x1'), ylabel('x2'), zlabel('y')
     zlim(10.^[-4.1,2.9])
-	xlim([range_x1(1),range_x1(2)]);
-	ylim([range_x2(1),range_x2(2)]);
+    xlim([range_x1(1),range_x1(2)]);
+    ylim([range_x2(1),range_x2(2)]);
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
 
-        %view(0,90);
+    %view(0,90);
     %% gPoE
     method='gPoE';
 
@@ -730,11 +730,11 @@ sigma_n
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
-	xlim([range_x1(1),range_x1(2)]);
-	ylim([range_x2(1),range_x2(2)]);
+    xlim([range_x1(1),range_x1(2)]);
+    ylim([range_x2(1),range_x2(2)]);
     caxis(ax2,[6,18])
     %     subplot(246),
-        view(0,90);
+    view(0,90);
     nexttile(6)
 
     surf(mesh_x,mesh_y,(Var)/1,'edgecolor','none','FaceAlpha',0.9);
@@ -749,12 +749,12 @@ sigma_n
     set(gca,'ZScale','log')
     hold off;
     xlabel('x1'), ylabel('x2'), zlabel('y')
-	xlim([range_x1(1),range_x1(2)]);
-	ylim([range_x2(1),range_x2(2)]);
+    xlim([range_x1(1),range_x1(2)]);
+    ylim([range_x2(1),range_x2(2)]);
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
-        %view(0,90);
+    %view(0,90);
 
     %% BCM
     method='BCM';
@@ -780,12 +780,12 @@ sigma_n
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
-	xlim([range_x1(1),range_x1(2)]);
-	ylim([range_x2(1),range_x2(2)]);
+    xlim([range_x1(1),range_x1(2)]);
+    ylim([range_x2(1),range_x2(2)]);
     caxis(ax3,[6,18])
 
     %     subplot(247),
-        view(0,90);
+    view(0,90);
     nexttile(7)
 
     surf(mesh_x,mesh_y,(Var)/1,'edgecolor','none','FaceAlpha',0.9);
@@ -800,12 +800,12 @@ sigma_n
     set(gca,'ZScale','log')
     hold off;
     xlabel('x1'), ylabel('x2'), zlabel('y')
-	xlim([range_x1(1),range_x1(2)]);
-	ylim([range_x2(1),range_x2(2)]);
+    xlim([range_x1(1),range_x1(2)]);
+    ylim([range_x2(1),range_x2(2)]);
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
-       % view(0,90);
+    % view(0,90);
 
 
     %% rBCM
@@ -828,16 +828,16 @@ sigma_n
     ax = gca;
     ax.YDir = 'normal';
     for m=1:M
-       % scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
+        % scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
-	xlim([range_x1(1),range_x1(2)]);
-	ylim([range_x2(1),range_x2(2)]);
+    xlim([range_x1(1),range_x1(2)]);
+    ylim([range_x2(1),range_x2(2)]);
     caxis(ax4,[6,18])
 
     %     subplot(248),
-        view(0,90);
+    view(0,90);
     nexttile(8)
 
     surf(mesh_x,mesh_y,(Var)/1,'edgecolor','none','FaceAlpha',0.9);
@@ -852,12 +852,12 @@ sigma_n
     set(gca,'ZScale','log')
     hold off;
     xlabel('x1'), ylabel('x2'), zlabel('y')
-	xlim([range_x1(1),range_x1(2)]);
-	ylim([range_x2(1),range_x2(2)]);
+    xlim([range_x1(1),range_x1(2)]);
+    ylim([range_x2(1),range_x2(2)]);
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
-      %  view(0,90);
+    %  view(0,90);
 
 
 
@@ -867,20 +867,20 @@ sigma_n
     if eps_export==1
         s.Format='eps';
         fname=strcat('./results/Agg/Centralized/','centralized-GPR-predict');
-	if temp_data==3
-	    fname=strcat(fname,'_',region);
-	end
-	fname=strcat(fname,'.',s.Format);
+    	if temp_data==3
+    	    fname=strcat(fname,'_',region);
+    	end
+    	fname=strcat(fname,'.',s.Format);
         hgexport(gcf,fname,s);
         disp("eps file saved")
     end
     if png_export==1
         s.Format='png';
         fname=strcat('./results/Agg/Centralized/','centralized-GPR-predict.');
-	if temp_data==3
-	    fname=strcat(fname,'_',region);
-	end
-	fname=strcat(fname,'.',s.Format);
+    	if temp_data==3
+    	    fname=strcat(fname,'_',region);
+    	end
+    	fname=strcat(fname,'.',s.Format);
         hgexport(gcf,fname,s);
         disp("png file saved")
     end
@@ -896,7 +896,7 @@ sigma_n
     %% No aggregation
     contour=0;
     method='NoAg';
-    
+
     tic
     [meanNoAg,varNoAg] = GPR_predict_NoAg(Agents,newX,sigma_n);
     toc
@@ -906,7 +906,7 @@ sigma_n
     agentsPredictionPlot(Agents,meanNoAg,varNoAg,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contour);
-    
+
 
     %% DEC-PoE
     method='DEC-PoE';
@@ -971,7 +971,7 @@ sigma_n
     agentsPredictionPlot(Agents,meanDEC_rBCM,varDEC_rBCM,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contour);
-    
+
 
     %% DEC-NPAE
     method='DEC-NPAE';
@@ -987,7 +987,7 @@ sigma_n
     agentsPredictionPlot(Agents,meanDEC_NPAE,varDEC_NPAE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contour);
-    
+
 end
 disp('all code ended')
 
