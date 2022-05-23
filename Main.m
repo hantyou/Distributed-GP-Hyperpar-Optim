@@ -6,22 +6,22 @@ delete(F);
 opengl software
 set(0,'DefaultFigureVisible','on')
 %% Define field for monitoring
-delete(gcp('nocreate'))
+% delete(gcp('nocreate'))
 range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
 rng(990611,'twister')
 rand(17+16,1);
 M=8;
-parpool(M)
+% parpool(M)
 region=[];
 %% Generate/Load dataset
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=70;
+everyAgentsSampleNum=20;
 Agents_measure_range=3;
-realDataSet=1;
+realDataSet=0;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
     loadRealDataset
@@ -32,7 +32,7 @@ else
     [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
 
     %% Decide sample points
-    method=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
+    method=1; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     subSize=ones(M,1)*everyAgentsSampleNum;
     Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,M)*0.9;
         unifrnd(range_x2(1),range_x2(2),1,M)*0.9];
@@ -88,8 +88,8 @@ for m=1:M
     Agents(m).N_m=localDataSetsSize(m);
     Agents(m).M=M;
     Agents(m).action_status=1;
-%         Agents(m).commuRange=4;
-    Agents(m).commuRange=2.5;
+        Agents(m).commuRange=4;
+%     Agents(m).commuRange=2.5;
 
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
@@ -122,6 +122,13 @@ elseif realDataSet==0
     zlabel('environmental scalar value')
     pause(0.01)
 end
+
+
+theta_range=[[-1,1];[-2,1]];
+LL=generateLikelihoodMap(X,Z,theta_range,sigma_n);
+
+
+
 %% Set topology
 Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
 A_full=generateTopology(Agents,Topology_method);
