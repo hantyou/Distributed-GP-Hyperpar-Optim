@@ -124,7 +124,7 @@ elseif realDataSet==0
 end
 
 
-theta_range=[[-1,1];[-2,1]];
+theta_range=[[-2,1];[-2,1]];
 LL=generateLikelihoodMap(X,Z,theta_range,sigma_n);
 
 
