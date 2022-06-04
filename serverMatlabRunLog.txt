@@ -9,47 +9,300 @@ To get started, type doc.
 For product information, visit www.mathworks.com.
  
 Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 6).
+Connected to the parallel pool (number of workers: 8).
 
 ans = 
 
  Pool with properties: 
 
             Connected: true
-           NumWorkers: 6
+           NumWorkers: 8
               Cluster: local
         AttachedFiles: {}
     AutoAddClientPath: true
           IdleTimeout: 30 minutes (30 minutes remaining)
           SpmdEnabled: true
 
-This exp is down with real dataset loaded
-Reading Sea Surface Temperature (SST) dataset
-latitudes read
-longitude read
-temperature read
-error read
+This exp is down with artificial dataset loaded
+Generate GP according to given GP_hyperpar
+Elapsed time is 1.260899 seconds.
 
 subSize =
 
-   210
-   177
-   266
-   198
-   199
-   270
+    30
+    30
+    30
+    30
+    30
+    30
+    30
+    30
+
+
+m =
+
+     1
+
+
+m =
+
+     2
+
+
+m =
+
+     3
+
+
+m =
+
+     4
+
+
+m =
+
+     5
+
+
+m =
+
+     6
+
+
+m =
+
+     7
+
+
+m =
+
+     8
+
+
+m =
+
+     9
+
+
+m =
+
+    10
+
+
+m =
+
+    11
+
+
+m =
+
+    12
+
+
+m =
+
+    13
+
+
+m =
+
+    14
+
+
+m =
+
+    15
+
+
+m =
+
+    16
+
+
+m =
+
+    17
+
+
+m =
+
+    18
+
+
+m =
+
+    19
+
+
+m =
+
+    20
+
+
+m =
+
+    21
+
+
+m =
+
+    22
+
+
+m =
+
+    23
+
+
+m =
+
+    24
+
+
+m =
+
+    25
+
+
+m =
+
+    26
+
+
+m =
+
+    27
+
+
+m =
+
+    28
+
+
+m =
+
+    29
+
+
+m =
+
+    30
+
+
+m =
+
+    31
+
+
+m =
+
+    32
+
+
+m =
+
+    33
+
+
+m =
+
+    34
+
+
+m =
+
+    35
+
+
+m =
+
+    36
+
+
+m =
+
+    37
+
+
+m =
+
+    38
+
+
+m =
+
+    39
+
+
+m =
+
+    40
+
+
+m =
+
+    41
+
+
+m =
+
+    42
+
+
+m =
+
+    43
+
+
+m =
+
+    44
+
+
+m =
+
+    45
+
+
+m =
+
+    46
+
+
+m =
+
+    47
+
+
+m =
+
+    48
+
+
+m =
+
+    49
+
+
+m =
+
+    50
 
 The method(s) to be evaluated in this experiment is(are):
 pxADMM_fd_sync
 pxADMM_fd_async
 
 Time of pxADMM_{fd}
+   250
+
+   500
+
 
 gcf = 
 
-  Figure (1) with properties:
+  Figure (4) with properties:
 
-      Number: 1
+      Number: 4
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -60,9 +313,9 @@ gcf =
 
 gcf = 
 
-  Figure (1) with properties:
+  Figure (4) with properties:
 
-      Number: 1
+      Number: 4
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -70,18 +323,63 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 22.545898 seconds.
+Elapsed time is 10.557869 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
 
-  Figure (1) with properties:
+  Figure (4) with properties:
 
-      Number: 1
+      Number: 4
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
        Units: 'pixels'
+
+  Use GET to show all properties
+
+
+lgd2 = 
+
+  ConstantLine with properties:
+
+    InterceptAxis: 'y'
+            Value: 5
+            Color: [1 0 0]
+        LineStyle: '-.'
+        LineWidth: 0.5000
+            Label: ''
+      DisplayName: ''
+
+  Use GET to show all properties
+
+
+ans = 
+
+  ConstantLine with properties:
+
+    InterceptAxis: 'y'
+            Value: 1
+            Color: [1 0 0]
+        LineStyle: '-.'
+        LineWidth: 0.5000
+            Label: ''
+      DisplayName: ''
+
+  Use GET to show all properties
+
+
+ans = 
+
+  ConstantLine with properties:
+
+    InterceptAxis: 'y'
+            Value: 1
+            Color: [1 0 0]
+        LineStyle: '-.'
+        LineWidth: 0.5000
+            Label: ''
+      DisplayName: ''
 
   Use GET to show all properties
 
@@ -93,9 +391,9 @@ fname =
 
 gcf = 
 
-  Figure (2) with properties:
+  Figure (5) with properties:
 
-      Number: 2
+      Number: 5
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -108,64 +406,74 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 38.853970 seconds.
+Elapsed time is 11.159215 seconds.
 
 theta =
 
-  3x1 single column vector
-
-    2.8524
-    0.9075
-    0.5496
+    5.2496
+    1.3175
+    1.0567
 
 
 ans =
 
-    2.8524
-    0.9075
-    0.5495
+    5.2496
+    1.3175
+    1.0567
 
 
 ans =
 
-    2.8524
-    0.9075
-    0.5496
+    5.2496
+    1.3175
+    1.0567
 
 
 ans =
 
-    2.8524
-    0.9075
-    0.5495
+    5.2496
+    1.3175
+    1.0567
 
 
 ans =
 
-    2.8524
-    0.9075
-    0.5496
+    5.2496
+    1.3175
+    1.0567
 
 
 ans =
 
-    2.8524
-    0.9075
-    0.5496
+    5.2496
+    1.3175
+    1.0567
 
 
 ans =
 
-    2.8524
-    0.9075
-    0.5496
+    5.2496
+    1.3175
+    1.0567
+
+
+ans =
+
+    5.2496
+    1.3175
+    1.0567
+
+
+ans =
+
+    5.2496
+    1.3175
+    1.0567
 
 
 sigma_n =
 
-  single
-
-    0.3860
+    0.3162
 
 PoE
 
@@ -178,7 +486,7 @@ ax5 =
            XScale: 'linear'
            YScale: 'linear'
     GridLineStyle: '-'
-         Position: [0.0857 0.0550 0.1992 0.3972]
+         Position: [0.0650 0.0550 0.2044 0.3972]
             Units: 'normalized'
 
   Use GET to show all properties
@@ -188,21 +496,21 @@ BCM
 rBCM
 png file saved
 No-Agg
-Elapsed time is 16.743379 seconds.
+Elapsed time is 3.454677 seconds.
 png file saved
 DEC-PoE
-Elapsed time is 17.691958 seconds.
+Elapsed time is 2.988478 seconds.
 png file saved
 DEC-gPoE
-Elapsed time is 17.311298 seconds.
+Elapsed time is 2.452696 seconds.
 png file saved
 DEC-BCM
-Elapsed time is 18.303215 seconds.
+Elapsed time is 3.580759 seconds.
 png file saved
 DEC-rBCM
-Elapsed time is 17.814384 seconds.
+Elapsed time is 3.798644 seconds.
 png file saved
 DEC-NPAE
-Elapsed time is 194.311422 seconds.
+Elapsed time is 28.113493 seconds.
 png file saved
 all code ended

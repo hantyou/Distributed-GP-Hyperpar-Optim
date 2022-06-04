@@ -6,20 +6,20 @@ delete(F);
 opengl software
 set(0,'DefaultFigureVisible','on')
 %% Define field for monitoring
-% delete(gcp('nocreate'))
+delete(gcp('nocreate'))
 range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
 rng(990611,'twister')
 rand(17+16,1);
 M=8;
-% parpool(M)
+parpool(M)
 region=[];
 %% Generate/Load dataset
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=20;
+everyAgentsSampleNum=30;
 Agents_measure_range=3;
 realDataSet=0;
 if realDataSet==1
