@@ -13,13 +13,17 @@ range=[range_x1;range_x2];
 rng(990611,'twister')
 rand(17+16,1);
 M=8;
+try
 parpool(32);
+catch
+parpool
+end
 region=[];
 %% Generate/Load dataset
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=30;
+everyAgentsSampleNum=70;
 Agents_measure_range=3;
 realDataSet=0;
 if realDataSet==1

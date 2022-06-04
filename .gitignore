@@ -1,5 +1,6 @@
 *.asv
 *.nc
+*.mat
 SSTdata/
 *.nfs*
 results/
