@@ -4,7 +4,7 @@ close all;
 F = findall(0,'type','figure','tag','TMWWaitbar');
 delete(F);
 opengl software
-set(0,'DefaultFigureVisible','on')
+set(0,'DefaultFigureVisible','off')
 %% Define field for monitoring
 delete(gcp('nocreate'))
 range_x1=[-5,5];
@@ -13,7 +13,7 @@ range=[range_x1;range_x2];
 rng(990611,'twister')
 rand(17+16,1);
 M=8;
-parpool(M)
+parpool(32);
 region=[];
 %% Generate/Load dataset
 reso_m=256;
@@ -266,6 +266,9 @@ epsilon = 1e-8; % used for stop criteria
 rho_glb=40;
 L_glb=500;
 
+
+delete(gcp('nocreate'))
+parpool(M)
 % rng('shuffle')
 %% Perform naive GD
 % initial_l=3*[1,1];

@@ -27,9 +27,11 @@ for m=1:sf_Num
     end
 end
 
-NLL=log(-LL)/log(10);
+% NLL=log(-LL)/log(10);
+NLL=-LL;
 figure,imshow(NLL,[]);
-figure,contour(l1s,sigma_fs,NLL,'--k','LineWidth',2);
+gcf=figure;
+contour(l1s,sigma_fs,NLL,'--k','LineWidth',2);
 hold on;
 set(gca, 'XScale', 'log')
 set(gca, 'YScale', 'log')
@@ -37,4 +39,7 @@ set(gca, 'YScale', 'log')
 imagesc(l1s,sigma_fs,NLL);
 contour(l1s,sigma_fs,NLL,'--k','LineWidth',2);
 hold off;
+fname='results/LikelihoodHyperpars';
+saveas(gcf,fname,'png');
+close gcf;
 end
