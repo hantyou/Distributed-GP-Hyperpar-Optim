@@ -14,9 +14,9 @@ rng(990611,'twister')
 rand(17+16,1);
 M=8;
 try
-parpool(32);
+    parpool(32);
 catch
-parpool
+    parpool
 end
 region=[];
 %% Generate/Load dataset
@@ -92,8 +92,8 @@ for m=1:M
     Agents(m).N_m=localDataSetsSize(m);
     Agents(m).M=M;
     Agents(m).action_status=1;
-        Agents(m).commuRange=4;
-%     Agents(m).commuRange=2.5;
+    Agents(m).commuRange=4;
+    %     Agents(m).commuRange=2.5;
 
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
@@ -179,16 +179,16 @@ if realDataSet==0||temp_data==3
         end
     end
     scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
-%     for m=1:M
-%         text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
-%     end
+    %     for m=1:M
+    %         text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
+    %     end
     %     % colormap("jet")
 
     xlabel('x1')
     ylabel('x2')
     colorbar
-        xlim([range_x1(1) range_x1(2)])
-        ylim([range_x2(1) range_x2(2)])
+    xlim([range_x1(1) range_x1(2)])
+    ylim([range_x2(1) range_x2(2)])
     title('network topology on 2D field')
     hold off
     fname='results/topology_background';
@@ -881,20 +881,20 @@ else
     if eps_export==1
         s.Format='eps';
         fname=strcat('./results/Agg/Centralized/','centralized-GPR-predict');
-    	if temp_data==3
-    	    fname=strcat(fname,'_',region);
-    	end
-    	fname=strcat(fname,'.',s.Format);
+        if temp_data==3
+            fname=strcat(fname,'_',region);
+        end
+        fname=strcat(fname,'.',s.Format);
         hgexport(gcf,fname,s);
         disp("eps file saved")
     end
     if png_export==1
         s.Format='png';
         fname=strcat('./results/Agg/Centralized/','centralized-GPR-predict.');
-    	if temp_data==3
-    	    fname=strcat(fname,'_',region);
-    	end
-    	fname=strcat(fname,'.',s.Format);
+        if temp_data==3
+            fname=strcat(fname,'_',region);
+        end
+        fname=strcat(fname,'.',s.Format);
         hgexport(gcf,fname,s);
         disp("png file saved")
     end
@@ -999,6 +999,16 @@ else
     visible='off';
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_NPAE,varDEC_NPAE,reso_x,reso_y,...
+        range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
+        visible,fig_export_pix,temp_data,region,contour);
+    %% NN-NPAE
+    method='NN-NPAE';
+    tic
+    [meanNN_NPAE,varNN_NPAE] = GPR_predict_NN(Agents,method,newX,sigma_n);
+    toc
+    visible='on';
+    fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
+    agentsPredictionPlot(Agents,meanNN_NPAE,varNN_NPAE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contour);
 
