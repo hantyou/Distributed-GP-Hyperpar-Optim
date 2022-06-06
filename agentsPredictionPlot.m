@@ -25,7 +25,7 @@ for m=1:M
     hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title('mean');
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
-	caxis(axm,[6,18]);
+% 	caxis(axm,[6,18]);
     if m==M
         colorbar;
     end
