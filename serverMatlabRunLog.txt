@@ -9,34 +9,21 @@ To get started, type doc.
 For product information, visit www.mathworks.com.
  
 Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 8).
-
-ans = 
-
- Pool with properties: 
-
-            Connected: true
-           NumWorkers: 8
-              Cluster: local
-        AttachedFiles: {}
-    AutoAddClientPath: true
-          IdleTimeout: 30 minutes (30 minutes remaining)
-          SpmdEnabled: true
-
+Connected to the parallel pool (number of workers: 32).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 1.260899 seconds.
+Elapsed time is 1.047782 seconds.
 
 subSize =
 
-    30
-    30
-    30
-    30
-    30
-    30
-    30
-    30
+    70
+    70
+    70
+    70
+    70
+    70
+    70
+    70
 
 
 m =
@@ -292,6 +279,22 @@ The method(s) to be evaluated in this experiment is(are):
 pxADMM_fd_sync
 pxADMM_fd_async
 
+Parallel pool using the 'local' profile is shutting down.
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 8).
+
+ans = 
+
+ Pool with properties: 
+
+            Connected: true
+           NumWorkers: 8
+              Cluster: local
+        AttachedFiles: {}
+    AutoAddClientPath: true
+          IdleTimeout: 30 minutes (30 minutes remaining)
+          SpmdEnabled: true
+
 Time of pxADMM_{fd}
    250
 
@@ -300,9 +303,9 @@ Time of pxADMM_{fd}
 
 gcf = 
 
-  Figure (4) with properties:
+  Figure (3) with properties:
 
-      Number: 4
+      Number: 3
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -313,9 +316,9 @@ gcf =
 
 gcf = 
 
-  Figure (4) with properties:
+  Figure (3) with properties:
 
-      Number: 4
+      Number: 3
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -323,14 +326,14 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 10.557869 seconds.
+Elapsed time is 34.196440 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
 
-  Figure (4) with properties:
+  Figure (3) with properties:
 
-      Number: 4
+      Number: 3
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -391,9 +394,9 @@ fname =
 
 gcf = 
 
-  Figure (5) with properties:
+  Figure (4) with properties:
 
-      Number: 5
+      Number: 4
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -406,69 +409,69 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 11.159215 seconds.
+Elapsed time is 43.200807 seconds.
 
 theta =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 ans =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 ans =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 ans =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 ans =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 ans =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 ans =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 ans =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 ans =
 
-    5.2496
-    1.3175
-    1.0567
+    4.9407
+    1.0408
+    1.0090
 
 
 sigma_n =
@@ -496,21 +499,55 @@ BCM
 rBCM
 png file saved
 No-Agg
-Elapsed time is 3.454677 seconds.
+Elapsed time is 5.555751 seconds.
 png file saved
 DEC-PoE
-Elapsed time is 2.988478 seconds.
+Elapsed time is 4.904702 seconds.
 png file saved
 DEC-gPoE
-Elapsed time is 2.452696 seconds.
+Elapsed time is 4.013783 seconds.
 png file saved
 DEC-BCM
-Elapsed time is 3.580759 seconds.
+Elapsed time is 5.256634 seconds.
 png file saved
 DEC-rBCM
-Elapsed time is 3.798644 seconds.
+Elapsed time is 4.598544 seconds.
 png file saved
 DEC-NPAE
-Elapsed time is 28.113493 seconds.
+Elapsed time is 60.557359 seconds.
+png file saved
+Elapsed time is 44.017610 seconds.
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 1011)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 1011)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 1011)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 1011)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 1011)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 1011)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 1011)] 
+[Warning: Negative data ignored] 
+[> In xlabel (line 56)
+  In agentsPredictionPlot (line 45)
+  In Main (line 1011)] 
 png file saved
 all code ended
