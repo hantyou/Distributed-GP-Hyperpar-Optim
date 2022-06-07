@@ -36,7 +36,7 @@ else
     [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
 
     %% Decide sample points
-    method=1; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
+    method=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     subSize=ones(M,1)*everyAgentsSampleNum;
     Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,M)*0.9;
         unifrnd(range_x2(1),range_x2(2),1,M)*0.9];
@@ -129,7 +129,7 @@ end
 
 
 theta_range=[[-2,1];[-2,1]];
-LL=generateLikelihoodMap(X,Z,theta_range,sigma_n);
+% LL=generateLikelihoodMap(X,Z,theta_range,sigma_n);
 
 
 
@@ -908,7 +908,7 @@ else
     close(gcf)
 
     %% No aggregation
-    contour=0;
+    contourFlag=0;
     method='NoAg';
 
     tic
@@ -919,7 +919,7 @@ else
     fname=strcat('./results/Agg/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanNoAg,varNoAg,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
-        visible,fig_export_pix,temp_data,region,contour);
+        visible,fig_export_pix,temp_data,region,contourFlag);
 
 
     %% DEC-PoE
@@ -935,7 +935,7 @@ else
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_PoE,varDEC_PoE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
-        visible,fig_export_pix,temp_data,region,contour);
+        visible,fig_export_pix,temp_data,region,contourFlag);
 
 
 
@@ -952,7 +952,7 @@ else
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_gPoE,varDEC_gPoE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
-        visible,fig_export_pix,temp_data,region,contour);
+        visible,fig_export_pix,temp_data,region,contourFlag);
 
 
     %% DEC-BCM
@@ -968,7 +968,7 @@ else
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_BCM,varDEC_BCM,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
-        visible,fig_export_pix,temp_data,region,contour);
+        visible,fig_export_pix,temp_data,region,contourFlag);
 
 
     %% DEC-rBCM
@@ -984,7 +984,7 @@ else
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_rBCM,varDEC_rBCM,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
-        visible,fig_export_pix,temp_data,region,contour);
+        visible,fig_export_pix,temp_data,region,contourFlag);
 
 
     %% DEC-NPAE
@@ -1000,17 +1000,19 @@ else
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_NPAE,varDEC_NPAE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
-        visible,fig_export_pix,temp_data,region,contour);
+        visible,fig_export_pix,temp_data,region,contourFlag);
     %% NN-NPAE
     method='NN-NPAE';
     tic
     [meanNN_NPAE,varNN_NPAE] = GPR_predict_NN(Agents,method,newX,sigma_n);
     toc
-    visible='on';
+    %%
+    visible='off';
+    
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanNN_NPAE,varNN_NPAE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
-        visible,fig_export_pix,temp_data,region,contour);
+        visible,fig_export_pix,temp_data,region,contourFlag);
 
 end
 disp('all code ended')

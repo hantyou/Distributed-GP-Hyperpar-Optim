@@ -44,7 +44,7 @@ switch upper(method)
         end
         beta=ones(M,N_newX);
         [Mean,Var,mean,var]=DEC_rBCM(A,subMeans,subVars,beta,k_star_star,maxIter);
-
+        
         %%%
         %         disp('Function Under Construction')
     case {'DEC-RBCM'}
@@ -60,13 +60,13 @@ switch upper(method)
         %         beta=ones(M,N_newX);
         beta=0.5*(log(k_star_star)-log(subVars));
         [Mean,Var,mean,var]=DEC_rBCM(A,subMeans,subVars,beta,k_star_star,maxIter);
-
+        
         %%%
         %         disp('Function Under Construction')
     case {'DEC-GRBCM'}
         disp('DEC-grBCM')
         %%%
-
+        
         %%%
         disp('Function Under Construction')
     case {'DEC-NPAE'}
@@ -76,8 +76,8 @@ switch upper(method)
         Mean=0;
         Var=0;
         %%%
-%         disp('Function Under Construction')
-
+        %         disp('Function Under Construction')
+        
 end
 
 end
@@ -190,12 +190,12 @@ end
 % K_A_m=cell(M,1);
 
 for m=1:M
-%     K_A_m{m}=zeros(1,M,N_newX);
+    %     K_A_m{m}=zeros(1,M,N_newX);
     K_A_m=zeros(M,N_newX);
-%     theta=[Agents(m).sigma_f;Agents(m).l];
+    %     theta=[Agents(m).sigma_f;Agents(m).l];
     k_m=k_ms{m};
-%     k_A(m,:)=diag(k_m*invKs{m}*k_m');
-invKs_m=invKs{m};
+    %     k_A(m,:)=diag(k_m*invKs{m}*k_m');
+    invKs_m=invKs{m};
     for n=1:N_newX
         k_A(m,n)=k_m(n,:)*invKs_m*k_m(n,:)';
     end
@@ -206,12 +206,12 @@ invKs_m=invKs{m};
             K_A_m(n,num)=k_m(num,:)*invKs_m*C_mn{m,n}*invKs{n}*k_n(num,:)';
             K_A(m,n,num)=k_m(num,:)*invKs_m*C_mn{m,n}*invKs{n}*k_n(num,:)';
         end
-
+        
     end
     % pre initial JOR
     q_mu_old(m,:)=subMean(m,:)./K_A_m(m,:);
     q_sigma_old(m,:)=k_A(m,:)./K_A_m(m,:);
-%     K_A(m,:,:)=K_A_m;
+    %     K_A(m,:,:)=K_A_m;
 end
 % JOR initial
 q_mu_direct=zeros(M,N_newX);
@@ -227,7 +227,7 @@ while maxIterJOR>0
     for i=1:M
         a_part_mu=(1-w).*q_mu_old(i,:);
         c_part_mu=zeros(1,N_newX);
-
+        
         a_part_sigma=(1-w).*q_sigma_old(i,:);
         c_part_sigma=zeros(1,N_newX);
         for j=1:M
@@ -241,12 +241,12 @@ while maxIterJOR>0
             else
                 continue;
             end
-
+            
         end
         K_A_i_i=squeeze(K_A(i,i,:))';
         b_part_mu=w./K_A_i_i.*(subMean(i,:)-c_part_mu);
         b_part_sigma=w./K_A_i_i.*(k_A(i,:)-c_part_sigma);
-
+        
         q_mu_new(i,:)=a_part_mu+b_part_mu;
         q_sigma_new(i,:)=a_part_sigma+b_part_sigma;
     end
@@ -254,8 +254,8 @@ while maxIterJOR>0
     q_sigma_old=q_sigma_new;
 end
 % calculation of q is not very accuarate
-q_mu=q_mu_new;
-q_sigma=q_sigma_new;
+q_mu=q_mu_direct;
+q_sigma=q_sigma_direct;
 % JOR part end
 
 %%%
@@ -331,7 +331,7 @@ function K=getK(X1,X2,theta,sigma_n)
 if nargin<4
     sigma_n=theta;
     theta=X2;
-
+    
     X=X1;
     X2=X1;
 end

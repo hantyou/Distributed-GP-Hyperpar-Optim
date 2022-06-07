@@ -22,7 +22,9 @@ switch upper(method)
     case {'NN-BCM'}
     case {'NN-GRBCM'}
     case {'NN-NPAE'}
+        disp('NN-NPAE')
         [Mean,Var]=NN_NPAE(Agents,newX,subMeans,subVars,sigma_n);
+        disp('NN-NPAE')
 end
 
 end
@@ -44,7 +46,7 @@ for m=1:M
     N_size=Agents(m).N_size;
     theta=[Agents(m).sigma_f;Agents(m).l];
     k_star_star=getK(newX(:,1),theta,sigma_n);
-    for n=1:N_newX
+    parfor n=1:N_newX
         newX_n=newX(:,n);
         kM_m_n=zeros(N_size+1,1);
         KM_m_n=zeros(N_size+1,N_size+1);
@@ -52,8 +54,9 @@ for m=1:M
             kxi=getK(newX_n,Xs{m}{i},theta,sigma_n);
             kM_m_n(i)=kxi*invCovs{m}{i}*kxi';
             for j=i:N_size+1
+                kxj=getK(newX_n,Xs{m}{j},theta,sigma_n);
                 cov_ij=Covs{m}{i,j};
-                KM_m_n(i,j)=kxi*invCovs{m}{i}*cov_ij*invCovs{m}{j}*kxi';
+                KM_m_n(i,j)=kxi*invCovs{m}{i}*cov_ij*invCovs{m}{j}*kxj';
                 KM_m_n(j,i)=KM_m_n(i,j)';
             end
         end
@@ -69,7 +72,7 @@ M=length(Agents);
 Xs=cell(1,M);
 Covs=cell(1,M);
 invCovs=cell(1,M);
-parfor m=1:M
+for m=1:M
     N_size=Agents(m).N_size;
     Xs{m}=cell(N_size+1,1);
     Covs{m}=cell(N_size+1,N_size+1);
