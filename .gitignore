@@ -5,3 +5,4 @@ SSTdata/
 *.nfs*
 results/
 workspaceForDebug.mat
+*.m~
