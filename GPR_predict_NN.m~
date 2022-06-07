@@ -46,7 +46,7 @@ for m=1:M
     N_size=Agents(m).N_size;
     theta=[Agents(m).sigma_f;Agents(m).l];
     k_star_star=getK(newX(:,1),theta,sigma_n);
-    parfor n=1:N_newX
+    for n=1:N_newX
         newX_n=newX(:,n);
         kM_m_n=zeros(N_size+1,1);
         KM_m_n=zeros(N_size+1,N_size+1);
@@ -109,8 +109,7 @@ Z=Agent.Z;
 if m<n
     Z=Z';
 end
-% theta=Agent.z;
-theta=[Agent.sigma_f;Agent.l];
+theta=Agent.z;
 
 K=getK(X,theta,sigma_n);
 

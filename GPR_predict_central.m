@@ -107,7 +107,7 @@ Z=Agent.Z;
 if m<n
     Z=Z';
 end
-theta=Agent.z;
+theta=[Agent.sigma_f;Agent.l];
 
 K=getK(X,theta,sigma_n);
 invK=inv(K);
