@@ -639,20 +639,6 @@ else
 
         [Agents(m).sigma_f;Agents(m).l]
     end
-
-    plotFlag=1;
-    [Mean_total,Uncertainty_total] = GPR_predict(X,Z,theta,[range_x1;range_x2],sigma_n,plotFlag);
-    if temp_data==2
-        ts_1=linspace(range_X1(1),range_X1(2),100);
-        ts_2=linspace(range_X2(1),range_X2(2),100);
-        [mesh_X1,mesh_X2]=meshgrid(ts_1,ts_2);
-        GT = shaperead("Road_LAeq_16h_London\Road_LAeq_16h_London.shp");
-        figure,
-        mapshow(GT);
-        hold on;
-        surf(mesh_X1,mesh_X2,(Mean_total),'edgecolor','none','FaceAlpha',0.9);
-        hold off
-    end
     %% Pre
     reso_x=100;
     reso_y=100;
@@ -666,6 +652,7 @@ else
     vecY=mesh_y(:);
     newX=[vecX,vecY]';
 
+    plotFlag=1;
     fig_export_pix=300;
     eps_export=0;
     png_export=1;
@@ -907,6 +894,26 @@ else
     saveas(gcf,fname,'fig');
     saveas(gcf,strcat(fname,'_direct_save'),'png');
     close(gcf)
+    %% GPR Full
+    method='Full';
+    disp('Full')
+
+    tic
+    [Mean_total,Uncertainty_total] = GPR_predict(X,Z,theta,[range_x1;range_x2],sigma_n,plotFlag);
+    toc
+    Mean_total=reshape(Mean_total,1,reso_x*reso_y);
+    Uncertainty_total=reshape(Uncertainty_total,1,reso_x*reso_y);
+    if temp_data==2
+        ts_1=linspace(range_X1(1),range_X1(2),100);
+        ts_2=linspace(range_X2(1),range_X2(2),100);
+        [mesh_X1,mesh_X2]=meshgrid(ts_1,ts_2);
+        GT = shaperead("Road_LAeq_16h_London\Road_LAeq_16h_London.shp");
+        figure,
+        mapshow(GT);
+        hold on;
+        surf(mesh_X1,mesh_X2,(Mean_total),'edgecolor','none','FaceAlpha',0.9);
+        hold off
+    end
 
     %% No aggregation
     method='NoAg';
@@ -1006,13 +1013,39 @@ else
     tic
     [meanNN_NPAE,varNN_NPAE] = GPR_predict_NN(Agents,method,newX,sigma_n);
     toc
-    %%
+
     visible='on';
-    
+
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanNN_NPAE,varNN_NPAE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
+    %% Evaluate Prediction Performance
+    evaMethod='RMSE';
+    realMean=Mean_total;
+    realVar=Uncertainty_total;
+    %
+    [pfmcMean_NoAg,pfmcVar_NoAg] = ...
+        evaluatePredictionPerformance(realMean,realVar,meanNoAg,varNoAg,evaMethod);
+    %
+    [pfmcMean_PoE,pfmcVar_PoE] = ...
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_PoE,varDEC_PoE,evaMethod);
+    %
+    [pfmcMean_gPoE,pfmcVar_gPoE] = ...
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_gPoE,varDEC_gPoE,evaMethod);
+    %
+    [pfmcMean_BCM,pfmcVar_BCM] = ...
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_BCM,varDEC_BCM,evaMethod);
+    %
+    [pfmcMean_rBCM,pfmcVar_rBCM] = ...
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_rBCM,varDEC_rBCM,evaMethod);
+    %
+    [pfmcMean_DEC_NPAE,pfmcVar_DEC_NPAE] = ...
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_NPAE,varDEC_NPAE,evaMethod);
+    %
+    [pfmcMean_NN_NPAE,pfmcVar_NN_NPAE] = ...
+        evaluatePredictionPerformance(realMean,realVar,meanNN_NPAE,varNN_NPAE,evaMethod);
+
 
 end
 disp('all code ended')

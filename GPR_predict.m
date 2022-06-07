@@ -29,43 +29,43 @@ var=[];
 ts_1=linspace(range_x1(1),range_x1(2),100);
 ts_2=linspace(range_x2(1),range_x2(2),100);
 try
-L=chol(K)';
-[mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
-[h,w]=size(mesh_x);
-mean=zeros(h,w);
-var=zeros(h,w);
-alpha=L'\(L\y);
-parfor xi=1:h
-    for yi=1:w
-        x_star=[mesh_x(xi,yi);mesh_y(xi,yi)];
-        [y_est,y_var_est] = GPRSinglePointPredict(X,x_star,alpha,L,theta,sigma_n);
-        
-        mean(xi,yi)=y_est;
-        var(xi,yi)=y_var_est;
-    end
-end
-catch
-invK=inv(K);
-[mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
-[h,w]=size(mesh_x);
-mean=zeros(h,w);
-var=zeros(h,w);
-for xi=1:h
-    for yi=1:w
-        x_star=[mesh_x(xi,yi);mesh_y(xi,yi)];
-        
-        K_star_star=k(x_star,x_star,sigma_f,l,sigma_n);
-        K_star=zeros(1,N);
-        for i=1:N
-            K_star(i)=k(x_star,X(:,i),sigma_f,l,sigma_n);
-        end
-        y_est=K_star*invK*y;
-        y_var_est=K_star_star-K_star*invK*K_star';
+    L=chol(K)';
+    [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
+    [h,w]=size(mesh_x);
+    mean=zeros(h,w);
+    var=zeros(h,w);
+    alpha=L'\(L\y);
+    parfor xi=1:h
+        for yi=1:w
+            x_star=[mesh_x(xi,yi);mesh_y(xi,yi)];
+            [y_est,y_var_est] = GPRSinglePointPredict(X,x_star,alpha,L,theta,sigma_n);
 
-        mean(xi,yi)=y_est;
-        var(xi,yi)=y_var_est;
+            mean(xi,yi)=y_est;
+            var(xi,yi)=y_var_est;
+        end
     end
-end
+catch
+    invK=inv(K);
+    [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
+    [h,w]=size(mesh_x);
+    mean=zeros(h,w);
+    var=zeros(h,w);
+    parfor xi=1:h
+        for yi=1:w
+            x_star=[mesh_x(xi,yi);mesh_y(xi,yi)];
+
+            K_star_star=k(x_star,x_star,sigma_f,l,sigma_n);
+            K_star=zeros(1,N);
+            for i=1:N
+                K_star(i)=k(x_star,X(:,i),sigma_f,l,sigma_n);
+            end
+            y_est=K_star*invK*y;
+            y_var_est=K_star_star-K_star*invK*K_star';
+
+            mean(xi,yi)=y_est;
+            var(xi,yi)=y_var_est;
+        end
+    end
 end
 
 if plotFlag==1
@@ -80,7 +80,7 @@ if plotFlag==1
     ylabel('x2')
     zlabel('y')
     title('GPR result - mean')
-    
+
     subplot(122)
     surf(mesh_x,mesh_y,(var),'edgecolor','none','FaceAlpha',0.9);
     hold on,
