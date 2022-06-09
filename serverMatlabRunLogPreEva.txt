@@ -1,0 +1,27 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+              R2019b Update 5 (9.7.0.1319299) 64-bit (glnxa64)
+                             February 19, 2020
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+This exp is down with artificial dataset loaded
+Generate GP according to given GP_hyperpar
+Elapsed time is 1.207622 seconds.
+decide agents positions
+also deciding sampling points
+Elapsed time is 4.336342 seconds.
+data loading/generation end
+%%%%%%%%%%%%%%%%%%%%Examine Part Begin%%%%%%%%%%%%%%%%%%%%%%%
+Methods to be examined are:
+DEC-PoE
+DEC-gPoE
+DEC-BCM
+DEC-rBCM
+DEC-NPAE
+NN-NPAE
+No-Ag
+Now calculating Full GP
