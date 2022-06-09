@@ -491,6 +491,8 @@ for expId=1:Num_expGroup
 
 end
 
+save('evalueResult.mat');
+
 
 
 
