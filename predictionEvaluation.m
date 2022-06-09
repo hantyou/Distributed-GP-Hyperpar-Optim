@@ -1,6 +1,13 @@
 clc,clear;
 close all;
 set(0,'DefaultFigureVisible','off')
+delete(gcp('nocreate'))
+
+try
+    parpool(24);
+catch
+    parpool(8)
+end
 %% Data loading
 dataSourceOption=2;
 %1: Inherit from HPerpar Optimz part with files name as "workspaceForDebug.mat"
@@ -390,13 +397,13 @@ for n=1:Num_MethodsExamined
 end
 
 %% Pre
-% delete(gcp('nocreate'))
-% 
-% try
-%     parpool(24);
-% catch
-%     parpool(8)
-% end
+delete(gcp('nocreate'))
+
+try
+    parpool(24);
+catch
+    parpool(8)
+end
 
 reso_x=100;
 reso_y=100;
