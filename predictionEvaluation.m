@@ -1,6 +1,6 @@
 clc,clear;
 close all;
-set(0,'DefaultFigureVisible','on')
+set(0,'DefaultFigureVisible','off')
 %% Data loading
 dataSourceOption=2;
 %1: Inherit from HPerpar Optimz part with files name as "workspaceForDebug.mat"
