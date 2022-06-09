@@ -39,11 +39,11 @@ else
     [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
     
     %% Decide sample points
-    method=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
+    samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     subSize=ones(M,1)*everyAgentsSampleNum;
     Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,M)*0.9;
         unifrnd(range_x2(1),range_x2(2),1,M)*0.9];
-    [X,subSize,sampleIdx] = decideSamplePoints(method,subSize,range,Agents_Posi,Agents_measure_range);
+    [X,subSize,sampleIdx] = decideSamplePoints(samplingMethod,subSize,range,Agents_Posi,Agents_measure_range);
     sampleSize=sum(subSize);
     X1=X(1,:);
     X2=X(2,:);
@@ -671,8 +671,8 @@ else
     contourFlag=0;
     
     %%
-    method='PoE';
-    [MeanPoE,VarPoE] = GPR_predict_central(Agents,method,newX,sigma_n);
+    samplingMethod='PoE';
+    [MeanPoE,VarPoE] = GPR_predict_central(Agents,samplingMethod,newX,sigma_n);
     MeanPoE=reshape(MeanPoE,reso_x,reso_y);
     VarPoE=reshape(VarPoE,reso_x,reso_y);
     
@@ -693,7 +693,7 @@ else
         % scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
-    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
+    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(samplingMethod,' GPR result - mean'));
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
     caxis(ax1,[6,18]);
@@ -718,14 +718,14 @@ else
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
     zticks(10.^(-4:2:2));
-    title({strcat(method,' GPR result'),'variance (in log plot)'})
+    title({strcat(samplingMethod,' GPR result'),'variance (in log plot)'})
     
     %view(0,90);
     %% gPoE
-    method='gPoE';
+    samplingMethod='gPoE';
     
     
-    [MeangPoE,VargPoE] = GPR_predict_central(Agents,method,newX,sigma_n);
+    [MeangPoE,VargPoE] = GPR_predict_central(Agents,samplingMethod,newX,sigma_n);
     MeangPoE=reshape(MeangPoE,reso_x,reso_y);
     VargPoE=reshape(VargPoE,reso_x,reso_y);
     
@@ -743,7 +743,7 @@ else
         %scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
-    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
+    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(samplingMethod,' GPR result - mean'));
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
     caxis(ax2,[6,18])
@@ -767,14 +767,14 @@ else
     ylim([range_x2(1),range_x2(2)]);
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
-    title({strcat(method,' GPR result'),'variance (in log plot)'})
+    title({strcat(samplingMethod,' GPR result'),'variance (in log plot)'})
     %view(0,90);
     
     %% BCM
-    method='BCM';
+    samplingMethod='BCM';
     
     
-    [MeanBCM,VarBCM] = GPR_predict_central(Agents,method,newX,sigma_n);
+    [MeanBCM,VarBCM] = GPR_predict_central(Agents,samplingMethod,newX,sigma_n);
     MeanBCM=reshape(MeanBCM,reso_x,reso_y);
     VarBCM=reshape(VarBCM,reso_x,reso_y);
     
@@ -793,7 +793,7 @@ else
         %scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
-    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
+    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(samplingMethod,' GPR result - mean'));
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
     caxis(ax3,[6,18])
@@ -818,15 +818,15 @@ else
     ylim([range_x2(1),range_x2(2)]);
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
-    title({strcat(method,' GPR result'),'variance (in log plot)'})
+    title({strcat(samplingMethod,' GPR result'),'variance (in log plot)'})
     % view(0,90);
     
     
     %% rBCM
-    method='rBCM';
+    samplingMethod='rBCM';
     
     
-    [MeanrBCM,VarrBCM] = GPR_predict_central(Agents,method,newX,sigma_n);
+    [MeanrBCM,VarrBCM] = GPR_predict_central(Agents,samplingMethod,newX,sigma_n);
     MeanrBCM=reshape(MeanrBCM,reso_x,reso_y);
     VarrBCM=reshape(VarrBCM,reso_x,reso_y);
     
@@ -845,7 +845,7 @@ else
         % scatter3(Agents(m).X(1,:),Agents(m).X(2,:),Agents(m).Z,'*')
     end
     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
-    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(method,' GPR result - mean'));
+    hold off; xlabel('x1'), ylabel('x2'), zlabel('y'), title(strcat(samplingMethod,' GPR result - mean'));
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
     caxis(ax4,[6,18])
@@ -870,7 +870,7 @@ else
     ylim([range_x2(1),range_x2(2)]);
     zlim(10.^[-4.1,2.9])
     zticks(10.^(-4:2:2));
-    title({strcat(method,' GPR result'),'variance (in log plot)'})
+    title({strcat(samplingMethod,' GPR result'),'variance (in log plot)'})
     %  view(0,90);
     
     
@@ -907,7 +907,7 @@ else
     saveas(gcf,strcat(fname,'_direct_save'),'png');
     close(gcf)
     %% GPR Full
-    method='Full';
+    samplingMethod='Full';
     disp('Full')
     
     tic
@@ -929,109 +929,109 @@ else
     end
     
     %% No aggregation
-    method='NoAg';
+    samplingMethod='NoAg';
     
     tic
     [meanNoAg,varNoAg] = GPR_predict_NoAg(Agents,newX,sigma_n);
     toc
     %%
     visible='off';
-    fname=strcat('./results/Agg/',strcat(method,'-GPR-predict'));
+    fname=strcat('./results/Agg/',strcat(samplingMethod,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanNoAg,varNoAg,reso_x,reso_y,...
-        range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
+        range_x1,range_x2,agentsPosiY,fname,samplingMethod,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
     
     
     %% DEC-PoE
-    method='DEC-PoE';
+    samplingMethod='DEC-PoE';
     
     A=A_full(1:M,1:M);
     maxIter=20;
     
     tic
-    [~,~,meanDEC_PoE,varDEC_PoE] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
+    [~,~,meanDEC_PoE,varDEC_PoE] = GPR_predict_dec(Agents,samplingMethod,newX,A,maxIter,sigma_n);
     toc
     visible='off';
-    fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
+    fname=strcat('./results/Agg/DEC/',strcat(samplingMethod,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_PoE,varDEC_PoE,reso_x,reso_y,...
-        range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
+        range_x1,range_x2,agentsPosiY,fname,samplingMethod,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
     
     
     
     %% DEC-gPoE
-    method='DEC-gPoE';
+    samplingMethod='DEC-gPoE';
     
     A=A_full(1:M,1:M);
     maxIter=30;
     
     tic
-    [~,~,meanDEC_gPoE,varDEC_gPoE] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
+    [~,~,meanDEC_gPoE,varDEC_gPoE] = GPR_predict_dec(Agents,samplingMethod,newX,A,maxIter,sigma_n);
     toc
     visible='off';
-    fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
+    fname=strcat('./results/Agg/DEC/',strcat(samplingMethod,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_gPoE,varDEC_gPoE,reso_x,reso_y,...
-        range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
+        range_x1,range_x2,agentsPosiY,fname,samplingMethod,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
     
     
     %% DEC-BCM
-    method='DEC-BCM';
+    samplingMethod='DEC-BCM';
     
     A=A_full(1:M,1:M);
     maxIter=30;
     
     tic
-    [~,~,meanDEC_BCM,varDEC_BCM] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
+    [~,~,meanDEC_BCM,varDEC_BCM] = GPR_predict_dec(Agents,samplingMethod,newX,A,maxIter,sigma_n);
     toc
     visible='off';
-    fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
+    fname=strcat('./results/Agg/DEC/',strcat(samplingMethod,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_BCM,varDEC_BCM,reso_x,reso_y,...
-        range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
+        range_x1,range_x2,agentsPosiY,fname,samplingMethod,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
     
     
     %% DEC-rBCM
-    method='DEC-rBCM';
+    samplingMethod='DEC-rBCM';
     
     A=A_full(1:M,1:M);
     maxIter=30;
     
     tic
-    [~,~,meanDEC_rBCM,varDEC_rBCM] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
+    [~,~,meanDEC_rBCM,varDEC_rBCM] = GPR_predict_dec(Agents,samplingMethod,newX,A,maxIter,sigma_n);
     toc
     visible='off';
-    fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
+    fname=strcat('./results/Agg/DEC/',strcat(samplingMethod,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_rBCM,varDEC_rBCM,reso_x,reso_y,...
-        range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
+        range_x1,range_x2,agentsPosiY,fname,samplingMethod,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
     
     
     %% DEC-NPAE
-    method='DEC-NPAE';
+    samplingMethod='DEC-NPAE';
     
     A=A_full(1:M,1:M);
     maxIter=30;
     
     tic
-    [~,~,meanDEC_NPAE,varDEC_NPAE] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
+    [~,~,meanDEC_NPAE,varDEC_NPAE] = GPR_predict_dec(Agents,samplingMethod,newX,A,maxIter,sigma_n);
     toc
     visible='off';
-    fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
+    fname=strcat('./results/Agg/DEC/',strcat(samplingMethod,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanDEC_NPAE,varDEC_NPAE,reso_x,reso_y,...
-        range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
+        range_x1,range_x2,agentsPosiY,fname,samplingMethod,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
     %% NN-NPAE
-    method='NN-NPAE';
+    samplingMethod='NN-NPAE';
     tic
-    [meanNN_NPAE,varNN_NPAE] = GPR_predict_NN(Agents,method,newX,sigma_n);
+    [meanNN_NPAE,varNN_NPAE] = GPR_predict_NN(Agents,samplingMethod,newX,sigma_n);
     toc
     
     visible='off';
     
-    fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
+    fname=strcat('./results/Agg/DEC/',strcat(samplingMethod,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanNN_NPAE,varNN_NPAE,reso_x,reso_y,...
-        range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
+        range_x1,range_x2,agentsPosiY,fname,samplingMethod,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
     
     %% Evaluate Prediction Performance
@@ -1041,25 +1041,25 @@ else
     realVar=Uncertainty_total;
     %
     [pfmcMean_NoAg,pfmcVar_NoAg] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanNoAg,varNoAg,evaMethod)
+        evaluatePredictionPerformanceMetrices(realMean,realVar,meanNoAg,varNoAg,evaMethod)
     %
     [pfmcMean_PoE,pfmcVar_PoE] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_PoE,varDEC_PoE,evaMethod)
+        evaluatePredictionPerformanceMetrices(realMean,realVar,meanDEC_PoE,varDEC_PoE,evaMethod)
     %
     [pfmcMean_gPoE,pfmcVar_gPoE] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_gPoE,varDEC_gPoE,evaMethod)
+        evaluatePredictionPerformanceMetrices(realMean,realVar,meanDEC_gPoE,varDEC_gPoE,evaMethod)
     %
     [pfmcMean_BCM,pfmcVar_BCM] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_BCM,varDEC_BCM,evaMethod)
+        evaluatePredictionPerformanceMetrices(realMean,realVar,meanDEC_BCM,varDEC_BCM,evaMethod)
     %
     [pfmcMean_rBCM,pfmcVar_rBCM] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_rBCM,varDEC_rBCM,evaMethod)
+        evaluatePredictionPerformanceMetrices(realMean,realVar,meanDEC_rBCM,varDEC_rBCM,evaMethod)
     %
     [pfmcMean_DEC_NPAE,pfmcVar_DEC_NPAE] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_NPAE,varDEC_NPAE,evaMethod)
+        evaluatePredictionPerformanceMetrices(realMean,realVar,meanDEC_NPAE,varDEC_NPAE,evaMethod)
     %
     [pfmcMean_NN_NPAE,pfmcVar_NN_NPAE] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanNN_NPAE,varNN_NPAE,evaMethod)
+        evaluatePredictionPerformanceMetrices(realMean,realVar,meanNN_NPAE,varNN_NPAE,evaMethod)
     
     
 save('workspaceForDebugAfterPrediction.mat');

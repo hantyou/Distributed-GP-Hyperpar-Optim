@@ -244,7 +244,7 @@ end
         [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m));
 
     %% Decide sample points
-    method=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
+    samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     subSize=ones(M,1)*everyAgentsSampleNum;
 %     Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,M)*0.8;
 %         unifrnd(range_x2(1),range_x2(2),1,M)*0.8];
@@ -252,7 +252,7 @@ end
     L_x2=range_x2(2)-range_x2(1);
     Agents_Posi=[unifrnd(-L_x1/2,L_x1/2,1,M)*0.8+(range_x1(1)+range_x1(2))/2;
         unifrnd(-L_x2/2,L_x2/2,1,M)*0.8+(range_x2(1)+range_x2(2))/2];
-    [X,subSize,sampleIdx] = decideSamplePoints(method,subSize,range,Agents_Posi,Agents_measure_range);
+    [X,subSize,sampleIdx] = decideSamplePoints(samplingMethod,subSize,range,Agents_Posi,Agents_measure_range);
     sampleSize=sum(subSize);
     X1=X(1,:);
     X2=X(2,:);
