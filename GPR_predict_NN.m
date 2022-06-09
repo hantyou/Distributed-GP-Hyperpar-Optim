@@ -1,4 +1,4 @@
-function [Mean,Var] = GPR_predict_NN(Agents,method,newX,sigma_n)
+function [Mean,Var] = GPR_predict_NN(Agents,method,newX,sigma_n,recursiveMean)
 %GPR_PREDICT_DEC Summary of this function goes here
 %   Detailed explanation goes here
 if nargin==3
@@ -15,6 +15,9 @@ parfor m=1:M
     [subMeans(m,:),subVars(m,:)]=subGP(Agents(m),newX,sigma_n);
 end
 
+if nargin==5
+    subMeans=recursiveMean;
+end
 
 switch upper(method)
     case {'NN-POE'}
@@ -23,8 +26,8 @@ switch upper(method)
     case {'NN-GRBCM'}
     case {'NN-NPAE'}
         disp('NN-NPAE')
+        pause(0.001);
         [Mean,Var]=NN_NPAE(Agents,newX,subMeans,subVars,sigma_n);
-        disp('NN-NPAE')
 end
 
 end
@@ -61,7 +64,8 @@ for m=1:M
             end
         end
         mu(m,n)=kM_m_n'/KM_m_n*subMean_m(:,n);
-        var(m,n)=k_star_star-kM_m_n'/KM_m_n*kM_m_n;
+%         var(m,n)=k_star_star-kM_m_n'/KM_m_n*kM_m_n;
+        var(m,n)=k_star_star-kM_m_n'/KM_m_n*(k_star_star-subVar_m(:,n));
     end
 end
 

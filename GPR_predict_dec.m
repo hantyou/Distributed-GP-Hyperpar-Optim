@@ -220,7 +220,7 @@ parfor n=1:N_newX
     q_mu_direct(:,n)=inv(K_A(:,:,n))*subMean(:,n);
     q_sigma_direct(:,n)=inv(K_A(:,:,n))*k_A(:,n);
 end
-maxIterJOR=200;
+maxIterJOR=400;
 w=0.15;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
@@ -256,12 +256,16 @@ end
 % calculation of q is not very accuarate
 q_mu=q_mu_direct;
 q_sigma=q_sigma_direct;
+
+q_mu=q_mu_new;
+q_sigma=q_sigma_new;
+
 % JOR part end
 
 %%%
 
 direct_output_mu=zeros(1,N_newX);
-for n=1:N_newX
+parfor n=1:N_newX
     direct_output_mu(n)=k_A(:,n)'*inv(K_A(:,:,n))*subMean(:,n);
 end
 %direct_output_mu=reshape(direct_output_mu,[64,64]);
@@ -290,7 +294,8 @@ end
 w_mu=w_mu_new;
 w_sigma=w_sigma_new;
 mu=M*w_mu;
-var=sigma_f.*(k_star_star-M*w_sigma);
+% var=(sigma_f.^2).*(k_star_star-M*w_sigma);
+var=(k_star_star-M*w_sigma);
 
 end
 

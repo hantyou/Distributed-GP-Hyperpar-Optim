@@ -3,7 +3,10 @@ clc, clear;
 close all;
 F = findall(0,'type','figure','tag','TMWWaitbar');
 delete(F);
+try
 opengl software
+catch
+end
 set(0,'DefaultFigureVisible','off')
 %% Define field for monitoring
 delete(gcp('nocreate'))
@@ -12,19 +15,19 @@ range_x2=[-5,5];
 range=[range_x1;range_x2];
 rng(990611,'twister')
 rand(17+16,1);
-M=8;
+M=10;
 try
     parpool(32);
 catch
-    parpool
+    parpool(8)
 end
 region=[];
 %% Generate/Load dataset
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=70;
-Agents_measure_range=3;
+everyAgentsSampleNum=200;
+Agents_measure_range=4;
 realDataSet=0;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
@@ -34,7 +37,7 @@ else
     temp_data=0;
     [F_true,reso]=loadDataset(1,reso,range,[5,1,1]);
     [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
-
+    
     %% Decide sample points
     method=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     subSize=ones(M,1)*everyAgentsSampleNum;
@@ -94,7 +97,7 @@ for m=1:M
     Agents(m).action_status=1;
     Agents(m).commuRange=4;
     %     Agents(m).commuRange=2.5;
-
+    
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
     Agents(m).distXd=zeros(subSize(m),subSize(m),inputDim);
@@ -183,7 +186,7 @@ if realDataSet==0||temp_data==3
     %         text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
     %     end
     %     % colormap("jet")
-
+    
     xlabel('x1')
     ylabel('x2')
     colorbar
@@ -194,9 +197,9 @@ if realDataSet==0||temp_data==3
     fname='results/topology_background';
     saveas(gcf,fname,'png');
     close gcf;
-
-
-
+    
+    
+    
     gcf=figure('visible','off');
     hold on;
     scatter(Agents_Posi(1,:),Agents_Posi(2,:))
@@ -220,7 +223,7 @@ if realDataSet==0||temp_data==3
     %     % colormap("jet")
     %     xlim([range_x1(1) range_x1(2)])
     %     ylim([range_x2(1) range_x2(2)])
-
+    
     xlabel('x1')
     ylabel('x2')
     title('network topology')
@@ -281,13 +284,13 @@ if run_GD
     % run GD
     stepSize=0.0001;
     maxIter=2000;
-
+    
     disp('Time of GD')
-
+    
     tic
     [sigma_GD,l_GD,Steps_GD]  = runGD(Agents,M,initial_sigma_f,initial_l,sigma_n,stepSize,epsilon,maxIter);
     toc
-
+    
     pause(0.1)
 end
 %% Perform ADMM
@@ -308,13 +311,13 @@ if run_ADMM
         Agents(m).mu=stepSize;
     end
     % run ADMM
-
+    
     disp('Time of ADMM')
-
+    
     tic
     [sigma_ADMM,l_ADMM,Steps_ADMM,IterCounts] = runADMM(Agents,M,stepSize,epsilon,maxOutIter,maxInIter);
     toc
-
+    
     pause(0.1)
 end
 %% Perform pxADMM
@@ -333,13 +336,13 @@ if run_pxADMM
         Agents(m).L=L_glb;
     end
     % run pxADMM
-
+    
     disp('Time of pxADMM')
-
+    
     tic
     [sigma_pxADMM,l_pxADMM,Steps_pxADMM,Zs_pxADMM] = runPXADMM(Agents,M,epsilon,maxIter);
     toc
-
+    
     pause(0.1)
 end
 %% Perform ADMM_fd
@@ -354,7 +357,7 @@ if run_ADMM_fd
         Agents(m).l=initial_l';
         Agents(m).sigma_n=sigma_n;
         Agents(m).mu=stepSize;
-
+        
         Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).beta_mn=ones(inputDim+1,Agents(m).N_size);
@@ -367,16 +370,16 @@ if run_ADMM_fd
             Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l];
         end
     end
-
-
+    
+    
     % run ADMM_fd
-
+    
     disp('Time of ADMM_{fd}')
-
+    
     tic
     [sigma_ADMM_fd,l_ADMM_fd,Steps_ADMM_fd,IterCounts_fd] = runADMM_fd(Agents,M,stepSize,epsilon,maxOutIter,maxInIter);
     toc
-
+    
     pause(0.1)
 end
 %% Perform pxADMM_fd_sync
@@ -394,12 +397,12 @@ if run_pxADMM_fd_sync
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).sigma_n=sigma_n;
         Agents(m).L=L_glb;
-
+        
         Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).beta_mn=0.1*ones(inputDim+1,Agents(m).N_size);
         Agents(m).beta_nm=0.1*ones(inputDim+1,Agents(m).N_size);
-
+        
         Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).updatedVars=zeros(1,Agents(m).N_size);
@@ -413,13 +416,13 @@ if run_pxADMM_fd_sync
     end
     sync=1;
     % run pxADMM_fd
-
+    
     disp('Time of pxADMM_{fd}')
-
+    
     tic
     [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
-
+    
     pause(0.1)
     Steps_pxADMM_fd_sync=Steps_pxADMM_fd_sync{1};
 end
@@ -431,7 +434,7 @@ if run_pxADMM_fd_async
     initial_beta = 0.1*[1;ones(length(initial_l),1)];
     for m=1:M
         Agents(m).communicationAbility=1;
-
+        
         Agents(m).action_status=1;
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
@@ -440,15 +443,15 @@ if run_pxADMM_fd_async
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).sigma_n=sigma_n;
         Agents(m).L=L_glb;
-
+        
         Agents(m).Zs=initial_z;
         Agents(m).Steps=0;
-
+        
         Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).beta_mn=0.1*ones(inputDim+1,Agents(m).N_size);
         Agents(m).beta_nm=0.1*ones(inputDim+1,Agents(m).N_size);
-
+        
         Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+1,Agents(m).N_size);
         Agents(m).updatedVars=ones(1,Agents(m).N_size);
@@ -463,9 +466,9 @@ if run_pxADMM_fd_async
     end
     sync=0;
     % run pxADMM_fd
-
+    
     disp('Time of pxADMM_{fd}')
-
+    
     tic
     [sigma_pxADMM_fd_async,l_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
@@ -481,7 +484,7 @@ if run_pxADMM_async_realSimu
     initial_beta = [1;ones(length(initial_l),1)];
     for m=1:M
         Agents(m).communicationAbility=1;
-
+        
         Agents(m).action_status=1;
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
@@ -507,11 +510,11 @@ if run_pxADMM_async_realSimu
         Agents(m).slowSync=zeros(M,1);
         Agents(m).slowSyncThreshold=10;
     end
-
+    
     disp('Time of pxADMM_{fd,realSimu}')
     Agents = runPXADMM_fd_spmd(Agents,epsilon);
-
-
+    
+    
     gcf=figure;
     hold on
     for m=1:M
@@ -522,7 +525,7 @@ if run_pxADMM_async_realSimu
     fname='results/pxADMM_fd_spmd_steps';
     saveas(gcf,fname,'png');
     close gcf
-
+    
     gcf=figure;
     for i=1:length(initial_z)
         subplot(length(initial_z),1,i)
@@ -538,7 +541,7 @@ if run_pxADMM_async_realSimu
     fname='results/pxADMM_fd_spmd_vars';
     saveas(gcf,fname,'png');
     close gcf
-
+    
     warning('on','all')
 end
 %% Compare convergence speed in terms of iterations
@@ -616,27 +619,36 @@ if 0
         plot(temp_17_train(:,c));
         plot(1+linspace(1,newDayLength,size(predictY_mean,2)),predictY_mean(c,:));
         hold off
-
+        
     end
-
+    
     figure,
     for c=1:cityNum
         subplot(ceil(cityNum/col),col,c)
         hold on
         plot(predictY_var(c,:));
         hold off
-
+        
     end
 else
-
+    
     %% GPR1
+    
+    delete(gcp('nocreate'))
+    
+    try
+        parpool(24);
+    catch
+        parpool(8)
+    end
+    
     % theta=[Agents(1).sigma_f;Agents(1).l];
     theta=[sigma_pxADMM_fd_sync;l_pxADMM_fd_sync];
     theta
     for m=1:M
         Agents(m).sigma_f=thetas_pxADMM_fd_sync(1,m);
         Agents(m).l=thetas_pxADMM_fd_sync(2:end,m);
-
+        
         [Agents(m).sigma_f;Agents(m).l]
     end
     %% Pre
@@ -646,33 +658,33 @@ else
     ts_1=linspace(range_x1(1),range_x1(2),reso_x);
     ts_2=linspace(range_x2(1),range_x2(2),reso_y);
     [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
-
+    
     vecX=mesh_x(:);
-
+    
     vecY=mesh_y(:);
     newX=[vecX,vecY]';
-
+    
     plotFlag=1;
     fig_export_pix=300;
     eps_export=0;
     png_export=1;
     contourFlag=0;
-
+    
     %%
     method='PoE';
     [MeanPoE,VarPoE] = GPR_predict_central(Agents,method,newX,sigma_n);
     MeanPoE=reshape(MeanPoE,reso_x,reso_y);
     VarPoE=reshape(VarPoE,reso_x,reso_y);
-
-
+    
+    
     Mean=MeanPoE;
     Var=VarPoE;
-
+    
     gcf=figure('visible','off');
     tiledlayout(2,4,'TileSpacing','Compact','Padding','Compact');
-
+    
     ax1=nexttile(1);
-
+    
     surf(mesh_x,mesh_y,(Mean),'edgecolor','none','FaceAlpha',0.9);
     hold on,
     ax = gca;
@@ -685,11 +697,11 @@ else
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
     caxis(ax1,[6,18]);
-
+    
     view(0,90);
     %     subplot(245),
     ax5=nexttile(5)
-
+    
     surf(mesh_x,mesh_y,(Var)/1,'edgecolor','none','FaceAlpha',0.9);
     hold on,
     ax = gca;
@@ -707,22 +719,22 @@ else
     ylim([range_x2(1),range_x2(2)]);
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
-
+    
     %view(0,90);
     %% gPoE
     method='gPoE';
-
-
+    
+    
     [MeangPoE,VargPoE] = GPR_predict_central(Agents,method,newX,sigma_n);
     MeangPoE=reshape(MeangPoE,reso_x,reso_y);
     VargPoE=reshape(VargPoE,reso_x,reso_y);
-
-
+    
+    
     Mean=MeangPoE;
     Var=VargPoE;
-
+    
     ax2=nexttile(2);
-
+    
     surf(mesh_x,mesh_y,(Mean),'edgecolor','none','FaceAlpha',0.9);
     hold on,
     ax = gca;
@@ -738,7 +750,7 @@ else
     %     subplot(246),
     view(0,90);
     nexttile(6)
-
+    
     surf(mesh_x,mesh_y,(Var)/1,'edgecolor','none','FaceAlpha',0.9);
     hold on,
     ax = gca;
@@ -757,19 +769,19 @@ else
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
     %view(0,90);
-
+    
     %% BCM
     method='BCM';
-
-
+    
+    
     [MeanBCM,VarBCM] = GPR_predict_central(Agents,method,newX,sigma_n);
     MeanBCM=reshape(MeanBCM,reso_x,reso_y);
     VarBCM=reshape(VarBCM,reso_x,reso_y);
-
-
+    
+    
     Mean=MeanBCM;
     Var=VarBCM;
-
+    
     %     figure,subplot(121)
     %     subplot(243)
     ax3=nexttile(3);
@@ -785,11 +797,11 @@ else
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
     caxis(ax3,[6,18])
-
+    
     %     subplot(247),
     view(0,90);
     nexttile(7)
-
+    
     surf(mesh_x,mesh_y,(Var)/1,'edgecolor','none','FaceAlpha',0.9);
     hold on,
     ax = gca;
@@ -808,23 +820,23 @@ else
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
     % view(0,90);
-
-
+    
+    
     %% rBCM
     method='rBCM';
-
-
+    
+    
     [MeanrBCM,VarrBCM] = GPR_predict_central(Agents,method,newX,sigma_n);
     MeanrBCM=reshape(MeanrBCM,reso_x,reso_y);
     VarrBCM=reshape(VarrBCM,reso_x,reso_y);
-
-
+    
+    
     Mean=MeanrBCM;
     Var=VarrBCM;
-
+    
     %     subplot(244)
     ax4=nexttile(4);
-
+    
     surf(mesh_x,mesh_y,(Mean),'edgecolor','none','FaceAlpha',0.9);
     hold on,
     ax = gca;
@@ -837,11 +849,11 @@ else
     xlim([range_x1(1),range_x1(2)]);
     ylim([range_x2(1),range_x2(2)]);
     caxis(ax4,[6,18])
-
+    
     %     subplot(248),
     view(0,90);
     nexttile(8)
-
+    
     surf(mesh_x,mesh_y,(Var)/1,'edgecolor','none','FaceAlpha',0.9);
     hold on,
     ax = gca;
@@ -860,9 +872,9 @@ else
     zticks(10.^(-4:2:2));
     title({strcat(method,' GPR result'),'variance (in log plot)'})
     %  view(0,90);
-
-
-
+    
+    
+    
     sname='CEN predict plot';
     s=hgexport('readstyle',sname);
     s.Resolution=fig_export_pix;
@@ -886,21 +898,22 @@ else
         hgexport(gcf,fname,s);
         disp("png file saved")
     end
-
-
+    
+    
     %     pause(1)
     fname=strcat('./results/Agg/Centralized/','centralized-GPR-predict');
-
+    
     saveas(gcf,fname,'fig');
     saveas(gcf,strcat(fname,'_direct_save'),'png');
     close(gcf)
     %% GPR Full
     method='Full';
     disp('Full')
-
+    
     tic
     [Mean_total,Uncertainty_total] = GPR_predict(X,Z,theta,[range_x1;range_x2],sigma_n,plotFlag);
     toc
+    
     Mean_total=reshape(Mean_total,1,reso_x*reso_y);
     Uncertainty_total=reshape(Uncertainty_total,1,reso_x*reso_y);
     if temp_data==2
@@ -914,10 +927,10 @@ else
         surf(mesh_X1,mesh_X2,(Mean_total),'edgecolor','none','FaceAlpha',0.9);
         hold off
     end
-
+    
     %% No aggregation
     method='NoAg';
-
+    
     tic
     [meanNoAg,varNoAg] = GPR_predict_NoAg(Agents,newX,sigma_n);
     toc
@@ -927,14 +940,14 @@ else
     agentsPredictionPlot(Agents,meanNoAg,varNoAg,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
-
-
+    
+    
     %% DEC-PoE
     method='DEC-PoE';
-
+    
     A=A_full(1:M,1:M);
     maxIter=20;
-
+    
     tic
     [~,~,meanDEC_PoE,varDEC_PoE] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
     toc
@@ -943,15 +956,15 @@ else
     agentsPredictionPlot(Agents,meanDEC_PoE,varDEC_PoE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
-
-
-
+    
+    
+    
     %% DEC-gPoE
     method='DEC-gPoE';
-
+    
     A=A_full(1:M,1:M);
     maxIter=30;
-
+    
     tic
     [~,~,meanDEC_gPoE,varDEC_gPoE] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
     toc
@@ -960,14 +973,14 @@ else
     agentsPredictionPlot(Agents,meanDEC_gPoE,varDEC_gPoE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
-
-
+    
+    
     %% DEC-BCM
     method='DEC-BCM';
-
+    
     A=A_full(1:M,1:M);
     maxIter=30;
-
+    
     tic
     [~,~,meanDEC_BCM,varDEC_BCM] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
     toc
@@ -976,14 +989,14 @@ else
     agentsPredictionPlot(Agents,meanDEC_BCM,varDEC_BCM,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
-
-
+    
+    
     %% DEC-rBCM
     method='DEC-rBCM';
-
+    
     A=A_full(1:M,1:M);
     maxIter=30;
-
+    
     tic
     [~,~,meanDEC_rBCM,varDEC_rBCM] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
     toc
@@ -992,14 +1005,14 @@ else
     agentsPredictionPlot(Agents,meanDEC_rBCM,varDEC_rBCM,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
-
-
+    
+    
     %% DEC-NPAE
     method='DEC-NPAE';
-
+    
     A=A_full(1:M,1:M);
     maxIter=30;
-
+    
     tic
     [~,~,meanDEC_NPAE,varDEC_NPAE] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
     toc
@@ -1013,40 +1026,43 @@ else
     tic
     [meanNN_NPAE,varNN_NPAE] = GPR_predict_NN(Agents,method,newX,sigma_n);
     toc
-
-    visible='on';
-
+    
+    visible='off';
+    
     fname=strcat('./results/Agg/DEC/',strcat(method,'-GPR-predict'));
     agentsPredictionPlot(Agents,meanNN_NPAE,varNN_NPAE,reso_x,reso_y,...
         range_x1,range_x2,agentsPosiY,fname,method,eps_export,png_export,...
         visible,fig_export_pix,temp_data,region,contourFlag);
+    
     %% Evaluate Prediction Performance
     evaMethod='RMSE';
+    disp('evaluating')
     realMean=Mean_total;
     realVar=Uncertainty_total;
     %
     [pfmcMean_NoAg,pfmcVar_NoAg] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanNoAg,varNoAg,evaMethod);
+        evaluatePredictionPerformance(realMean,realVar,meanNoAg,varNoAg,evaMethod)
     %
     [pfmcMean_PoE,pfmcVar_PoE] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_PoE,varDEC_PoE,evaMethod);
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_PoE,varDEC_PoE,evaMethod)
     %
     [pfmcMean_gPoE,pfmcVar_gPoE] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_gPoE,varDEC_gPoE,evaMethod);
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_gPoE,varDEC_gPoE,evaMethod)
     %
     [pfmcMean_BCM,pfmcVar_BCM] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_BCM,varDEC_BCM,evaMethod);
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_BCM,varDEC_BCM,evaMethod)
     %
     [pfmcMean_rBCM,pfmcVar_rBCM] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_rBCM,varDEC_rBCM,evaMethod);
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_rBCM,varDEC_rBCM,evaMethod)
     %
     [pfmcMean_DEC_NPAE,pfmcVar_DEC_NPAE] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanDEC_NPAE,varDEC_NPAE,evaMethod);
+        evaluatePredictionPerformance(realMean,realVar,meanDEC_NPAE,varDEC_NPAE,evaMethod)
     %
     [pfmcMean_NN_NPAE,pfmcVar_NN_NPAE] = ...
-        evaluatePredictionPerformance(realMean,realVar,meanNN_NPAE,varNN_NPAE,evaMethod);
-
-
+        evaluatePredictionPerformance(realMean,realVar,meanNN_NPAE,varNN_NPAE,evaMethod)
+    
+    
+save('workspaceForDebugAfterPrediction.mat');
 end
 disp('all code ended')
 
