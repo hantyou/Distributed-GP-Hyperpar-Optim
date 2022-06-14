@@ -50,6 +50,7 @@ for m=1:M
     theta=[Agents(m).sigma_f;Agents(m).l];
     k_star_star=getK(newX(:,1),theta,sigma_n);
     parfor n=1:N_newX
+        warning('off');
         newX_n=newX(:,n);
         kM_m_n=zeros(N_size+1,1);
         KM_m_n=zeros(N_size+1,N_size+1);
@@ -76,7 +77,7 @@ M=length(Agents);
 Xs=cell(1,M);
 Covs=cell(1,M);
 invCovs=cell(1,M);
-parfor m=1:M
+for m=1:M
     N_size=Agents(m).N_size;
     Xs{m}=cell(N_size+1,1);
     Covs{m}=cell(N_size+1,N_size+1);

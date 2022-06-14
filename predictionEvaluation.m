@@ -1,6 +1,6 @@
 clc,clear;
 close all;
-set(0,'DefaultFigureVisible','off')
+set(0,'DefaultFigureVisible','on')
 delete(gcp('nocreate'))
 
 try
@@ -31,15 +31,15 @@ if dataSourceOption==1
     elseif samplingMethod==2
         disp("Sampling method: near agents position, could lose some points if out of range;")
     end
-
+    
     % The sampling positions are stored in X,
     % corresponding clean values in Y,
     % noisy values in Z.
-
+    
 elseif dataSourceOption==2
     % If generate new data, indicate some options
     samplingMethod=2;
-
+    
     range_x1=[-5,5];
     range_x2=[-5,5];
     range=[range_x1;range_x2];
@@ -49,14 +49,14 @@ elseif dataSourceOption==2
     reso_m=256;
     reso_n=256;
     reso=[reso_m,reso_n];
-    everyAgentsSampleNum=80;
+    everyAgentsSampleNum=50;
     Agents_measure_range=3;
     realDataSet=0;
     samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     agentsScatterMethod=2; % 1. Randomly distributed accross the area; 2. K_means center
     overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
     %% Generate/Load dataset
-
+    
     if realDataSet==1
         disp('This exp is down with real dataset loaded')
         loadRealDataset
@@ -65,12 +65,12 @@ elseif dataSourceOption==2
         temp_data=0;
         [F_true,reso]=loadDataset(1,reso,range,[5,1,1]);
         [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
-
+        
         %% Decide sample points
-
+        
         % renew twister
         rng(990611,'twister')
-
+        
         tic
         disp('decide agents positions');
         if agentsScatterMethod==1
@@ -82,11 +82,11 @@ elseif dataSourceOption==2
                 unifrnd(range_x2(1),range_x2(2),1,maxM)*0.9];
             subSize=ones(maxM,1)*everyAgentsSampleNum;
             [X_temp,subSize,sampleIdx] = decideSamplePoints(1,subSize,range,Agents_Posi,Agents_measure_range);
-
+            
             X_temp=X_temp';
             cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
             pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
-
+            
             numC=maxM;
             if overlap==1
                 fcm_option=[3,50,1e-6,false];
@@ -105,7 +105,7 @@ elseif dataSourceOption==2
                     else
                         ind=ind1;
                     end
-
+                    
                     fcm_idx(n)=ind;
                 end
                 idx=fcm_idx;C=centers;
@@ -117,7 +117,7 @@ elseif dataSourceOption==2
             end
             Agents_Posi=C';
             clusterIdx=idx;
-
+            
             figure;
             hold on
             LegendTxt=cell(numC+1,1);
@@ -133,12 +133,12 @@ elseif dataSourceOption==2
             hold off
         end
         toc
-
-
+        
+        
         subSize=ones(maxM,1)*everyAgentsSampleNum;
-
+        
         [X,subSize,sampleIdx] = decideSamplePoints(samplingMethod,subSize,range,Agents_Posi,Agents_measure_range);
-
+        
         if agentsScatterMethod==2
             X=X_temp';
             subSize=zeros(maxM,1);
@@ -147,10 +147,10 @@ elseif dataSourceOption==2
                 sampleIdx=cumsum(subSize)';
                 sampleIdx=[0,sampleIdx];
             end
-
+            
         end
-
-
+        
+        
         sampleSize=sum(subSize);
         X1=X(1,:);
         X2=X(2,:);
@@ -196,7 +196,7 @@ elseif dataSourceOption==2
         Agents(m).action_status=1;
         Agents(m).commuRange=3.5;
         %     Agents(m).commuRange=2.5;
-
+        
         Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
         Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
         Agents(m).distXd=zeros(subSize(m),subSize(m),inputDim);
@@ -205,9 +205,9 @@ elseif dataSourceOption==2
             Agents(m).distXd(:,:,d)=dist(Agents(m).X(d,:)).^2;
         end
     end
-
+    
     %% Plot field and sampled points and noisy sample points
-
+    
     if realDataSet==1&&temp_data==1
         figure,
         hold on;
@@ -229,20 +229,20 @@ elseif dataSourceOption==2
         zlabel('environmental scalar value')
         pause(0.01)
     end
-
-
-
+    
+    
+    
     %% Set topology
     Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
     A_full=generateTopology(Agents,Topology_method);
     clear Topology_method;
-
+    
     for m=1:maxM
         Agents(m).A=A_full(1:maxM,1:maxM);
         Agents(m).Neighbors=find(Agents(m).A(Agents(m).Code,:)~=0);
         Agents(m).N_size=length(Agents(m).Neighbors);
     end
-
+    
     G=graph(A_full(1:maxM,1:maxM));
     % figure,plot(G)
     L = laplacian(G);
@@ -282,7 +282,7 @@ elseif dataSourceOption==2
         %         text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
         %     end
         %     % colormap("jet")
-
+        
         xlabel('x1')
         ylabel('x2')
         colorbar
@@ -293,9 +293,9 @@ elseif dataSourceOption==2
         fname='results/topology_background';
         %     saveas(gcf,fname,'png');
         %         close gcf;
-
-
-
+        
+        
+        
         gcf=figure('visible','on');
         hold on;
         scatter(Agents_Posi(1,:),Agents_Posi(2,:))
@@ -319,7 +319,7 @@ elseif dataSourceOption==2
         %     % colormap("jet")
         %     xlim([range_x1(1) range_x1(2)])
         %     ylim([range_x2(1) range_x2(2)])
-
+        
         xlabel('x1')
         ylabel('x2')
         title('network topology')
@@ -328,9 +328,9 @@ elseif dataSourceOption==2
         %     saveas(gcf,fname,'png');
         %         close gcf;
     end
-
-
-
+    
+    
+    
 end
 disp('data loading/generation end')
 disp('%%%%%%%%%%%%%%%%%%%%Examine Part Begin%%%%%%%%%%%%%%%%%%%%%%%')
@@ -339,13 +339,12 @@ clearvars -except A_full Agents Agents_Posi cVec pVec X Y Z range sampleSize sig
 %% Evaluation setup
 Ms=[2,4,8,16]; % different number of agents for different exp groups
 maxRange=max(range(:))-min(range(:));
-commuRange=[maxRange,maxRange/2,maxRange/4,maxRange/6];
+commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/4];
 
-tempFlag=[0,1,1,0];
+tempFlag=[0,0,1,1];
 tempFlag=tempFlag==1;
 Ms=Ms(tempFlag);
 commuRange=commuRange(tempFlag);
-
 
 Num_expGroup=length(Ms);
 MethodsName=[
@@ -386,8 +385,8 @@ MethodsFlag=[
     1;
     1;
     1;
-    1;
-    1;
+    0;
+    0;
     1];
 MethodsExamined=MethodsName(MethodsFlag==1);
 Num_MethodsExamined=sum(MethodsFlag);
@@ -396,7 +395,7 @@ for n=1:Num_MethodsExamined
     disp(MethodsExamined(n))
 end
 
-%% Pre
+%% Pre-parpool reset
 delete(gcp('nocreate'))
 
 try
@@ -404,7 +403,7 @@ try
 catch
     parpool(8)
 end
-
+%% Pre-exp pars
 reso_x=100;
 reso_y=100;
 range_x1=range(1,:);
@@ -432,6 +431,8 @@ savePlot=0;
 
 meanRMSE=zeros(Num_MethodsExamined,Num_expGroup);
 varRMSE=zeros(Num_MethodsExamined,Num_expGroup);
+graphs=cell(Num_expGroup,1);
+times=zeros(Num_MethodsExamined,Num_expGroup);
 
 %% Evaluate Full GP
 method='Full';
@@ -450,57 +451,76 @@ for expId=1:Num_expGroup
     M=Ms(expId);
     disp("Agent number:")
     disp(M)
-
+    connected=0;
+    
     [Agents,clusterIdx] = predictionEvaluationLoopDataDivide(range,X,Z,M,overlapFlag);
-    for m=1:M
-        Agents(m).commuRange=commuRange(expId);
-
+    while connected==0
+        for m=1:M
+            Agents(m).commuRange=commuRange(expId);
+        end
+        A_full=generateTopology(Agents,Topology_method);
+        G=graph(A_full);
+        Lap = laplacian(G);
+        [~,V,~]=svd(full(Lap));
+        V=diag(V);
+        if V(end-1)>0
+            connected=1;
+        else
+            commuRange(expId)=commuRange(expId)*1.2;
+            continue;
+        end
+        for m=1:M
+            Agents(m).A=A_full(1:M,1:M);
+            Agents(m).Neighbors=find(Agents(m).A(Agents(m).Code,:)~=0);
+            Agents(m).N_size=length(Agents(m).Neighbors);
+            Agents(m).sigma_f=theta(1);
+            Agents(m).l=theta(2:end);
+            Agents(m).z=theta;
+            Agents(m).sigma_n=sigma_n;
+        end
     end
-
-    A_full=generateTopology(Agents,Topology_method);
-    for m=1:M
-        Agents(m).A=A_full(1:M,1:M);
-        Agents(m).Neighbors=find(Agents(m).A(Agents(m).Code,:)~=0);
-        Agents(m).N_size=length(Agents(m).Neighbors);
-        Agents(m).sigma_f=theta(1);
-        Agents(m).l=theta(2:end);
-        Agents(m).z=theta;
-    end
-
+    graphs{expId}=G;
+    
     for n=1:Num_MethodsExamined
         method=MethodsExamined(n);
+        tic
         switch method
             case DECNAME
                 disp(method)
                 A=A_full(1:M,1:M);
-                maxIter=20;
-                tic
+                maxIter=40;
                 [~,~,mean,var] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
-                toc
             case NNNAME
                 disp(method)
-                tic
                 [mean,var] = GPR_predict_NN(Agents,method,newX,sigma_n);
-                toc
             case NOAGNAME
                 disp(method)
-                tic
                 [mean,var] = GPR_predict_NoAg(Agents,newX,sigma_n);
-                toc
             case CENTER
                 disp(method)
                 disp("!!!!!!!!!!!!!!!!!Evaluation Under Construction!!!!!!!!!!!!!!!!!!!!")
         end
-    evaMethod='RMSE';
-    [meanRMSE(n,expId),varRMSE(n,expId)] = ...
-        evaluatePredictionPerformanceMetrices(realMean,realVar,mean,var,evaMethod);
+        toc
+        TOC=toc;
+        times(n,expId)=TOC;
+        evaMethod='RMSE';
+        [meanRMSE(n,expId),varRMSE(n,expId)] = ...
+            evaluatePredictionPerformanceMetrices(realMean,realVar,mean,var,evaMethod);
     end
-
+    
 end
 
 save('evalueResult.mat');
+%% plot result
 
-
+figure,hold on;
+legendTxt=cell(Num_MethodsExamined,1);
+for m=1:Num_MethodsExamined
+    plot(Ms,meanRMSE(m,:),'-o')
+    legendTxt{m}=MethodsExamined(m);
+end
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','NW');
 
 
 

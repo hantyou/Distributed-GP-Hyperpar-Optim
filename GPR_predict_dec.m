@@ -53,7 +53,7 @@ switch upper(method)
         k_star_star=zeros(M,N_newX);
         for m=1:M
             theta=[Agents(m).sigma_f;Agents(m).l];
-            for n=1:N_newX
+            parfor n=1:N_newX
                 k_star_star(m,n)=kernelFunc(newX(:,n),newX(:,n),theta,sigma_n,'RBF');
             end
         end

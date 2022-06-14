@@ -1,4 +1,4 @@
-function A_full=generateTopology(Agents,methods)
+function [A_full,Agents]=generateTopology(Agents,methods)
     M=Agents(1).M;
 if methods==1
     %% method 1: stacking squares
@@ -19,6 +19,7 @@ if methods==1
             A_full(start_i-4:start_i-1,start_j:start_j+3)=eye(4);
         end
     end
+    A_full=A_full(1:M,1:M);
 elseif methods==2
     %% method 2: nearest link with minimum link
     Agent_1_posi=Agents(1).Position;
@@ -44,4 +45,17 @@ elseif methods==3
     %% method 2: no links
     A_full=zeros(M,M);
 end
+
+for m=1:M
+    ind_m=find(A_full(m,:)~=0);
+    Agents(m).Neighbors=ind_m;
+    Agents(m).A=A_full;
+end
+
+if nargout==2
+    disp('Neighbor info saved into agents.')
+end
+
+
+
 end
