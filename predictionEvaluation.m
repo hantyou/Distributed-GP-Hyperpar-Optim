@@ -1,10 +1,10 @@
 clc,clear;
 close all;
-set(0,'DefaultFigureVisible','on')
+set(0,'DefaultFigureVisible','off')
 delete(gcp('nocreate'))
 
 try
-    parpool(24);
+    parpool(30);
 catch
     parpool(8)
 end
@@ -49,7 +49,7 @@ elseif dataSourceOption==2
     reso_m=256;
     reso_n=256;
     reso=[reso_m,reso_n];
-    everyAgentsSampleNum=50;
+    everyAgentsSampleNum=200;
     Agents_measure_range=3;
     realDataSet=0;
     samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
@@ -253,7 +253,7 @@ elseif dataSourceOption==2
     end
     clear L;
     if realDataSet==0||temp_data==3
-        gcf=figure('visible','on');
+        gcf=figure('visible','off');
         hold on;
         if realDataSet==0
             imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n),F_true);
@@ -290,9 +290,9 @@ elseif dataSourceOption==2
         ylim([range_x2(1) range_x2(2)])
         title('network topology on 2D field')
         hold off
-        fname='results/topology_background';
-        %     saveas(gcf,fname,'png');
-        %         close gcf;
+        fname='results/Agg/PerformanceEva/topology_background';
+            saveas(gcf,fname,'png');
+                close gcf;
         
         
         
@@ -324,9 +324,9 @@ elseif dataSourceOption==2
         ylabel('x2')
         title('network topology')
         hold off
-        fname='results/just_topology';
-        %     saveas(gcf,fname,'png');
-        %         close gcf;
+        fname='results/Agg/PerformanceEva/just_topology';
+            saveas(gcf,fname,'png');
+                close gcf;
     end
     
     
@@ -341,7 +341,7 @@ Ms=[2,4,8,12,16]; % different number of agents for different exp groups
 tempFlag=[1,1,1,1,1];
 
 maxRange=max(range(:))-min(range(:));
-commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3.5,maxRange/4];
+commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/3.5];
 tempFlag=tempFlag==1;
 Ms=Ms(tempFlag);
 commuRange=commuRange(tempFlag);
@@ -453,7 +453,7 @@ realVar=reshape(realVar,1,reso_x*reso_y);
 %% Evaluate Others
 
 rng(990611,'twister')
-for expId=5:Num_expGroup
+for expId=1:Num_expGroup
     M=Ms(expId);
     disp("Agent number:")
     disp(M)
@@ -486,6 +486,7 @@ for expId=5:Num_expGroup
         end
     end
     graphs{expId}=G;
+    pause(0.01)
     
     for n=1:Num_MethodsExamined
         method=MethodsExamined(n);
@@ -525,13 +526,17 @@ end
 save('evalueResult.mat');
 %% plot result
 
-figure,
+gcf=figure;
 for m=1:Num_expGroup
     subplot(1,Num_expGroup,m);
     plot(graphs{m});
 end
+fname='results/Agg/PerformanceEva/Graphs';
+saveas(gcf,fname,'png');
+close gcf;
 
-figure,hold on;
+gcf=figure;
+hold on;
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
     plot(Ms,meanRMSE(m,:),'-o')
@@ -541,8 +546,12 @@ set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','NW');
 hold off
 title('RMSE')
+fname='results/Agg/PerformanceEva/RMSE';
+saveas(gcf,fname,'png');
+close gcf;
 
-figure,hold on
+gcf=figure;
+hold on
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
     plot(Ms,times(m,:),'-o')
@@ -552,6 +561,9 @@ set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','NW');
 hold off
 title('Time used')
+fname='results/Agg/PerformanceEva/Times';
+saveas(gcf,fname,'png');
+close gcf;
 
 
 

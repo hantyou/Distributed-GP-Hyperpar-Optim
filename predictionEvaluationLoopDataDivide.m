@@ -1,8 +1,8 @@
 function [Agents,clusterIdx] = predictionEvaluationLoopDataDivide(range,X,Z,M,overlapFlag)
 
 
-            cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
-            pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
+cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
+pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
 X=X';
 [sampleSize,D]=size(X);
 
@@ -24,7 +24,7 @@ if overlapFlag==1
         else
             ind=ind1;
         end
-
+        
         fcm_idx(n)=ind;
     end
     idx=fcm_idx;C=centers;
@@ -38,7 +38,7 @@ Agents_Posi=C';
 clusterIdx=idx;
 
 
-figure;
+gcf=figure;
 hold on
 LegendTxt=cell(numC+1,1);
 for id=1:numC
@@ -52,6 +52,10 @@ plot(C(:,1),C(:,2),'kx',...
 legend(LegendTxt,'Location','NW')
 hold off
 
+fname=strcat('results/Agg/PerformanceEva/topologyAndDivide',num2str(M));
+
+saveas(gcf,fname,'png');
+close gcf;
 
 subSize=ones(M,1);
 X=X';
@@ -73,7 +77,7 @@ idx1=1:sampleSize;
 idx=ones(M,max(subSize));
 %     clusterIdx=clusterIdx';
 for m=1:M
-        idx(m,1:subSize(m))=find(clusterIdx==m)';
+    idx(m,1:subSize(m))=find(clusterIdx==m)';
 end
 idxedZ=Z(idx);
 subDataSetsZ=idxedZ;
@@ -95,7 +99,7 @@ for m=1:M
     Agents(m).M=M;
     Agents(m).action_status=1;
     %     Agents(m).commuRange=2.5;
-
+    
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
     Agents(m).distXd=zeros(subSize(m),subSize(m),inputDim);
