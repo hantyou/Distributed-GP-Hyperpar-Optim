@@ -337,11 +337,11 @@ disp('%%%%%%%%%%%%%%%%%%%%Examine Part Begin%%%%%%%%%%%%%%%%%%%%%%%')
 close all
 clearvars -except A_full Agents Agents_Posi cVec pVec X Y Z range sampleSize sigma_n
 %% Evaluation setup
-Ms=[2,4,8,16]; % different number of agents for different exp groups
-maxRange=max(range(:))-min(range(:));
-commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/4];
+Ms=[2,4,8,12,16]; % different number of agents for different exp groups
+tempFlag=[1,1,1,1,1];
 
-tempFlag=[0,0,1,1];
+maxRange=max(range(:))-min(range(:));
+commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3.5,maxRange/4];
 tempFlag=tempFlag==1;
 Ms=Ms(tempFlag);
 commuRange=commuRange(tempFlag);
@@ -358,6 +358,7 @@ MethodsName=[
     "DEC-rBCM";
     "DEC-NPAE";
     "NN-NPAE";
+    "CON-NPAE";
     "No-Ag"];
 DECNAME={
     "DEC-PoE";
@@ -366,6 +367,8 @@ DECNAME={
     "DEC-rBCM";
     "DEC-NPAE"}';
 NNNAME={"NN-NPAE"};
+
+
 
 NOAGNAME={"No-Ag"};
 
@@ -385,8 +388,9 @@ MethodsFlag=[
     1;
     1;
     1;
-    0;
-    0;
+    1;
+    1;
+    1;
     1];
 MethodsExamined=MethodsName(MethodsFlag==1);
 Num_MethodsExamined=sum(MethodsFlag);
@@ -396,13 +400,13 @@ for n=1:Num_MethodsExamined
 end
 
 %% Pre-parpool reset
-delete(gcp('nocreate'))
-
-try
-    parpool(24);
-catch
-    parpool(8)
-end
+% delete(gcp('nocreate'))
+% 
+% try
+%     parpool(24);
+% catch
+%     parpool(8)
+% end
 %% Pre-exp pars
 reso_x=100;
 reso_y=100;
@@ -447,7 +451,9 @@ realVar=Uncertainty_total;
 realVar=reshape(realVar,1,reso_x*reso_y);
 
 %% Evaluate Others
-for expId=1:Num_expGroup
+
+rng(990611,'twister')
+for expId=5:Num_expGroup
     M=Ms(expId);
     disp("Agent number:")
     disp(M)
@@ -461,9 +467,9 @@ for expId=1:Num_expGroup
         A_full=generateTopology(Agents,Topology_method);
         G=graph(A_full);
         Lap = laplacian(G);
-        [~,V,~]=svd(full(Lap));
+        [V,~]=eig(full(Lap));
         V=diag(V);
-        if V(end-1)>0
+        if V(2)>1e-5
             connected=1;
         else
             commuRange(expId)=commuRange(expId)*1.2;
@@ -488,7 +494,7 @@ for expId=1:Num_expGroup
             case DECNAME
                 disp(method)
                 A=A_full(1:M,1:M);
-                maxIter=40;
+                maxIter=50;
                 [~,~,mean,var] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
             case NNNAME
                 disp(method)
@@ -496,6 +502,12 @@ for expId=1:Num_expGroup
             case NOAGNAME
                 disp(method)
                 [mean,var] = GPR_predict_NoAg(Agents,newX,sigma_n);
+            case "CON-NPAE"
+                disp(method)
+                method1="NN-NPAE";
+                method2="DEC-BCM";
+                [mean,var] = GPR_predict_NN(Agents,method1,newX,sigma_n);
+                [~,~,mean,var] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,mean,var);
             case CENTER
                 disp(method)
                 disp("!!!!!!!!!!!!!!!!!Evaluation Under Construction!!!!!!!!!!!!!!!!!!!!")
@@ -513,6 +525,12 @@ end
 save('evalueResult.mat');
 %% plot result
 
+figure,
+for m=1:Num_expGroup
+    subplot(1,Num_expGroup,m);
+    plot(graphs{m});
+end
+
 figure,hold on;
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
@@ -521,6 +539,19 @@ for m=1:Num_MethodsExamined
 end
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','NW');
+hold off
+title('RMSE')
+
+figure,hold on
+legendTxt=cell(Num_MethodsExamined,1);
+for m=1:Num_MethodsExamined
+    plot(Ms,times(m,:),'-o')
+    legendTxt{m}=MethodsExamined(m);
+end
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','NW');
+hold off
+title('Time used')
 
 
 

@@ -1,5 +1,5 @@
 % NPAE branch
-function [Mean,Var,mean,var] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n)
+function [Mean,Var,mean,var] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,submean_old,subvar_old)
 %GPR_PREDICT_DEC Summary of this function goes here
 %   Detailed explanation goes here
 if nargin==5
@@ -12,10 +12,15 @@ N_newX=size(newX,2);
 subMeans=zeros(M,N_newX);
 subVars=zeros(M,N_newX);
 
-parfor m=1:M
-    [subMeans(m,:),subVars(m,:)]=subGP(Agents(m),newX,sigma_n);
+
+if nargin==8
+    subMeans=submean_old;
+    subVars=subvar_old;
+else
+    parfor m=1:M
+        [subMeans(m,:),subVars(m,:)]=subGP(Agents(m),newX,sigma_n);
+    end
 end
-maxIter=20;
 
 switch upper(method)
     case {'DEC-POE'}
@@ -217,6 +222,7 @@ end
 q_mu_direct=zeros(M,N_newX);
 q_sigma_direct=zeros(M,N_newX);
 parfor n=1:N_newX
+    warning('off','all');
     q_mu_direct(:,n)=inv(K_A(:,:,n))*subMean(:,n);
     q_sigma_direct(:,n)=inv(K_A(:,:,n))*k_A(:,n);
 end
@@ -265,9 +271,10 @@ q_sigma=q_sigma_new;
 %%%
 
 direct_output_mu=zeros(1,N_newX);
-parfor n=1:N_newX
-    direct_output_mu(n)=k_A(:,n)'*inv(K_A(:,:,n))*subMean(:,n);
-end
+% % % % % parfor n=1:N_newX
+% % % % %     warning('off','all');
+% % % % %     direct_output_mu(n)=k_A(:,n)'*inv(K_A(:,:,n))*subMean(:,n);
+% % % % % end
 %direct_output_mu=reshape(direct_output_mu,[64,64]);
 % gcf=figure('visible','on');
 % imshow(direct_output_mu,[]),colormap('jet');

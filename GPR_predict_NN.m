@@ -50,7 +50,7 @@ for m=1:M
     theta=[Agents(m).sigma_f;Agents(m).l];
     k_star_star=getK(newX(:,1),theta,sigma_n);
     parfor n=1:N_newX
-        warning('off');
+        warning('off','all');
         newX_n=newX(:,n);
         kM_m_n=zeros(N_size+1,1);
         KM_m_n=zeros(N_size+1,N_size+1);
