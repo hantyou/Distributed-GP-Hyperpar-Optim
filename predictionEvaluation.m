@@ -49,7 +49,7 @@ elseif dataSourceOption==2
     reso_m=256;
     reso_n=256;
     reso=[reso_m,reso_n];
-    everyAgentsSampleNum=200;
+    everyAgentsSampleNum=100;
     Agents_measure_range=3;
     realDataSet=0;
     samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
@@ -291,8 +291,8 @@ elseif dataSourceOption==2
         title('network topology on 2D field')
         hold off
         fname='results/Agg/PerformanceEva/topology_background';
-            saveas(gcf,fname,'png');
-                close gcf;
+        saveas(gcf,fname,'png');
+        close gcf;
         
         
         
@@ -325,8 +325,8 @@ elseif dataSourceOption==2
         title('network topology')
         hold off
         fname='results/Agg/PerformanceEva/just_topology';
-            saveas(gcf,fname,'png');
-                close gcf;
+        saveas(gcf,fname,'png');
+        close gcf;
     end
     
     
@@ -341,7 +341,7 @@ Ms=[2,4,8,12,16]; % different number of agents for different exp groups
 tempFlag=[1,1,1,1,1];
 
 maxRange=max(range(:))-min(range(:));
-commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/3.5];
+commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/7];
 tempFlag=tempFlag==1;
 Ms=Ms(tempFlag);
 commuRange=commuRange(tempFlag);
@@ -401,7 +401,7 @@ end
 
 %% Pre-parpool reset
 % delete(gcp('nocreate'))
-% 
+%
 % try
 %     parpool(24);
 % catch
@@ -500,6 +500,8 @@ for expId=1:Num_expGroup
             case NNNAME
                 disp(method)
                 [mean,var] = GPR_predict_NN(Agents,method,newX,sigma_n);
+                meanNN=mean;
+                varNN=var;
             case NOAGNAME
                 disp(method)
                 [mean,var] = GPR_predict_NoAg(Agents,newX,sigma_n);
@@ -507,8 +509,22 @@ for expId=1:Num_expGroup
                 disp(method)
                 method1="NN-NPAE";
                 method2="DEC-BCM";
-                [mean,var] = GPR_predict_NN(Agents,method1,newX,sigma_n);
-                [~,~,mean,var] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,mean,var);
+                NNFlag=0;
+                try
+                    meanNN;
+                    varNN;
+                    NNFlag=1;
+                catch
+                    NNFlag=0;
+                end
+                
+                if NNFlag==0
+                    [mean,var] = GPR_predict_NN(Agents,method1,newX,sigma_n);
+                    [~,~,mean,var] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,mean,var);
+                elseif NNFlag==1
+                    [~,~,mean,var] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,meanNN,varNN);
+                end
+                
             case CENTER
                 disp(method)
                 disp("!!!!!!!!!!!!!!!!!Evaluation Under Construction!!!!!!!!!!!!!!!!!!!!")
@@ -539,14 +555,29 @@ gcf=figure;
 hold on;
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
-    plot(Ms,meanRMSE(m,:),'-o')
+    plot(Ms,meanRMSE(m,:),strcat('-',pVec(m)));
     legendTxt{m}=MethodsExamined(m);
 end
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','NW');
 hold off
-title('RMSE')
-fname='results/Agg/PerformanceEva/RMSE';
+title('Prediction Mean RMSE')
+fname='results/Agg/PerformanceEva/MeanRMSE';
+saveas(gcf,fname,'png');
+close gcf;
+
+gcf=figure;
+hold on;
+legendTxt=cell(Num_MethodsExamined,1);
+for m=1:Num_MethodsExamined
+    plot(Ms,VarRMSE(m,:),strcat('-',pVec(m)));
+    legendTxt{m}=MethodsExamined(m);
+end
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','NW');
+hold off
+title('Prediction Var RMSE')
+fname='results/Agg/PerformanceEva/VarRMSE';
 saveas(gcf,fname,'png');
 close gcf;
 
