@@ -1,8 +1,9 @@
 function [pd,pdn] = getDiv(obj,z)
 %GETDIV Summary of this function goes here
 %   Detailed explanation goes here
+D=length(obj.l);
 sigma_old=z(1);
-l_old=z(2:end);
+l_old=z(2:(2+D-1));
 inputDim=length(l_old);
 K_n=obj.sigma_n^2*eye(obj.N_m);
 %%%%local update START%%%%
@@ -25,7 +26,7 @@ for d=1:inputDim
     pd_l(d) = 0.5*trace(constant_1*K_div_l_d);
 end
 %% div sigma_n
-if narout>1
+if nargout>1
     K_div_sigma_n=2*sqrt(K_n);
     pdn=0.5*trace(constant_1*K_div_sigma_n);
 end
