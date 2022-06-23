@@ -49,6 +49,7 @@ classdef agent
 
         theta_n
         beta_n
+        
 
         % Common parameters, matrix, etc.
         K % The local kernel matrix
@@ -225,6 +226,7 @@ classdef agent
             % update hyperparameters
             new_sigma=obj.z(1)-(obj.pd_sigma_f+obj.beta(1))/(obj.rho+obj.L);
             new_l=obj.z(2:end)-(obj.pd_l+obj.beta(2:end))/(obj.rho+obj.L);
+            
 
             obj.sigma_f=new_sigma;
             obj.l=new_l;
@@ -407,10 +409,10 @@ classdef agent
             K_div_sigma_f=2/old_sigma*K_s;
             obj.pd_sigma_f =0.5* trace(constant_1*K_div_sigma_f);
 
-            pd = getDiv(obj,obj.z);
+            [pd,pdn] = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
             old_beta=mean([obj.beta,obj.beta_mn],2);
-
+    
             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
             
             

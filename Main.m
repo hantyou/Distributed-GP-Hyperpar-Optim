@@ -17,7 +17,7 @@ range=[range_x1;range_x2];
 rng(990611,'twister')
 rand(17+16,1);
 
-M=10;
+M=8;
 
 try
     parpool(32);
@@ -30,7 +30,7 @@ region=[];
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=200;
+everyAgentsSampleNum=70;
 Agents_measure_range=4;
 realDataSet=0;
 if realDataSet==1
