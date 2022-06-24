@@ -12,7 +12,7 @@ Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 32).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 1.074926 seconds.
+Elapsed time is 1.119592 seconds.
 
 subSize =
 
@@ -28,6 +28,7 @@ subSize =
 The method(s) to be evaluated in this experiment is(are):
 pxADMM_fd_sync
 pxADMM_fd_async
+pxADMM_async_realSimu
 
 Time of pxADMM_{fd}
    250
@@ -62,7 +63,7 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 22.258146 seconds.
+Elapsed time is 23.714585 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
@@ -128,7 +129,7 @@ ans =
   ConstantLine with properties:
 
     InterceptAxis: 'y'
-            Value: 1
+            Value: 0.3162
             Color: [1 0 0]
         LineStyle: '-.'
         LineWidth: 0.5000
@@ -160,106 +161,8 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 28.631034 seconds.
-
-theta =
-
-    4.9641
-    0.9968
-    1.0948
-
-
-ans =
-
-    4.9641
-    0.9968
-    1.0948
-    0.5000
-
-
-ans =
-
-    4.9641
-    0.9968
-    1.0948
-    0.5000
-
-
-ans =
-
-    4.9641
-    0.9968
-    1.0948
-    0.5000
-
-
-ans =
-
-    4.9641
-    0.9968
-    1.0948
-    0.5000
-
-
-ans =
-
-    4.9641
-    0.9968
-    1.0948
-    0.5000
-
-
-ans =
-
-    4.9641
-    0.9968
-    1.0948
-    0.5000
-
-
-ans =
-
-    4.9641
-    0.9968
-    1.0948
-    0.5000
-
-
-ans =
-
-    4.9641
-    0.9968
-    1.0948
-    0.5000
-
-
-sigma_n =
-
-    0.3162
-
-PoE
-
-ax5 = 
-
-  Axes with properties:
-
-             XLim: [0 1]
-             YLim: [0 1]
-           XScale: 'linear'
-           YScale: 'linear'
-    GridLineStyle: '-'
-         Position: [0.0650 0.0550 0.2044 0.3972]
-            Units: 'normalized'
-
-  Use GET to show all properties
-
-gPoE
-BCM
-rBCM
-png file saved
-Full
-Elapsed time is 3.204280 seconds.
-No-Agg
+Elapsed time is 23.368610 seconds.
+Time of pxADMM_{fd,realSimu}
 The identifier was:
-MATLAB:innerdimThere was an error! The message was:
-Incorrect dimensions for matrix multiplication. Check that the number of columns in the first matrix matches the number of rows in the second matrix. To perform elementwise multiplication, use '.*'.
+parallel:lang:spmd:ExecutionErrorThere was an error! The message was:
+Error detected on workers 11 16 24.
