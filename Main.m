@@ -484,14 +484,14 @@ if run_pxADMM_fd_async
 end
 %% Perform pxADMM_async_realSimu
 if run_pxADMM_async_realSimu
-    maxIter=1000;
+    maxIter=2000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = [1;ones(length(initial_l),1);1];
     for m=1:M
         Agents(m).communicationAbility=1;
 
         Agents(m).action_status=1;
-        Agents(m).beta=initial_beta;
+        Agents(m).beta=in2itial_beta;
         Agents(m).z=initial_z;
         Agents(m).rho=rho_glb;
         Agents(m).l=initial_l';
@@ -518,7 +518,7 @@ if run_pxADMM_async_realSimu
     end
 
     disp('Time of pxADMM_{fd,realSimu}')
-    Agents = runPXADMM_fd_spmd(Agents,epsilon);
+    [Agents,cinfo] = runPXADMM_fd_spmd(Agents,epsilon);
 
 
     gcf=figure;
