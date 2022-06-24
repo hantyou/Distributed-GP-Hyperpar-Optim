@@ -12,58 +12,29 @@ Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 32).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 1.133462 seconds.
+Elapsed time is 1.074926 seconds.
 
 subSize =
 
-   136
-   200
-   140
-   178
-   147
-   200
-    96
-   190
-   200
-   190
+    67
+    70
+    49
+    70
+    37
+    69
+    38
+    64
 
 The method(s) to be evaluated in this experiment is(are):
 pxADMM_fd_sync
 pxADMM_fd_async
-
-Parallel pool using the 'local' profile is shutting down.
-Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 10).
-
-ans = 
-
- Pool with properties: 
-
-            Connected: true
-           NumWorkers: 10
-              Cluster: local
-        AttachedFiles: {}
-    AutoAddClientPath: true
-          IdleTimeout: 30 minutes (30 minutes remaining)
-          SpmdEnabled: true
 
 Time of pxADMM_{fd}
    250
 
    500
 
-
-gcf = 
-
-  Figure (2) with properties:
-
-      Number: 2
-        Name: ''
-       Color: [0.9400 0.9400 0.9400]
-    Position: [232 246 560 420]
-       Units: 'pixels'
-
-  Use GET to show all properties
+   750
 
 
 gcf = 
@@ -78,7 +49,20 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 76.699323 seconds.
+
+gcf = 
+
+  Figure (2) with properties:
+
+      Number: 2
+        Name: ''
+       Color: [0.9400 0.9400 0.9400]
+    Position: [232 246 560 420]
+       Units: 'pixels'
+
+  Use GET to show all properties
+
+Elapsed time is 22.258146 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
@@ -100,6 +84,21 @@ lgd2 =
 
     InterceptAxis: 'y'
             Value: 5
+            Color: [1 0 0]
+        LineStyle: '-.'
+        LineWidth: 0.5000
+            Label: ''
+      DisplayName: ''
+
+  Use GET to show all properties
+
+
+ans = 
+
+  ConstantLine with properties:
+
+    InterceptAxis: 'y'
+            Value: 1
             Color: [1 0 0]
         LineStyle: '-.'
         LineWidth: 0.5000
@@ -161,86 +160,77 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 79.842391 seconds.
-Parallel pool using the 'local' profile is shutting down.
-Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 24).
+Elapsed time is 28.631034 seconds.
 
 theta =
 
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
 
 
 ans =
 
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
+    0.5000
 
 
 ans =
 
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
+    0.5000
 
 
 ans =
 
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
+    0.5000
 
 
 ans =
 
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
+    0.5000
 
 
 ans =
 
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
+    0.5000
 
 
 ans =
 
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
+    0.5000
 
 
 ans =
 
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
+    0.5000
 
 
 ans =
 
-    4.4841
-   -0.9682
-    1.0104
-
-
-ans =
-
-    4.4841
-   -0.9682
-    1.0104
-
-
-ans =
-
-    4.4841
-   -0.9682
-    1.0104
+    4.9641
+    0.9968
+    1.0948
+    0.5000
 
 
 sigma_n =
@@ -268,101 +258,8 @@ BCM
 rBCM
 png file saved
 Full
-Elapsed time is 21.561497 seconds.
+Elapsed time is 3.204280 seconds.
 No-Agg
-Elapsed time is 7.877772 seconds.
-png file saved
-DEC-PoE
-Elapsed time is 12.515311 seconds.
-png file saved
-DEC-gPoE
-Elapsed time is 12.340154 seconds.
-png file saved
-DEC-BCM
-Elapsed time is 13.189017 seconds.
-png file saved
-DEC-rBCM
-Elapsed time is 14.259666 seconds.
-png file saved
-DEC-NPAE
-Elapsed time is 281.967887 seconds.
-png file saved
-NN-NPAE
-Elapsed time is 462.880371 seconds.
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 1037)] 
-png file saved
-evaluating
-
-pfmcMean_NoAg =
-
-   39.9245
-
-
-pfmcVar_NoAg =
-
-  122.0818
-
-
-pfmcMean_PoE =
-
-    0.8035
-
-
-pfmcVar_PoE =
-
-    5.6330
-
-
-pfmcMean_gPoE =
-
-    0.8035
-
-
-pfmcVar_gPoE =
-
-    3.8750
-
-
-pfmcMean_BCM =
-
-    0.1739
-
-
-pfmcVar_BCM =
-
-    0.0590
-
-
-pfmcMean_rBCM =
-
-    0.1740
-
-
-pfmcVar_rBCM =
-
-    0.5369
-
-
-pfmcMean_DEC_NPAE =
-
-    0.0158
-
-
-pfmcVar_DEC_NPAE =
-
-    0.0148
-
-
-pfmcMean_NN_NPAE =
-
-    2.5274
-
-
-pfmcVar_NN_NPAE =
-
-   19.6312
-
-all code ended
+The identifier was:
+MATLAB:innerdimThere was an error! The message was:
+Incorrect dimensions for matrix multiplication. Check that the number of columns in the first matrix matches the number of rows in the second matrix. To perform elementwise multiplication, use '.*'.
