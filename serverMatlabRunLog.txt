@@ -12,7 +12,7 @@ Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 32).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 1.119592 seconds.
+Elapsed time is 1.133922 seconds.
 
 subSize =
 
@@ -63,7 +63,7 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 23.714585 seconds.
+Elapsed time is 23.749795 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
@@ -161,8 +161,7 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 23.368610 seconds.
-Time of pxADMM_{fd,realSimu}
+Elapsed time is 23.649505 seconds.
 The identifier was:
-parallel:lang:spmd:ExecutionErrorThere was an error! The message was:
-Error detected on workers 11 16 24.
+MATLAB:UndefinedFunctionThere was an error! The message was:
+Unrecognized function or variable 'in2itial_beta'.
