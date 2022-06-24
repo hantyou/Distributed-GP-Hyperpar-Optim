@@ -26,9 +26,9 @@ switch method
     case {'bcm','BCM'}
         disp(method);
         k_star_star=zeros(1,N_newX);
-        theta=Agents(1).z;
+        theta=Agents(1).z(1:(end-1));
         for m=1:M
-            theta=theta+Agents(m).z;
+            theta=theta+Agents(m).z(1:(end-1));
         end
         theta=theta./M;
         for n=1:N_newX
@@ -38,9 +38,9 @@ switch method
     case {'rbcm','rBCM','RBCM'}
         disp(method);
         k_star_star=zeros(1,N_newX);
-        theta=Agents(1).z;
+        theta=Agents(1).z(end-1);
         for m=1:M
-            theta=theta+Agents(m).z;
+            theta=theta+Agents(m).z(1:(end-1));
         end
         theta=theta./M;
         for n=1:N_newX

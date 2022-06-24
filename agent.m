@@ -50,6 +50,7 @@ classdef agent
         theta_n
         beta_n
 
+
         % Common parameters, matrix, etc.
         K % The local kernel matrix
         N_m % The local data set size for agent m
@@ -181,8 +182,10 @@ classdef agent
         end
 
         function obj = runLocalPxADMM(obj)
+            D=length(obj.l);
             old_sigma=obj.z(1);
-            old_l=obj.z(2:end);
+            old_l=obj.z(2:(2+D-1));
+            old_sigma_n=obj.z(end);
             inputDim=length(old_l);
             K_n=obj.sigma_n^2*eye(obj.N_m);
             %%%%local update START%%%%
@@ -219,21 +222,23 @@ classdef agent
             %             K_div_l=[obj.pd_l(1);obj.pd_l(2)];
             %             obj.pd_l=K_div_l;
             %
-            pd = getDiv(obj,obj.z);
+            [pd,pdn] = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
 
             % update hyperparameters
             new_sigma=obj.z(1)-(obj.pd_sigma_f+obj.beta(1))/(obj.rho+obj.L);
-            new_l=obj.z(2:end)-(obj.pd_l+obj.beta(2:end))/(obj.rho+obj.L);
+            new_l=obj.z(2:(2+D-1))-(obj.pd_l+obj.beta(2:(2+D-1)))/(obj.rho+obj.L);
+            new_sigma_n=old_sigma_n-(pdn+obj.beta(end))/(obj.rho+obj.L);
 
             obj.sigma_f=new_sigma;
             obj.l=new_l;
+            obj.sigma_n=new_sigma_n;
             % after hyperparameter update, update the beta
-            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l]-obj.z);
+            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-obj.z);
             % the local update end
-            pd_new = getDiv(obj,[obj.sigma_f;obj.l]);
+            [pd_new,pdn_new ]= getDiv(obj,[obj.sigma_f;obj.l]);
 
-            L_max=norm(pd_new-pd)/norm([obj.sigma_f;obj.l]-obj.z);
+            L_max=norm([pd_new;pdn_new]-[pd,pdn])/norm([obj.sigma_f;obj.l;obj.sigma_n]-obj.z);
             beta_new=obj.beta;
         end
 
@@ -248,11 +253,11 @@ classdef agent
                     %                     obj(m).z_nm(:,n)=obj(neighbor_idx).z_mn(:,self_idx_at_neighbor);
                     if neighbour_activation_status==1||neighbour_communication_ability==1
                         obj(m).beta_nm(:,n)=obj(neighbor_idx).beta_mn(:,self_idx_at_neighbor);
-                        obj(m).theta_n(:,n)=[obj(neighbor_idx).sigma_f;obj(neighbor_idx).l];
+                        obj(m).theta_n(:,n)=[obj(neighbor_idx).sigma_f;obj(neighbor_idx).l;obj(neighbor_idx).sigma_n];
                         obj(m).beta_n(:,n)=obj(neighbor_idx).beta;
 
                         obj(neighbor_idx).beta_nm(:,self_idx_at_neighbor)=obj(m).beta_mn(:,n);
-                        obj(neighbor_idx).theta_n(:,self_idx_at_neighbor)=[obj(m).sigma_f;obj(m).l];
+                        obj(neighbor_idx).theta_n(:,self_idx_at_neighbor)=[obj(m).sigma_f;obj(m).l;obj(m).sigma_n];
                         obj(neighbor_idx).beta_n(:,self_idx_at_neighbor)=obj(m).beta;
 
                         obj(m).updatedVars(n)=1;
@@ -263,7 +268,7 @@ classdef agent
                         obj(m).beta_n(:,n) = obj(m).beta_n(:,n);
 
                         obj(neighbor_idx).beta_nm(:,self_idx_at_neighbor)=obj(m).beta_mn(:,n);
-                        obj(neighbor_idx).theta_n(:,self_idx_at_neighbor)=[obj(m).sigma_f;obj(m).l];
+                        obj(neighbor_idx).theta_n(:,self_idx_at_neighbor)=[obj(m).sigma_f;obj(m).l;obj(m).sigma_n];
                         obj(neighbor_idx).beta_n(:,self_idx_at_neighbor)=obj(m).beta;
                         obj(neighbor_idx).updatedVars(self_idx_at_neighbor)=1;
                     end
@@ -373,20 +378,23 @@ classdef agent
         end
 
         function obj=runPxADMM_fd(obj)
+            D=length(obj.l);
             obj.action_status=0;
             obj.updatedVars=0*obj.updatedVars;
             % update z_mn
             for n=1:obj.N_size
-                obj.z_mn(:,n) =((obj.beta_mn(:,n))/obj.rho +([obj.sigma_f;obj.l])+obj.beta_nm(:,n)/obj.rho+obj.theta_n(:,n))/2;
+                obj.z_mn(:,n) =((obj.beta_mn(:,n))/obj.rho +([obj.sigma_f;obj.l;obj.sigma_n])+obj.beta_nm(:,n)/obj.rho+obj.theta_n(:,n))/2;
             end
             new_z=mean([obj.z,obj.z_mn],2);
             
             % update theta_m
             old_sigma=new_z(1);
-            old_l=new_z(2:end);
+            old_l=new_z(2:(2+D-1));
+            old_sigma_n=new_z(end);
             inputDim=length(old_l);
             obj.z(1)=old_sigma;
-            obj.z(2:end)=old_l;
+            obj.z(2:(2+D-1))=old_l;
+            obj.z(end)=old_sigma_n;
 
             K_n=obj.sigma_n^2*eye(obj.N_m);
             distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
@@ -407,22 +415,23 @@ classdef agent
             K_div_sigma_f=2/old_sigma*K_s;
             obj.pd_sigma_f =0.5* trace(constant_1*K_div_sigma_f);
 
-            pd = getDiv(obj,obj.z);
+            [pd,pdn] = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
             old_beta=mean([obj.beta,obj.beta_mn],2);
-
-            new_theta=new_z-([obj.pd_sigma_f;obj.pd_l]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
+    
+            new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
             
             
             obj.sigma_f=new_theta(1);
-            obj.l=new_theta(2:end);
+            obj.l=new_theta(2:(2+D-1));
+            obj.sigma_n=new_theta(end);
             % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
             % beta update
             for n=1:obj.N_size
                 obj.beta_mn(:,n) = obj.beta_mn(:,n) + ...
-                    obj.rho * ([obj.sigma_f;obj.l]-obj.z_mn(:,n));
+                    obj.rho * ([obj.sigma_f;obj.l;obj.sigma_n]-obj.z_mn(:,n));
             end
-            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l]-new_z);
+            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z);
         end
 
 %         function obj=runPxADMM_fd(obj)

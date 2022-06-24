@@ -17,7 +17,7 @@ range=[range_x1;range_x2];
 rng(990611,'twister')
 rand(17+16,1);
 
-M=10;
+M=8;
 
 try
     parpool(32);
@@ -30,7 +30,7 @@ region=[];
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=200;
+everyAgentsSampleNum=70;
 Agents_measure_range=4;
 realDataSet=0;
 if realDataSet==1
@@ -271,6 +271,7 @@ fprintf("\n");
 
 % initialize theta and other parameters
 initial_sigma_f=5.5;
+initial_sigma_n=0.5;
 initial_l=2*ones(1,inputDim);
 epsilon = 1e-8; % used for stop criteria
 
@@ -278,8 +279,8 @@ rho_glb=40;
 L_glb=500;
 
 
-delete(gcp('nocreate'))
-parpool(M)
+% delete(gcp('nocreate'))
+% parpool(M)
 % rng('shuffle')
 %% Perform naive GD
 % initial_l=3*[1,1];
@@ -301,8 +302,8 @@ end
 if run_ADMM
     % initialize ADMM
     stepSize=0.000001; % step size of optimizing theta in inner interations
-    initial_beta = [1;ones(length(initial_l),1)];
-    initial_z = [initial_sigma_f;initial_l'];
+    initial_beta = [1;ones(length(initial_l),1);1];
+    initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
     maxOutIter=2000;
     maxInIter=30;
     for m=1:M
@@ -311,7 +312,7 @@ if run_ADMM
         Agents(m).rho=0.5;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
-        Agents(m).sigma_n=sigma_n;
+        Agents(m).sigma_n=initial_sigma_n;
         Agents(m).mu=stepSize;
     end
     % run ADMM
@@ -359,19 +360,19 @@ if run_ADMM_fd
         Agents(m).rho=100;
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).l=initial_l';
-        Agents(m).sigma_n=sigma_n;
+        Agents(m).sigma_n=initial_sigma_n;
         Agents(m).mu=stepSize;
 
-        Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_mn=ones(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_nm=ones(inputDim+1,Agents(m).N_size);
-        Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
+        Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=ones(inputDim+2,Agents(m).N_size);
+        Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
     end
     for m=1:M
         for n=1:Agents(m).N_size
             neighbor_idx=Agents(m).Neighbors(n);
-            Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l];
+            Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l;Agents(neighbor_idx).sigma_n];
         end
     end
 
@@ -390,8 +391,8 @@ end
 if run_pxADMM_fd_sync
     % initialize pxADMM_fd
     maxIter=8000;
-    initial_z=[initial_sigma_f;initial_l'];
-    initial_beta = 0.1*[1;ones(length(initial_l),1)];
+    initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
+    initial_beta = 0.1*[1;ones(length(initial_l),1);1];
     for m=1:M
         Agents(m).communicationAbility=1;
         Agents(m).beta=initial_beta;
@@ -399,23 +400,23 @@ if run_pxADMM_fd_sync
         Agents(m).rho=rho_glb;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
-        Agents(m).sigma_n=sigma_n;
+        Agents(m).sigma_n=initial_sigma_n;
         Agents(m).L=L_glb;
 
-        Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_mn=0.1*ones(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_nm=0.1*ones(inputDim+1,Agents(m).N_size);
+        Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=0.1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=0.1*ones(inputDim+2,Agents(m).N_size);
 
-        Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_n=zeros(inputDim+1,Agents(m).N_size);
+        Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).updatedVars=zeros(1,Agents(m).N_size);
         Agents(m).updatedVarsNumberThreshold=2;
     end
     for m=1:M
         for n=1:Agents(m).N_size
             neighbor_idx=Agents(m).Neighbors(n);
-            Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l];
+            Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l;Agents(neighbor_idx).sigma_n];
         end
     end
     sync=1;
@@ -424,7 +425,7 @@ if run_pxADMM_fd_sync
     disp('Time of pxADMM_{fd}')
 
     tic
-    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
+    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,sigma_n_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
 
     pause(0.1)
@@ -433,9 +434,9 @@ end
 %% Perform pxADMM_fd_async
 if run_pxADMM_fd_async
     % initialize pxADMM_fd
-    maxIter=8000;
-    initial_z=[initial_sigma_f;initial_l'];
-    initial_beta = 0.1*[1;ones(length(initial_l),1)];
+    maxIter=10000;
+    initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
+    initial_beta = 0.1*[1;ones(length(initial_l),1);1];
     for m=1:M
         Agents(m).communicationAbility=1;
 
@@ -445,27 +446,27 @@ if run_pxADMM_fd_async
         Agents(m).rho=rho_glb;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
-        Agents(m).sigma_n=sigma_n;
+        Agents(m).sigma_n=initial_sigma_n;
         Agents(m).L=L_glb;
 
         Agents(m).Zs=initial_z;
         Agents(m).Steps=0;
 
-        Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_mn=0.1*ones(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_nm=0.1*ones(inputDim+1,Agents(m).N_size);
+        Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=0.1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=0.1*ones(inputDim+2,Agents(m).N_size);
 
-        Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_n=zeros(inputDim+1,Agents(m).N_size);
+        Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).updatedVars=ones(1,Agents(m).N_size);
-        Agents(m).updatedVarsNumberThreshold=2;
+        Agents(m).updatedVarsNumberThreshold=3;
         Agents(m).updatedVarsNumberThreshold=min(Agents(m).updatedVarsNumberThreshold,Agents(m).N_size);
     end
     for m=1:M
         for n=1:Agents(m).N_size
             neighbor_idx=Agents(m).Neighbors(n);
-            Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l];
+            Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l;Agents(neighbor_idx).sigma_n];
         end
     end
     sync=0;
@@ -474,7 +475,7 @@ if run_pxADMM_fd_async
     disp('Time of pxADMM_{fd}')
 
     tic
-    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
+    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] = runPXADMM_fd(Agents,M,0.1*epsilon,maxIter,sync);
     toc
     Agents(1).sigma_f=sigma_pxADMM_fd_async;
     Agents(1).l=l_pxADMM_fd_async;
@@ -495,19 +496,19 @@ if run_pxADMM_async_realSimu
         Agents(m).rho=rho_glb;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
-        Agents(m).sigma_n=sigma_n;
+        Agents(m).sigma_n=initial_sigma_n;
         Agents(m).L=L_glb;
         Agents(m).maxIter=maxIter;
         Agents(m).Zs=initial_z;
         Agents(m).Steps=0;
         Agents(m).M=M;
-        Agents(m).z_mn=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).z_nm=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_mn=ones(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_nm=ones(inputDim+1,Agents(m).N_size);
+        Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=ones(inputDim+2,Agents(m).N_size);
         Agents(m).currentStep=1;
-        Agents(m).theta_n=zeros(inputDim+1,Agents(m).N_size);
-        Agents(m).beta_n=zeros(inputDim+1,Agents(m).N_size);
+        Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).updatedVars=ones(1,Agents(m).N_size);
         Agents(m).updatedVarsNumberThreshold=2;
         Agents(m).updatedVarsNumberThreshold=min(Agents(m).updatedVarsNumberThreshold,Agents(m).N_size);
@@ -638,22 +639,22 @@ else
 
     %% GPR1
 
-    delete(gcp('nocreate'))
-
-    try
-        parpool(24);
-    catch
-        parpool(8)
-    end
+%     delete(gcp('nocreate'))
+% 
+%     try
+%         parpool(24);
+%     catch
+%         parpool(8)
+%     end
 
     % theta=[Agents(1).sigma_f;Agents(1).l];
     theta=[sigma_pxADMM_fd_sync;l_pxADMM_fd_sync];
     theta
     for m=1:M
         Agents(m).sigma_f=thetas_pxADMM_fd_sync(1,m);
-        Agents(m).l=thetas_pxADMM_fd_sync(2:end,m);
+        Agents(m).l=thetas_pxADMM_fd_sync(2:end-1,m);
 
-        [Agents(m).sigma_f;Agents(m).l]
+        [Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]
     end
     %% Pre
     reso_x=100;
