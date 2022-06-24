@@ -570,7 +570,7 @@ gcf=figure;
 hold on;
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
-    plot(Ms,VarRMSE(m,:),strcat('-',pVec(m)));
+    plot(Ms,varRMSE(m,:),strcat('-',pVec(m)));
     legendTxt{m}=MethodsExamined(m);
 end
 set(gca, 'YScale', 'log');
