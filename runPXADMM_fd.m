@@ -329,9 +329,12 @@ else
             lgd2=yline(5,'-.r')
             legend([lgd,lgd2],{'converged value','real value'}, 'Location','northeast')
             ylim([4.5,6])
-        else
+        elseif i<=inputDim+1
             yline(1,'-.r')
             ylim([0.5,2.1])
+        else
+            yline(sqrt(0.1),'-.r')
+            ylim([0.00001,2])
         end
         set(gca, 'XScale', 'log')
         hold off

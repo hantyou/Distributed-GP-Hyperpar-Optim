@@ -63,6 +63,7 @@ classdef agent
         Steps
         currentStep
         maxIter
+        runningHO
     end
 
     methods

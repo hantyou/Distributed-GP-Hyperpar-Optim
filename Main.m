@@ -9,22 +9,21 @@ catch
 end
 set(0,'DefaultFigureVisible','off')
 %% Define field for monitoring
-delete(gcp('nocreate'))
 range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
 
 rng(990611,'twister')
 rand(17+16,1);
-
 M=8;
-
+region=[];
+%% parpool setup
+delete(gcp('nocreate'))
 try
     parpool(32);
 catch
     parpool(8)
 end
-region=[];
 
 %% Generate/Load dataset
 reso_m=256;
@@ -243,7 +242,7 @@ run_pxADMM=0;
 run_ADMM_fd=0;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
-run_pxADMM_async_realSimu=0;
+run_pxADMM_async_realSimu=1;
 
 run_flags =    [run_GD;
     run_ADMM;
@@ -476,7 +475,7 @@ if run_pxADMM_fd_async
 
     tic
     [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] =...
-        runPXADMM_fd(Agents,M,0.01*epsilon,maxIter,sync);
+        runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
     Agents(1).sigma_f=sigma_pxADMM_fd_async;
     Agents(1).l=l_pxADMM_fd_async;
@@ -485,9 +484,9 @@ if run_pxADMM_fd_async
 end
 %% Perform pxADMM_async_realSimu
 if run_pxADMM_async_realSimu
-    maxIter=10000;
-    initial_z=[initial_sigma_f;initial_l'];
-    initial_beta = [1;ones(length(initial_l),1)];
+    maxIter=1000;
+    initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
+    initial_beta = [1;ones(length(initial_l),1);1];
     for m=1:M
         Agents(m).communicationAbility=1;
 
@@ -514,7 +513,8 @@ if run_pxADMM_async_realSimu
         Agents(m).updatedVarsNumberThreshold=2;
         Agents(m).updatedVarsNumberThreshold=min(Agents(m).updatedVarsNumberThreshold,Agents(m).N_size);
         Agents(m).slowSync=zeros(M,1);
-        Agents(m).slowSyncThreshold=10;
+        Agents(m).slowSyncThreshold=2;
+        Agents(m).runningHO=1;
     end
 
     disp('Time of pxADMM_{fd,realSimu}')
@@ -534,11 +534,18 @@ if run_pxADMM_async_realSimu
 
     gcf=figure;
     for i=1:length(initial_z)
+        if i==1
+            disp('sigma_f')
+        elseif i==inputDim+2
+            disp('sigma_n')
+        else
+            disp(strcat('l_',num2str(i-1)))
+        end
         subplot(length(initial_z),1,i)
         hold on
         for m=1:M
             plot(Agents(m).Zs(i,2:end));
-            disp(Agents(m).Zs(i,end))
+%             disp(Agents(m).Zs(i,end))
         end
         hold off
         %set(gca,'YScale','log')
@@ -654,6 +661,7 @@ else
     for m=1:M
         Agents(m).sigma_f=thetas_pxADMM_fd_sync(1,m);
         Agents(m).l=thetas_pxADMM_fd_sync(2:end-1,m);
+        Agents(m).sigma_n=thetas_pxADMM_fd_sync(end,m);
 
         [Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]
     end
