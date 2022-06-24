@@ -475,7 +475,8 @@ if run_pxADMM_fd_async
     disp('Time of pxADMM_{fd}')
 
     tic
-    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] = runPXADMM_fd(Agents,M,0.1*epsilon,maxIter,sync);
+    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] =...
+        runPXADMM_fd(Agents,M,0.01*epsilon,maxIter,sync);
     toc
     Agents(1).sigma_f=sigma_pxADMM_fd_async;
     Agents(1).l=l_pxADMM_fd_async;
