@@ -278,8 +278,8 @@ rho_glb=40;
 L_glb=500;
 
 
-% delete(gcp('nocreate'))
-% parpool(M)
+delete(gcp('nocreate'))
+parpool(M)
 % rng('shuffle')
 %% Perform naive GD
 % initial_l=3*[1,1];
@@ -647,13 +647,13 @@ else
 
     %% GPR1
 
-%     delete(gcp('nocreate'))
-% 
-%     try
-%         parpool(24);
-%     catch
-%         parpool(8)
-%     end
+     delete(gcp('nocreate'))
+ 
+     try
+         parpool(24);
+     catch
+         parpool(8)
+     end
 
     % theta=[Agents(1).sigma_f;Agents(1).l];
     theta=[sigma_pxADMM_fd_sync;l_pxADMM_fd_sync];
