@@ -31,7 +31,7 @@ reso_n=256;
 reso=[reso_m,reso_n];
 everyAgentsSampleNum=70;
 Agents_measure_range=4;
-realDataSet=0;
+realDataSet=1;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
     loadRealDataset
