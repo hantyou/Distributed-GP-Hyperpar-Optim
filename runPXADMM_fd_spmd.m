@@ -1,10 +1,14 @@
-function Agents = runPXADMM_fd_spmd(Agents,epsilon)
+function [Agents,newCInfo] = runPXADMM_fd_spmd(Agents,epsilon)
 
 M=length(Agents);
 q = parallel.pool.DataQueue; % define a dataReceiver in center to monitor process in agents
 afterEach(q,@tackleData)
 warning('off','all')
 tic
+communicationInfoReceiveAgents=cell(M,1);
+for m=1:M
+    communicationInfoReceiveAgents{m}=[];
+end
 spmd
 
     warning('off','all')
@@ -20,7 +24,7 @@ spmd
 
     neighborWorkingStatus=ones(1,M);
     while iterCount<maxIter
-
+        communicationInfoReceive=zeros(M,1);
         iterCount=iterCount+1;
         %         Agents(m).z=Agents(m).z.*rand;
         %         Agents(m).beta=Agents(m).beta .* (rand*rand);
@@ -103,6 +107,7 @@ spmd
                 try
                     if isDataAvail
                         msgReceivedPkg=labReceive(srcWkrIdx);
+                        communicationInfoReceive(srcWkrIdx)=1;
                         %                         neighborWorkingStatus(srcWkrIdx)=msgReceivedPkg{8};
                         Agents(m).updatedVarsNumber=Agents(m).updatedVarsNumber+1;
                         restNum=restNum-1;
@@ -187,6 +192,7 @@ spmd
             updateFlag=1;
         end
 
+        communicationInfoReceiveAgents{m}=[ communicationInfoReceiveAgents{m},communicationInfoReceive];
     end%end of while outer iter
     Agents(m).runningHO=0;
     %% This agent has finished optimization, now transfer info to neighbors
@@ -195,6 +201,7 @@ spmd
     doesntResponse=50*ones(1,M);
     Neighbors=Agents(m).Neighbors;
     while needTransferInfo==1
+        communicationInfoReceive=zeros(M,1);
         msgSentPkg=cell(8,1);
         msgSentPkg{1}=Agents(m).Code;
         msgSentPkg{3}=Agents(m).beta;
@@ -226,6 +233,7 @@ spmd
                 try
                     isDataAvail = labProbe(srcWkrIdx);
                     if isDataAvail
+                        communicationInfoReceive(srcWkrIdx)=2;
                         doesntResponse(srcWkrIdx)=100;
                         msgReceivedPkg=labReceive(srcWkrIdx);
                         NeighborRunningHOflag=msgReceivedPkg{8};
@@ -252,6 +260,7 @@ spmd
             needTransferInfo=0;
         end
 
+        communicationInfoReceiveAgents{m}=[ communicationInfoReceiveAgents{m},communicationInfoReceive];
     end%end of needTransferInfo while
 
 end%end of spmd
@@ -262,6 +271,17 @@ for m=1:M
     newAgents(m)=am(m);
 end
 Agents=newAgents;
+
+
+newCInfo=cell(M,1);
+for m=1:M
+    cm=communicationInfoReceiveAgents(m);
+    cm=cm{1};
+    cm=cm{m};
+    cm=cm(Agents(m).Neighbors,:);
+    newCInfo{m}=cm;
+
+end
 
 toc
 
