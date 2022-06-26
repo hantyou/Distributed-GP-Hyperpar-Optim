@@ -10,25 +10,44 @@ For product information, visit www.mathworks.com.
  
 Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 32).
-This exp is down with artificial dataset loaded
-Generate GP according to given GP_hyperpar
-Elapsed time is 1.133922 seconds.
+This exp is down with real dataset loaded
+Reading Sea Surface Temperature (SST) dataset
+latitudes read
+longitude read
+temperature read
+error read
 
 subSize =
 
-    67
-    70
-    49
-    70
-    37
-    69
-    38
-    64
+    15
+    18
+    16
+    17
+    22
+    30
+    20
+    22
 
 The method(s) to be evaluated in this experiment is(are):
 pxADMM_fd_sync
 pxADMM_fd_async
 pxADMM_async_realSimu
+
+Parallel pool using the 'local' profile is shutting down.
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 8).
+
+ans = 
+
+ Pool with properties: 
+
+            Connected: true
+           NumWorkers: 8
+              Cluster: local
+        AttachedFiles: {}
+    AutoAddClientPath: true
+          IdleTimeout: 30 minutes (30 minutes remaining)
+          SpmdEnabled: true
 
 Time of pxADMM_{fd}
    250
@@ -37,12 +56,14 @@ Time of pxADMM_{fd}
 
    750
 
+        1000
+
 
 gcf = 
 
-  Figure (2) with properties:
+  Figure (1) with properties:
 
-      Number: 2
+      Number: 1
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -53,9 +74,9 @@ gcf =
 
 gcf = 
 
-  Figure (2) with properties:
+  Figure (1) with properties:
 
-      Number: 2
+      Number: 1
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -63,14 +84,14 @@ gcf =
 
   Use GET to show all properties
 
-Elapsed time is 23.749795 seconds.
+Elapsed time is 13.575635 seconds.
 Time of pxADMM_{fd}
 
 gcf = 
 
-  Figure (2) with properties:
+  Figure (1) with properties:
 
-      Number: 2
+      Number: 1
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -146,9 +167,9 @@ fname =
 
 gcf = 
 
-  Figure (3) with properties:
+  Figure (2) with properties:
 
-      Number: 3
+      Number: 2
         Name: ''
        Color: [0.9400 0.9400 0.9400]
     Position: [232 246 560 420]
@@ -161,7 +182,7 @@ fname =
 
     'results/pxADMM_fd_async_steps_direct_display'
 
-Elapsed time is 23.649505 seconds.
+Elapsed time is 26.487182 seconds.
 The identifier was:
 MATLAB:UndefinedFunctionThere was an error! The message was:
 Unrecognized function or variable 'in2itial_beta'.
