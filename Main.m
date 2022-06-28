@@ -31,7 +31,7 @@ reso_n=256;
 reso=[reso_m,reso_n];
 everyAgentsSampleNum=70;
 Agents_measure_range=4;
-realDataSet=1;
+realDataSet=0;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
     loadRealDataset
@@ -236,10 +236,10 @@ if realDataSet==0||temp_data==3
     close gcf;
 end
 %% Experiment group setup
-run_GD=0;
-run_ADMM=0;
-run_pxADMM=0;
-run_ADMM_fd=0;
+run_GD=1;
+run_ADMM=1;
+run_pxADMM=1;
+run_ADMM_fd=1;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
 run_pxADMM_async_realSimu=1;
@@ -272,12 +272,12 @@ fprintf("\n");
 initial_sigma_f=5.5;
 initial_sigma_n=0.5;
 initial_l=2*ones(1,inputDim);
-epsilon = 1e-8; % used for stop criteria
+epsilon = 1e-5; % used for stop criteria
 
 rho_glb=40;
 L_glb=500;
 
-
+%%
 delete(gcp('nocreate'))
 parpool(M)
 % rng('shuffle')
@@ -303,12 +303,12 @@ if run_ADMM
     stepSize=0.000001; % step size of optimizing theta in inner interations
     initial_beta = [1;ones(length(initial_l),1);1];
     initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
-    maxOutIter=2000;
+    maxOutIter=1000;
     maxInIter=30;
     for m=1:M
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
-        Agents(m).rho=0.5;
+        Agents(m).rho=20;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).sigma_n=initial_sigma_n;
@@ -319,7 +319,7 @@ if run_ADMM
     disp('Time of ADMM')
 
     tic
-    [sigma_ADMM,l_ADMM,Steps_ADMM,IterCounts] = runADMM(Agents,M,stepSize,epsilon,maxOutIter,maxInIter);
+    [sigma_ADMM,l_ADMM,sigma_n_ADMM,Steps_ADMM,IterCounts] = runADMM(Agents,M,stepSize,0.001,maxOutIter,maxInIter);
     toc
 
     pause(0.1)
@@ -344,7 +344,7 @@ if run_pxADMM
     disp('Time of pxADMM')
 
     tic
-    [sigma_pxADMM,l_pxADMM,Steps_pxADMM,Zs_pxADMM] = runPXADMM(Agents,M,epsilon,maxIter);
+    [sigma_pxADMM,l_pxADMM,sigma_n_pxADMM,Steps_pxADMM,Zs_pxADMM] = runPXADMM(Agents,M,epsilon,maxIter);
     toc
 
     pause(0.1)

@@ -1,4 +1,4 @@
-function [sigma_pxADMM,l_pxADMM,Steps,Zs] = runPXADMM(Agents,M,epsilon,maxIter)
+function [sigma_pxADMM,l_pxADMM,sigma_n_pxADMM,Steps,Zs] = runPXADMM(Agents,M,epsilon,maxIter)
 %RUNPXADMM Summary of this function goes here
 %   Detailed explanation goes here
 sampleSize=M*length(Agents(1).Z);
@@ -52,7 +52,8 @@ while pxADMMflag
     end
 end
 sigma_pxADMM=updated_z(1);
-l_pxADMM=updated_z(2:end);
+l_pxADMM=updated_z(2:end-1);
+sigma_n_pxADMM=updated_z(end);
 % plot part
 % figure,
 % for m=1:M

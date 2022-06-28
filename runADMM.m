@@ -1,4 +1,4 @@
-function [sigma_ADMM,l_ADMM,Steps,IterCounts] = runADMM(Agents,M,stepSize,epsilon,maxOutIter,maxInIter)
+function [sigma_ADMM,l_ADMM,sigma_n_ADMM,Steps,IterCounts] = runADMM(Agents,M,stepSize,epsilon,maxOutIter,maxInIter)
 %RUNADMM Summary of this function goes here
 %   Detailed explanation goes here
 sampleSize=M*length(Agents(1).Z);
@@ -33,10 +33,10 @@ while outADMMflag
     %     disp(outIterCount)
     % Calculate z from agents' data
     old_z=updated_z;
-    updated_z=[0;0;0];
+    updated_z=zeros(size(updated_z));
     for m=1:M
         Agents(m).mu=stepSize;
-        updated_z=updated_z+[Agents(m).sigma_f;Agents(m).l]+1/Agents(m).rho*Agents(m).beta;
+        updated_z=updated_z+[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]+1/Agents(m).rho*Agents(m).beta;
     end
     updated_z=1/M*updated_z;
     % transmit z from center to agents
@@ -46,7 +46,7 @@ while outADMMflag
     % at each agent, perform inner iteration
     % for each inner iteration, the theta=[sigma_f, l] is going to be
     % updated, and beta is also to be updated
-    parfor m=1:M
+    for m=1:M
         [Agents(m),Zs_m,Steps_m,inIterCount_m]=Agents(m).runLocalInnerADMM(maxInIter,epsilon);
         Zs{m}=[Zs{m},Zs_m];
         Steps{m}=[Steps{m},Steps_m];
@@ -65,7 +65,9 @@ while outADMMflag
     end
 end
 sigma_ADMM=updated_z(1);
-l_ADMM=updated_z(2:3);
+D=length(Agents(1).l);
+l_ADMM=updated_z(2:(2+D-1));
+sigma_n_ADMM=updated_z(end);
 % Plot
 figure,
 for m=1:M

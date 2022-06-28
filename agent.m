@@ -108,13 +108,15 @@ classdef agent
 
         function [obj,Zs,Steps,inIterCount] = runLocalInnerADMM(obj,maxInIter,epsilon)
             localGDflag=1;
+            D=length(obj.l);
             %             epsilon=10*epsilon;
             inIterCount=0;
-            Zs=zeros(3,maxInIter);
+            Zs=zeros(2+D,maxInIter);
             %             old_sigma=obj.z(1);
             %             old_l=obj.z(2:3);
             old_sigma=obj.sigma_f;
             old_l=obj.l;
+            old_sigma_n=obj.sigma_n;
             % below are some unchanged matrix used for every iterations
             K_n=obj.sigma_n^2*eye(obj.N_m);
             mu_temp=obj.mu;
@@ -150,20 +152,26 @@ classdef agent
                 K_div_l=[obj.pd_l(1);obj.pd_l(2)];
                 obj.pd_l=K_div_l;
 
+                [pd,pdn] = getDiv(obj,obj.z);
+                obj.pd_l=pd(2:end);
+                obj.pd_sigma_f=pd(1);
+
                 % update hyperparameters
                 new_sigma=old_sigma-mu_temp*obj.pd_sigma_f;
                 new_l=old_l-mu_temp*obj.pd_l;
+                new_sigma_n=old_sigma_n-mu_temp*pdn;
                 % calculate maximum update step
-                step=norm([new_sigma;new_l]-[old_sigma;old_l]);
+                step=norm([new_sigma;new_l;new_sigma_n]-[old_sigma;old_l;old_sigma_n]);
                 % now the new sigma and l will be out dated in the next
                 % iteration
                 old_sigma=new_sigma;
                 old_l=new_l;
+                old_sigma_n=new_sigma_n;
 
                 % adjust stepSize
                 mu_temp=0.9999999*mu_temp;
                 % store intermediate results
-                Zs(:,inIterCount)=[new_sigma;new_l];
+                Zs(:,inIterCount)=[new_sigma;new_l;new_sigma_n];
                 Steps=[Steps,step];
                 if step<epsilon
                     localGDfalg=0;
@@ -176,8 +184,9 @@ classdef agent
             obj.mu=mu_temp;
             obj.sigma_f=new_sigma;
             obj.l=new_l;
+            obj.sigma_n=new_sigma_n;
             % after hyperparameter update, update the beta
-            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l]-obj.z);
+            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-obj.z);
             % the local update end
             Zs=Zs(:,1:inIterCount);
         end
@@ -195,23 +204,23 @@ classdef agent
             K_s=old_sigma^(2)*exp(-0.5*distX);
             obj.K=K_s+K_n;
 
-            choL = chol(obj.K, 'lower');
-            alpha = choL'\(choL\obj.Z);
+% %             choL = chol(obj.K, 'lower');
+% %             alpha = choL'\(choL\obj.Z);
             %             invK=inv(obj.K);
-            invChoL=inv(choL);
-            constant_1=invChoL'*invChoL-alpha*alpha';
-            K_div_sigma_f=2/old_sigma*K_s;
-            %             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
-            obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f);
+% %             invChoL=inv(choL);
+% %             constant_1=invChoL'*invChoL-alpha*alpha';
+% %             K_div_sigma_f=2/old_sigma*K_s;
+% %             %             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
+% %             obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f);
 
             %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
-            K_div_l=[];
-            for d=1:inputDim
-                K_div_l_d=obj.distXd(:,:,d).*K_s*old_l(d)^(-3);
-
-                obj.pd_l(d) = 0.5*trace(constant_1*K_div_l_d);
-                K_div_l=[K_div_l;obj.pd_l(d)];
-            end
+% %             K_div_l=[];
+% %             for d=1:inputDim
+% %                 K_div_l_d=obj.distXd(:,:,d).*K_s*old_l(d)^(-3);
+% % 
+% %                 obj.pd_l(d) = 0.5*trace(constant_1*K_div_l_d);
+% %                 K_div_l=[K_div_l;obj.pd_l(d)];
+% %             end
 
 
             %             K_div_l_1=obj.distX1.*K_s*old_l(1)^(-3);
@@ -225,6 +234,7 @@ classdef agent
             %
             [pd,pdn] = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
+            obj.pd_sigma_f=pd(1);
 
             % update hyperparameters
             new_sigma=obj.z(1)-(obj.pd_sigma_f+obj.beta(1))/(obj.rho+obj.L);
@@ -402,22 +412,24 @@ classdef agent
             K_s=old_sigma^(2)*exp(-0.5*distX);
             obj.K=K_s+K_n;
 
-            choL = chol(obj.K, 'lower');
-            alpha = choL'\(choL\obj.Z);
-            try
-                invChoL=inv(choL);
-            catch
-                invChoL=pinv(choL);
-                disp("A non-PSD K matrix exists, now changed to psudo inverse mood.")
-            end
+% %             choL = chol(obj.K, 'lower');
+% %             alpha = choL'\(choL\obj.Z);
+% %             try
+% %                 invChoL=inv(choL);
+% %             catch
+% %                 invChoL=pinv(choL);
+% %                 disp("A non-PSD K matrix exists, now changed to psudo inverse mood.")
+% %             end
 
-
-            constant_1=invChoL'*invChoL-alpha*alpha';
-            K_div_sigma_f=2/old_sigma*K_s;
-            obj.pd_sigma_f =0.5* trace(constant_1*K_div_sigma_f);
+% 
+%             constant_1=invChoL'*invChoL-alpha*alpha';
+%             K_div_sigma_f=2/old_sigma*K_s;
+%             obj.pd_sigma_f =0.5* trace(constant_1*K_div_sigma_f);
 
             [pd,pdn] = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
+            obj.pd_sigma_f=pd(1);
+
             old_beta=mean([obj.beta,obj.beta_mn],2);
     
             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
