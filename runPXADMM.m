@@ -16,6 +16,7 @@ Zs=cell(M,1);
 for m=1:M
     Zs{m}=[];
 end
+D=length(Agents(1).l);
 %wb=waitbar(0,'Preparing','Name','pxADMM');
 %set(wb,'color','w');
 while pxADMMflag
@@ -23,10 +24,10 @@ while pxADMMflag
     % Calculate z from agents' data
     old_z=updated_z;
     inputDim=size(Agents(1).X,1);
-    updated_z=zeros(inputDim+1,1);
+    updated_z=zeros(inputDim+2,1);
     for m=1:M
         updated_z=updated_z+...
-            [Agents(m).sigma_f;Agents(m).l]...
+            [Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]...
             +1/Agents(m).rho*Agents(m).beta;
     end
     updated_z=1/M*updated_z;
@@ -36,7 +37,7 @@ while pxADMMflag
     end
     % at each agent, perform one step of proximal update, get the new
     % hyperparameters
-    parfor m=1:M
+    for m=1:M
         Agents(m)=Agents(m).runLocalPxADMM;
         Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l]];
     end
@@ -52,7 +53,7 @@ while pxADMMflag
     end
 end
 sigma_pxADMM=updated_z(1);
-l_pxADMM=updated_z(2:end-1);
+l_pxADMM=updated_z(2:(2+D-1));
 sigma_n_pxADMM=updated_z(end);
 % plot part
 % figure,
@@ -62,7 +63,7 @@ sigma_n_pxADMM=updated_z(end);
 %         plot(Zs{m}(z_i,:));
 %     end
 % end
-gcf=figure,
+gcf=figure;
 cvgValue=Inf*ones(1,inputDim+1);
 for i=1:inputDim+1
     subplot(inputDim+1,1,i)
@@ -78,7 +79,7 @@ figure,semilogy(Steps)
 xlabel('steps')
 ylabel('step length')
 title('pxADMM convergence')
-fname='pxADMM convergence'
+fname='pxADMM convergence';
 saveas(gcf,fname,'png')
 close gcf;
 

@@ -236,10 +236,10 @@ if realDataSet==0||temp_data==3
     close gcf;
 end
 %% Experiment group setup
-run_GD=1;
-run_ADMM=1;
-run_pxADMM=1;
-run_ADMM_fd=1;
+run_GD=0;
+run_ADMM=0;
+run_pxADMM=0;
+run_ADMM_fd=0;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
 run_pxADMM_async_realSimu=1;
@@ -319,7 +319,7 @@ if run_ADMM
     disp('Time of ADMM')
 
     tic
-    [sigma_ADMM,l_ADMM,sigma_n_ADMM,Steps_ADMM,IterCounts] = runADMM(Agents,M,stepSize,0.001,maxOutIter,maxInIter);
+    [sigma_ADMM,l_ADMM,sigma_n_ADMM,Steps_ADMM,IterCounts] = runADMM(Agents,M,stepSize,epsilon,maxOutIter,maxInIter);
     toc
 
     pause(0.1)
@@ -328,8 +328,8 @@ end
 if run_pxADMM
     % initialize pxADMM
     maxIter=10000;
-    initial_z=[initial_sigma_f;initial_l'];
-    initial_beta = 1*[1;ones(length(initial_l),1)];
+    initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
+    initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
@@ -353,10 +353,10 @@ end
 if run_ADMM_fd
     % initialize ADMM_fd
     maxOutIter=2000;
-    maxInIter=30;
+    maxInIter=10;
     stepSize=0.0001;
     for m=1:M
-        Agents(m).rho=100;
+        Agents(m).rho=200;
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).l=initial_l';
         Agents(m).sigma_n=initial_sigma_n;
@@ -381,7 +381,7 @@ if run_ADMM_fd
     disp('Time of ADMM_{fd}')
 
     tic
-    [sigma_ADMM_fd,l_ADMM_fd,Steps_ADMM_fd,IterCounts_fd] = runADMM_fd(Agents,M,stepSize,epsilon,maxOutIter,maxInIter);
+    [sigma_ADMM_fd,l_ADMM_fd,sigma_n_ADMM_fd,Steps_ADMM_fd,IterCounts_fd] = runADMM_fd(Agents,M,stepSize,epsilon,maxOutIter,maxInIter);
     toc
 
     pause(0.1)
@@ -484,14 +484,14 @@ if run_pxADMM_fd_async
 end
 %% Perform pxADMM_async_realSimu
 if run_pxADMM_async_realSimu
-    maxIter=2000;
+    maxIter=800;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = [1;ones(length(initial_l),1);1];
     for m=1:M
         Agents(m).communicationAbility=1;
 
         Agents(m).action_status=1;
-        Agents(m).beta=in2itial_beta;
+        Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
         Agents(m).rho=rho_glb;
         Agents(m).l=initial_l';
@@ -519,6 +519,13 @@ if run_pxADMM_async_realSimu
 
     disp('Time of pxADMM_{fd,realSimu}')
     [Agents,cinfo] = runPXADMM_fd_spmd(Agents,epsilon);
+
+    figure('visible','off');
+    for m=1:M
+        subplot(M,1,m);
+        imagesc(cinfo{m});
+        colorbar;
+    end
 
 
     gcf=figure;

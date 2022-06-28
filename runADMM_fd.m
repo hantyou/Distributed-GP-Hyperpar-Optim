@@ -1,7 +1,8 @@
-function [sigma_ADMM_fd,l_ADMM_fd,Steps,IterCounts] = runADMM_fd(Agents,M,stepSize,epsilon,maxOutIter,maxInIter)
+function [sigma_ADMM_fd,l_ADMM_fd,sigma_n_ADMM_fd,Steps,IterCounts] = runADMM_fd(Agents,M,stepSize,epsilon,maxOutIter,maxInIter)
 %RUNADMM Summary of this function goes here
 %   Detailed explanation goes here
 sampleSize=M*length(Agents(1).Z);
+D=length(Agents(1).l);
 outADMMflag=1;
 Sigmas=[];
 Sigmas=[Sigmas;Agents(1).sigma_f];
@@ -10,7 +11,7 @@ Ls=[Ls,Agents(1).l];
 Likelihood=[];
 outIterCount=0;
 % the outer iteration begains here
-updated_z=[Agents(1).sigma_f;Agents(1).l];
+updated_z=[Agents(1).sigma_f;Agents(1).l;Agents(1).sigma_n];
 Zs=cell(M,1);
 for m=1:M
     Zs{m}=[];
@@ -24,13 +25,13 @@ for m=1:M
     Steps{m}=[];
 end
 outSteps=[];
-%wb=waitbar(0,'Preparing','Name','ADMM_{fd}');
-%set(wb,'color','w');
+wb=waitbar(0,'Preparing','Name','ADMM_{fd}');
+set(wb,'color','w');
 rho_0=Agents(1).rho;
 maxInIter_0=maxInIter;
-sub_old_z=zeros(3,M);
+sub_old_z=zeros(D+2,M);
 for m=1:M
-    sub_old_z(:,m)=[Agents(m).sigma_f;Agents(m).l];
+    sub_old_z(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
 end
 while outADMMflag
     outIterCount=outIterCount+1;
@@ -43,16 +44,16 @@ while outADMMflag
         Zs{m}=[Zs{m},Zs_m];
         Steps{m}=[Steps{m},Steps_m];
         IterCounts{m}=[IterCounts{m},IterCounts{m}(outIterCount)+inIterCount_m];
-        step_m=norm([Agents(m).sigma_f;Agents(m).l]-sub_old_z(:,m));
+        step_m=norm([Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]-sub_old_z(:,m));
         global_step=max(global_step,step_m);
-        sub_old_z(:,m)=[Agents(m).sigma_f;Agents(m).l];
-        updated_z=updated_z+[Agents(m).sigma_f;Agents(m).l];
+        sub_old_z(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
+        updated_z=updated_z+[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
     end
     updated_z=updated_z/M;
     step = global_step;
     outSteps=[outSteps,step];
     
-%    waitbar(outIterCount/maxOutIter,wb,sprintf('%s %.2f %s %f','ADMM_{fd}: ',outIterCount/maxOutIter*100,'% , step:', step))
+   waitbar(outIterCount/maxOutIter,wb,sprintf('%s %.2f %s %f','ADMM_{fd}: ',outIterCount/maxOutIter*100,'% , step:', step))
     if step < epsilon
         outADMMflag=0;
     end
@@ -61,7 +62,8 @@ while outADMMflag
     end
 end
 sigma_ADMM_fd=updated_z(1);
-l_ADMM_fd=updated_z(2:3);
+l_ADMM_fd=updated_z(2:(2+D-1));
+sigma_n_ADMM_fd=updated_z(end);
 % Plot
 figure,
 for m=1:M

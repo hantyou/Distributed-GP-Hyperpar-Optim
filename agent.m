@@ -249,7 +249,7 @@ classdef agent
             % the local update end
             [pd_new,pdn_new ]= getDiv(obj,[obj.sigma_f;obj.l]);
 
-            L_max=norm([pd_new;pdn_new]-[pd,pdn])/norm([obj.sigma_f;obj.l;obj.sigma_n]-obj.z);
+            L_max=norm([pd_new;pdn_new]-[pd;pdn])/norm([obj.sigma_f;obj.l;obj.sigma_n]-obj.z);
             beta_new=obj.beta;
         end
 
@@ -291,11 +291,13 @@ classdef agent
             localGDflag=1;
             %             epsilon=10*epsilon;
             inIterCount=0;
-            Zs=zeros(3,maxInIter);
+            D=length(obj.l);
+            Zs=zeros(D+2,maxInIter);
             %             old_sigma=obj.z(1);
             %             old_l=obj.z(2:3);
             old_sigma=obj.sigma_f;
             old_l=obj.l;
+            old_sigma_n=obj.sigma_n;
             % below are some unchanged matrix used for every iterations
             K_n=obj.sigma_n^2*eye(obj.N_m);
             mu_temp=obj.mu;
@@ -303,7 +305,7 @@ classdef agent
             for n=1:obj.N_size
                 obj.z_mn(:,n) = 0.5 * (...
                     (obj.beta_mn(:,n)+obj.beta_nm(:,n))/obj.rho +...
-                    ([obj.sigma_f;obj.l] + obj.theta_n(:,n))...
+                    ([obj.sigma_f;obj.l;obj.sigma_n] + obj.theta_n(:,n))...
                     );
             end
             while localGDflag
@@ -314,55 +316,61 @@ classdef agent
                 K_s=old_sigma^(2)*exp(-0.5*distX);
                 obj.K=K_s+K_n;
 
-                choL = chol(obj.K, 'lower');
-                alpha = choL'\(choL\obj.Z);
+%                 choL = chol(obj.K, 'lower');
+%                 alpha = choL'\(choL\obj.Z);
                 %             invK=inv(obj.K);
-                invChoL=inv(choL);
-                constant_1=invChoL'*invChoL-alpha*alpha';
+%                 invChoL=inv(choL);
+%                 constant_1=invChoL'*invChoL-alpha*alpha';
 
                 % calculate partial derivative about sigma_f
-                K_div_sigma_f=2/old_sigma*K_s;
-                pd_sigma_f_1= 0.5*trace(constant_1*K_div_sigma_f);
-                pd_sigma_f_2=0;
-                for n=1:obj.N_size
-                    pd_sigma_f_2=pd_sigma_f_2+obj.beta_mn(1,n)+obj.rho*(old_sigma-obj.z_mn(1,n));
-                end
-                obj.pd_sigma_f = pd_sigma_f_1 + pd_sigma_f_2 ;
+%                 K_div_sigma_f=2/old_sigma*K_s;
+%                 pd_sigma_f_1= 0.5*trace(constant_1*K_div_sigma_f);
+%                 pd_sigma_f_2=0;
+%                 for n=1:obj.N_size
+%                     pd_sigma_f_2=pd_sigma_f_2+obj.beta_mn(1,n)+obj.rho*(old_sigma-obj.z_mn(1,n));
+%                 end
+%                 obj.pd_sigma_f = pd_sigma_f_1 + pd_sigma_f_2 ;
+% 
+%                 % calculate partial derivative about l
+%                 % first l
+%                 K_div_l_1 = obj.distX1.*K_s*old_l(1)^(-3);
+%                 pd_l_1_a = 0.5*trace(constant_1*K_div_l_1);
+%                 pd_l_1_b = 0;
+%                 for n=1:obj.N_size
+%                     pd_l_1_b = pd_l_1_b + obj.beta_mn(2,n) + obj.rho*(old_l(1)-obj.z_mn(2,n));
+%                 end
+%                 pd_l_1 = pd_l_1_a + pd_l_1_b ;
+%                 % second l
+%                 K_div_l_2 = obj.distX2.*K_s*old_l(2)^(-3);
+%                 pd_l_2_a = 0.5*trace(constant_1*K_div_l_2);
+%                 pd_l_2_b = 0;
+%                 for n=1:obj.N_size
+%                     pd_l_2_b = pd_l_2_b + obj.beta_mn(3,n) + obj.rho*(old_l(2)-obj.z_mn(3,n));
+%                 end
+%                 pd_l_2 = pd_l_2_a + pd_l_2_b ;
+%                 % get pd_l
+%                 obj.pd_l=[pd_l_1;pd_l_2];
 
-                % calculate partial derivative about l
-                % first l
-                K_div_l_1 = obj.distX1.*K_s*old_l(1)^(-3);
-                pd_l_1_a = 0.5*trace(constant_1*K_div_l_1);
-                pd_l_1_b = 0;
-                for n=1:obj.N_size
-                    pd_l_1_b = pd_l_1_b + obj.beta_mn(2,n) + obj.rho*(old_l(1)-obj.z_mn(2,n));
-                end
-                pd_l_1 = pd_l_1_a + pd_l_1_b ;
-                % second l
-                K_div_l_2 = obj.distX2.*K_s*old_l(2)^(-3);
-                pd_l_2_a = 0.5*trace(constant_1*K_div_l_2);
-                pd_l_2_b = 0;
-                for n=1:obj.N_size
-                    pd_l_2_b = pd_l_2_b + obj.beta_mn(3,n) + obj.rho*(old_l(2)-obj.z_mn(3,n));
-                end
-                pd_l_2 = pd_l_2_a + pd_l_2_b ;
-                % get pd_l
-                obj.pd_l=[pd_l_1;pd_l_2];
+                [pd,pdn] = getDiv(obj,obj.z);
+                obj.pd_l=pd(2:end);
+                obj.pd_sigma_f=pd(1);
 
                 % update hyperparameters
                 new_sigma=old_sigma-mu_temp*obj.pd_sigma_f;
                 new_l=old_l-mu_temp*obj.pd_l;
+                new_sigma_n=old_sigma_n-mu_temp*pdn;
                 % calculate maximum update step
                 step=norm([new_sigma;new_l]-[old_sigma;old_l]);
                 % now the new sigma and l will be out dated in the next
                 % iteration
                 old_sigma=new_sigma;
                 old_l=new_l;
-                Zs(:,inIterCount)=[new_sigma;new_l];
+                old_sigma_n=new_sigma_n;
+                Zs(:,inIterCount)=[new_sigma;new_l;new_sigma_n];
                 % adjust stepSize
                 mu_temp=0.9999999*mu_temp;
                 % store intermediate results
-                Zs(:,inIterCount)=[new_sigma;new_l];
+                Zs(:,inIterCount)=[new_sigma;new_l;new_sigma_n];
                 Steps=[Steps,step];
                 if step<epsilon
                     localGDfalg=0;
@@ -375,10 +383,11 @@ classdef agent
             %             obj.mu=mu_temp;
             obj.sigma_f=new_sigma;
             obj.l=new_l;
+            obj.sigma_n=new_sigma_n;
             % update z_mn and beta_mn
             for n=1:obj.N_size
                 obj.beta_mn(:,n) = obj.beta_nm(:,n) + ...
-                    obj.rho * ([obj.sigma_f;obj.l]-obj.z_mn(:,n));
+                    obj.rho * ([obj.sigma_f;obj.l;obj.sigma_n]-obj.z_mn(:,n));
             end
             % the local update end
             Zs=Zs(:,1:inIterCount);

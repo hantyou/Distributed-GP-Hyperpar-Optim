@@ -46,7 +46,7 @@ while outADMMflag
     % at each agent, perform inner iteration
     % for each inner iteration, the theta=[sigma_f, l] is going to be
     % updated, and beta is also to be updated
-    for m=1:M
+    parfor m=1:M
         [Agents(m),Zs_m,Steps_m,inIterCount_m]=Agents(m).runLocalInnerADMM(maxInIter,epsilon);
         Zs{m}=[Zs{m},Zs_m];
         Steps{m}=[Steps{m},Steps_m];
