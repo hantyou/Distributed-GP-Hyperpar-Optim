@@ -223,8 +223,8 @@ q_mu_direct=zeros(M,N_newX);
 q_sigma_direct=zeros(M,N_newX);
 parfor n=1:N_newX
     warning('off','all');
-    q_mu_direct(:,n)=inv(K_A(:,:,n))*subMean(:,n);
-    q_sigma_direct(:,n)=inv(K_A(:,:,n))*k_A(:,n);
+    q_mu_direct(:,n)=pinv(K_A(:,:,n))*subMean(:,n);
+    q_sigma_direct(:,n)=pinv(K_A(:,:,n))*k_A(:,n);
 end
 maxIterJOR=400;
 w=0.15;
