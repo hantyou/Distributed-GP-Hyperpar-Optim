@@ -12,10 +12,10 @@ Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 30).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 1.765709 seconds.
+Elapsed time is 1.562481 seconds.
 decide agents positions
 also deciding sampling points
-Elapsed time is 5.005265 seconds.
+Elapsed time is 4.303231 seconds.
 data loading/generation end
 %%%%%%%%%%%%%%%%%%%%Examine Part Begin%%%%%%%%%%%%%%%%%%%%%%%
 Methods to be examined are:
@@ -28,139 +28,139 @@ NN-NPAE
 CON-NPAE
 No-Ag
 Now calculating Full GP
-Elapsed time is 26.566639 seconds.
+Elapsed time is 31.790964 seconds.
 Agent number:
      2
 
 DEC-PoE
 DEC-PoE
-Elapsed time is 69.680969 seconds.
+Elapsed time is 78.355894 seconds.
 DEC-gPoE
 DEC-gPoE
-Elapsed time is 85.253075 seconds.
+Elapsed time is 80.697780 seconds.
 DEC-BCM
 DEC-BCM
-Elapsed time is 66.395888 seconds.
+Elapsed time is 78.939885 seconds.
 DEC-rBCM
 DEC-rBCM
-Elapsed time is 69.346631 seconds.
+Elapsed time is 75.072600 seconds.
 DEC-NPAE
 DEC-NPAE
-Elapsed time is 291.315941 seconds.
+Elapsed time is 334.577782 seconds.
 NN-NPAE
 NN-NPAE
-Elapsed time is 173.351063 seconds.
+Elapsed time is 204.198688 seconds.
 CON-NPAE
 DEC-BCM
-Elapsed time is 0.350771 seconds.
+Elapsed time is 0.240652 seconds.
 No-Ag
 No-Agg
-Elapsed time is 7.673733 seconds.
+Elapsed time is 11.519289 seconds.
 Agent number:
      4
 
 DEC-PoE
 DEC-PoE
-Elapsed time is 32.590671 seconds.
+Elapsed time is 42.018772 seconds.
 DEC-gPoE
 DEC-gPoE
-Elapsed time is 32.562680 seconds.
+Elapsed time is 36.306741 seconds.
 DEC-BCM
 DEC-BCM
-Elapsed time is 24.562690 seconds.
+Elapsed time is 41.306605 seconds.
 DEC-rBCM
 DEC-rBCM
-Elapsed time is 31.512294 seconds.
+Elapsed time is 41.159766 seconds.
 DEC-NPAE
 DEC-NPAE
-Elapsed time is 247.200714 seconds.
+Elapsed time is 356.274414 seconds.
 NN-NPAE
 NN-NPAE
-Elapsed time is 288.729745 seconds.
+Elapsed time is 338.963091 seconds.
 CON-NPAE
 DEC-BCM
-Elapsed time is 0.654175 seconds.
+Elapsed time is 0.657863 seconds.
 No-Ag
 No-Agg
-Elapsed time is 9.691137 seconds.
+Elapsed time is 11.427187 seconds.
 Agent number:
      8
 
 DEC-PoE
 DEC-PoE
-Elapsed time is 18.988065 seconds.
+Elapsed time is 22.185056 seconds.
 DEC-gPoE
 DEC-gPoE
-Elapsed time is 18.771416 seconds.
+Elapsed time is 21.053034 seconds.
 DEC-BCM
 DEC-BCM
-Elapsed time is 20.439168 seconds.
+Elapsed time is 23.118293 seconds.
 DEC-rBCM
 DEC-rBCM
-Elapsed time is 20.387432 seconds.
+Elapsed time is 23.536452 seconds.
 DEC-NPAE
 DEC-NPAE
-Elapsed time is 269.987397 seconds.
+Elapsed time is 342.214957 seconds.
 NN-NPAE
 NN-NPAE
-Elapsed time is 192.666836 seconds.
+Elapsed time is 229.973982 seconds.
 CON-NPAE
 DEC-BCM
-Elapsed time is 1.371798 seconds.
+Elapsed time is 1.896154 seconds.
 No-Ag
 No-Agg
-Elapsed time is 6.675318 seconds.
+Elapsed time is 11.469654 seconds.
 Agent number:
     12
 
 DEC-PoE
 DEC-PoE
-Elapsed time is 9.456776 seconds.
+Elapsed time is 18.332289 seconds.
 DEC-gPoE
 DEC-gPoE
-Elapsed time is 12.807090 seconds.
+Elapsed time is 18.058306 seconds.
 DEC-BCM
 DEC-BCM
-Elapsed time is 15.798395 seconds.
+Elapsed time is 19.712368 seconds.
 DEC-rBCM
 DEC-rBCM
-Elapsed time is 16.197959 seconds.
+Elapsed time is 20.712039 seconds.
 DEC-NPAE
 DEC-NPAE
-Elapsed time is 283.156147 seconds.
+Elapsed time is 324.681783 seconds.
 NN-NPAE
 NN-NPAE
-Elapsed time is 205.976225 seconds.
+Elapsed time is 261.371156 seconds.
 CON-NPAE
 DEC-BCM
-Elapsed time is 2.764583 seconds.
+Elapsed time is 3.536431 seconds.
 No-Ag
 No-Agg
-Elapsed time is 9.614699 seconds.
+Elapsed time is 12.376316 seconds.
 Agent number:
     16
 
 DEC-PoE
 DEC-PoE
-Elapsed time is 13.030129 seconds.
+Elapsed time is 15.979662 seconds.
 DEC-gPoE
 DEC-gPoE
-Elapsed time is 12.741339 seconds.
+Elapsed time is 14.362298 seconds.
 DEC-BCM
 DEC-BCM
-Elapsed time is 13.085484 seconds.
+Elapsed time is 17.625908 seconds.
 DEC-rBCM
 DEC-rBCM
-Elapsed time is 14.217465 seconds.
+Elapsed time is 17.988889 seconds.
 DEC-NPAE
 DEC-NPAE
-Elapsed time is 296.568377 seconds.
+Elapsed time is 328.083069 seconds.
 NN-NPAE
 NN-NPAE
-Elapsed time is 303.415004 seconds.
+Elapsed time is 404.416591 seconds.
 CON-NPAE
 DEC-BCM
-Elapsed time is 4.644538 seconds.
+Elapsed time is 6.254930 seconds.
 No-Ag
 No-Agg
-Elapsed time is 8.054460 seconds.
+Elapsed time is 10.869277 seconds.
