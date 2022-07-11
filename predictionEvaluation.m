@@ -31,15 +31,15 @@ if dataSourceOption==1
     elseif samplingMethod==2
         disp("Sampling method: near agents position, could lose some points if out of range;")
     end
-    
+
     % The sampling positions are stored in X,
     % corresponding clean values in Y,
     % noisy values in Z.
-    
+
 elseif dataSourceOption==2
     % If generate new data, indicate some options
     samplingMethod=2;
-    
+
     range_x1=[-5,5];
     range_x2=[-5,5];
     range=[range_x1;range_x2];
@@ -49,14 +49,14 @@ elseif dataSourceOption==2
     reso_m=256;
     reso_n=256;
     reso=[reso_m,reso_n];
-    everyAgentsSampleNum=100;
+    everyAgentsSampleNum=25;
     Agents_measure_range=3;
     realDataSet=0;
     samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     agentsScatterMethod=2; % 1. Randomly distributed accross the area; 2. K_means center
     overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
     %% Generate/Load dataset
-    
+
     if realDataSet==1
         disp('This exp is down with real dataset loaded')
         loadRealDataset
@@ -65,12 +65,12 @@ elseif dataSourceOption==2
         temp_data=0;
         [F_true,reso]=loadDataset(1,reso,range,[5,1,1]);
         [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
-        
+
         %% Decide sample points
-        
+
         % renew twister
         rng(990611,'twister')
-        
+
         tic
         disp('decide agents positions');
         if agentsScatterMethod==1
@@ -82,11 +82,11 @@ elseif dataSourceOption==2
                 unifrnd(range_x2(1),range_x2(2),1,maxM)*0.9];
             subSize=ones(maxM,1)*everyAgentsSampleNum;
             [X_temp,subSize,sampleIdx] = decideSamplePoints(1,subSize,range,Agents_Posi,Agents_measure_range);
-            
+
             X_temp=X_temp';
             cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
             pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
-            
+
             numC=maxM;
             if overlap==1
                 fcm_option=[3,50,1e-6,false];
@@ -105,7 +105,7 @@ elseif dataSourceOption==2
                     else
                         ind=ind1;
                     end
-                    
+
                     fcm_idx(n)=ind;
                 end
                 idx=fcm_idx;C=centers;
@@ -117,7 +117,7 @@ elseif dataSourceOption==2
             end
             Agents_Posi=C';
             clusterIdx=idx;
-            
+
             figure;
             hold on
             LegendTxt=cell(numC+1,1);
@@ -133,12 +133,12 @@ elseif dataSourceOption==2
             hold off
         end
         toc
-        
-        
+
+
         subSize=ones(maxM,1)*everyAgentsSampleNum;
-        
+
         [X,subSize,sampleIdx] = decideSamplePoints(samplingMethod,subSize,range,Agents_Posi,Agents_measure_range);
-        
+
         if agentsScatterMethod==2
             X=X_temp';
             subSize=zeros(maxM,1);
@@ -147,10 +147,10 @@ elseif dataSourceOption==2
                 sampleIdx=cumsum(subSize)';
                 sampleIdx=[0,sampleIdx];
             end
-            
+
         end
-        
-        
+
+
         sampleSize=sum(subSize);
         X1=X(1,:);
         X2=X(2,:);
@@ -196,7 +196,7 @@ elseif dataSourceOption==2
         Agents(m).action_status=1;
         Agents(m).commuRange=3.5;
         %     Agents(m).commuRange=2.5;
-        
+
         Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
         Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
         Agents(m).distXd=zeros(subSize(m),subSize(m),inputDim);
@@ -205,9 +205,9 @@ elseif dataSourceOption==2
             Agents(m).distXd(:,:,d)=dist(Agents(m).X(d,:)).^2;
         end
     end
-    
+
     %% Plot field and sampled points and noisy sample points
-    
+
     if realDataSet==1&&temp_data==1
         figure,
         hold on;
@@ -229,20 +229,20 @@ elseif dataSourceOption==2
         zlabel('environmental scalar value')
         pause(0.01)
     end
-    
-    
-    
+
+
+
     %% Set topology
     Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
     A_full=generateTopology(Agents,Topology_method);
     clear Topology_method;
-    
+
     for m=1:maxM
         Agents(m).A=A_full(1:maxM,1:maxM);
         Agents(m).Neighbors=find(Agents(m).A(Agents(m).Code,:)~=0);
         Agents(m).N_size=length(Agents(m).Neighbors);
     end
-    
+
     G=graph(A_full(1:maxM,1:maxM));
     % figure,plot(G)
     L = laplacian(G);
@@ -282,7 +282,7 @@ elseif dataSourceOption==2
         %         text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
         %     end
         %     % colormap("jet")
-        
+
         xlabel('x1')
         ylabel('x2')
         colorbar
@@ -293,9 +293,9 @@ elseif dataSourceOption==2
         fname='results/Agg/PerformanceEva/topology_background';
         saveas(gcf,fname,'png');
         close gcf;
-        
-        
-        
+
+
+
         gcf=figure('visible','on');
         hold on;
         scatter(Agents_Posi(1,:),Agents_Posi(2,:))
@@ -319,7 +319,7 @@ elseif dataSourceOption==2
         %     % colormap("jet")
         %     xlim([range_x1(1) range_x1(2)])
         %     ylim([range_x2(1) range_x2(2)])
-        
+
         xlabel('x1')
         ylabel('x2')
         title('network topology')
@@ -328,9 +328,9 @@ elseif dataSourceOption==2
         saveas(gcf,fname,'png');
         close gcf;
     end
-    
-    
-    
+
+
+
 end
 disp('data loading/generation end')
 disp('%%%%%%%%%%%%%%%%%%%%Examine Part Begin%%%%%%%%%%%%%%%%%%%%%%%')
@@ -399,6 +399,7 @@ for n=1:Num_MethodsExamined
     disp(MethodsExamined(n))
 end
 
+evaMethod='RMSE';
 %% Pre-parpool reset
 % delete(gcp('nocreate'))
 %
@@ -435,6 +436,8 @@ savePlot=0;
 
 meanRMSE=zeros(Num_MethodsExamined,Num_expGroup);
 varRMSE=zeros(Num_MethodsExamined,Num_expGroup);
+meanRMSE2=zeros(Num_MethodsExamined,Num_expGroup);
+varRMSE2=zeros(Num_MethodsExamined,Num_expGroup);
 graphs=cell(Num_expGroup,1);
 times=zeros(Num_MethodsExamined,Num_expGroup);
 
@@ -458,7 +461,7 @@ for expId=1:Num_expGroup
     disp("Agent number:")
     disp(M)
     connected=0;
-    
+
     [Agents,clusterIdx] = predictionEvaluationLoopDataDivide(range,X,Z,M,overlapFlag);
     while connected==0
         for m=1:M
@@ -487,7 +490,7 @@ for expId=1:Num_expGroup
     end
     graphs{expId}=G;
     pause(0.01)
-    
+
     for n=1:Num_MethodsExamined
         method=MethodsExamined(n);
         tic
@@ -495,16 +498,86 @@ for expId=1:Num_expGroup
             case DECNAME
                 disp(method)
                 A=A_full(1:M,1:M);
-                maxIter=50;
-                [~,~,mean,var] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n);
+                maxIter=10;
+                [Means,Vars,mean,var] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,'PDMM');
+
+
+
+                toc
+                [Means2,Vars2,mean2,var2] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,'DTCF');
+
+
+%                 [meanRMSEs,varRMSEs] = ...
+%                     evaluatePredictionPerformanceMetrices(realMean,realVar,Means,Vars,'consensusRMSE');
+%                 [meanRMSEs2,varRMSEs2] = ...
+%                     evaluatePredictionPerformanceMetrices(realMean,realVar,Means2,Vars2,'consensusRMSE');
+%                 %
+%                 figure('visible','on')
+%                 for m=1:M
+%                     subplot(6,4,m)
+%                     imagesc(reshape(mean(m,:),[100,100]));
+%                     colormap('jet')
+%                     colorbar
+%                 end
+%                 sgtitle(strcat('PDMM-',method));
+%                 subplot(6,4,17:20)
+%                 plot(0:maxIter,meanRMSEs);
+%                 hold on
+%                 plot(0:maxIter,meanRMSEs2);
+%                 hold off
+%                 set(gca, 'YScale', 'log')
+%                 title('Mean RMSE')
+%                 legend('PDMM','DTCF')
+% 
+% 
+% 
+%                 subplot(6,4,21:24)
+%                 plot(0:maxIter,varRMSEs);
+%                 hold on
+%                 plot(0:maxIter,varRMSEs2);
+%                 hold off
+%                 set(gca, 'YScale', 'log')
+%                 title('Var RMSE')
+%                 legend('PDMM','DTCF')
+%                 %
+%                 figure('visible','on')
+%                 for m=1:M
+%                     subplot(6,4,m)
+%                     imagesc(reshape(mean2(m,:),[100,100]));
+%                     colormap('jet')
+%                     colorbar
+%                 end
+%                 sgtitle(strcat('DTCF-',method));
+%                 subplot(6,4,17:20)
+%                 plot(0:maxIter,meanRMSEs);
+%                 hold on
+%                 plot(0:maxIter,meanRMSEs2);
+%                 hold off
+%                 set(gca, 'YScale', 'log')
+%                 title('Mean RMSE')
+%                 legend('PDMM','DTCF')
+% 
+%                 subplot(6,4,21:24)
+%                 plot(0:maxIter,varRMSEs);
+%                 hold on
+%                 plot(0:maxIter,varRMSEs2);
+%                 hold off
+%                 set(gca, 'YScale', 'log')
+%                 title('Var RMSE')
+%                 legend('PDMM','DTCF')
+
             case NNNAME
                 disp(method)
                 [mean,var] = GPR_predict_NN(Agents,method,newX,sigma_n);
+                mean2=[];
+                var2=[];
                 meanNN=mean;
                 varNN=var;
             case NOAGNAME
                 disp(method)
                 [mean,var] = GPR_predict_NoAg(Agents,newX,sigma_n);
+                mean2=[];
+                var2=[];
             case "CON-NPAE"
                 disp(method)
                 method1="NN-NPAE";
@@ -517,14 +590,16 @@ for expId=1:Num_expGroup
                 catch
                     NNFlag=0;
                 end
-                
+
                 if NNFlag==0
                     [mean,var] = GPR_predict_NN(Agents,method1,newX,sigma_n);
                     [~,~,mean,var] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,mean,var);
                 elseif NNFlag==1
                     [~,~,mean,var] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,meanNN,varNN);
                 end
-                
+                mean2=[];
+                var2=[];
+
             case CENTER
                 disp(method)
                 disp("!!!!!!!!!!!!!!!!!Evaluation Under Construction!!!!!!!!!!!!!!!!!!!!")
@@ -532,11 +607,15 @@ for expId=1:Num_expGroup
         toc
         TOC=toc;
         times(n,expId)=TOC;
-        evaMethod='RMSE';
         [meanRMSE(n,expId),varRMSE(n,expId)] = ...
             evaluatePredictionPerformanceMetrices(realMean,realVar,mean,var,evaMethod);
+        try
+            [meanRMSE2(n,expId),varRMSE2(n,expId)] = ...
+                evaluatePredictionPerformanceMetrices(realMean,realVar,mean2,var2,evaMethod);
+        catch
+        end
     end
-    
+
 end
 
 save('evalueResult.mat');
@@ -569,6 +648,25 @@ close gcf;
 gcf=figure;
 hold on;
 legendTxt=cell(Num_MethodsExamined,1);
+% meanRMSE2(isnan(meanRMSE2))=0;
+meanRMSE2((end-2):end,:)=meanRMSE((end-2):end,:);
+
+for m=1:Num_MethodsExamined
+    plot(Ms,meanRMSE2(m,:),strcat('-',pVec(m)));
+    legendTxt{m}=MethodsExamined(m);
+end
+% legendTxt=legendTxt{1:size(meanRMSE2,1)};
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','NW');
+hold off
+title('Prediction Mean RMSE DTCF')
+fname='results/Agg/PerformanceEva/MeanRMSE2';
+saveas(gcf,fname,'png');
+close gcf;
+
+gcf=figure;
+hold on;
+legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
     plot(Ms,varRMSE(m,:),strcat('-',pVec(m)));
     legendTxt{m}=MethodsExamined(m);
@@ -578,6 +676,23 @@ legend(legendTxt,'Location','NW');
 hold off
 title('Prediction Var RMSE')
 fname='results/Agg/PerformanceEva/VarRMSE';
+saveas(gcf,fname,'png');
+close gcf;
+
+gcf=figure;
+hold on;
+legendTxt=cell(size(varRMSE2,1),1);
+varRMSE2((end-2):end,:)=varRMSE((end-2):end,:);
+for m=1:size(varRMSE2,1)
+    plot(Ms,varRMSE2(m,:),strcat('-',pVec(m)));
+    legendTxt{m}=MethodsExamined(m);
+end
+legendTxt=legendTxt{1:size(varRMSE2,1)};
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','NW');
+hold off
+title('Prediction Var RMSE DTCF')
+fname='results/Agg/PerformanceEva/VarRMSE2';
 saveas(gcf,fname,'png');
 close gcf;
 
