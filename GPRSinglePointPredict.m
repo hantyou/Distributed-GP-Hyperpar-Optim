@@ -5,7 +5,7 @@ function [Mean,Var] = GPRSinglePointPredict(X,x,alpha,L,theta,sigma_n)
 % unpack variables
 N=size(X,2);
 sigma_f=theta(1);
-l=theta(2:end);
+l=theta(2:(end-1));
 
 
 x_star=x;

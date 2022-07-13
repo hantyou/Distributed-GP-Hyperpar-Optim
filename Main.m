@@ -236,9 +236,9 @@ if realDataSet==0||temp_data==3
     close gcf;
 end
 %% Experiment group setup
-run_GD=0;
+run_GD=1;
 run_ADMM=0;
-run_pxADMM=0;
+run_pxADMM=1;
 run_ADMM_fd=0;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
@@ -336,7 +336,7 @@ if run_pxADMM
         Agents(m).rho=rho_glb;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
-        Agents(m).sigma_n=sigma_n;
+        Agents(m).sigma_n=initial_sigma_n;
         Agents(m).L=L_glb;
     end
     % run pxADMM
@@ -565,7 +565,7 @@ if run_pxADMM_async_realSimu
     warning('on','all')
 end
 %% Compare convergence speed in terms of iterations
-figure,
+gcf=figure;
 lgd_txt=[];
 hold on;
 if run_GD
@@ -609,6 +609,11 @@ ylabel('norm(step)');
 title('log plot of steps-iterations');
 legend(lgd_txt);
 hold off;
+s=hgexport('factorystyle');
+s.Resolution=600;
+s.Format='png';
+fname='results/HOMethodsCompare';
+hgexport(gcf,fname,s);
 pause(0.01)
 save('workspaceForDebug.mat');
 

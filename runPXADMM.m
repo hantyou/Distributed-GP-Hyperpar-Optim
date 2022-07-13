@@ -39,7 +39,7 @@ while pxADMMflag
     % hyperparameters
     for m=1:M
         Agents(m)=Agents(m).runLocalPxADMM;
-        Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l]];
+        Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]];
     end
     step = norm(updated_z(1:end)-old_z(1:end));
     Steps=[Steps,step];
