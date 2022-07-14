@@ -86,22 +86,26 @@ classdef agent
             K_n=obj.sigma_n^2*eye(obj.N_m);
             obj.K=K_s+K_n;
 
-            choL = chol(obj.K, 'lower');
-            alpha = choL'\(choL\obj.Z);
-            %             invK=inv(obj.K);
-            invChoL=inv(choL);
-            constant_1=invChoL'*invChoL-alpha*alpha';
-            K_div_sigma_f=2/obj.sigma_f*K_s;
-            %             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
-            obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f);
-
-            %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
-
-            K_div_l_1=obj.distX1.*K_s*obj.l(1)^(-3);
-            obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1);
-            K_div_l_2=obj.distX2.*K_s*obj.l(2)^(-3);
-            obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2);
-
+%             choL = chol(obj.K, 'lower');
+%             alpha = choL'\(choL\obj.Z);
+%             %             invK=inv(obj.K);
+%             invChoL=inv(choL);
+%             constant_1=invChoL'*invChoL-alpha*alpha';
+%             K_div_sigma_f=2/obj.sigma_f*K_s;
+%             %             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
+%             obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f);
+% 
+%             %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
+% 
+%             K_div_l_1=obj.distX1.*K_s*obj.l(1)^(-3);
+%             obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1);
+%             K_div_l_2=obj.distX2.*K_s*obj.l(2)^(-3);
+%             obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2);
+            
+            [pd,pdn] = getDiv(obj,obj.z);
+            obj.pd_sigma_f=pd(1);
+            obj.pd_l=pd(2:(2+D-1));
+            obj.pd_sigma_n=pdn;
 
             obj.mu=0.99999*obj.mu;
         end
@@ -129,28 +133,28 @@ classdef agent
                 K_s=old_sigma^(2)*exp(-0.5*distX);
                 obj.K=K_s+K_n;
 
-                choL = chol(obj.K, 'lower');
-                alpha = choL'\(choL\obj.Z);
+%                 choL = chol(obj.K, 'lower');
+%                 alpha = choL'\(choL\obj.Z);
                 %             invK=inv(obj.K);
-                invChoL=inv(choL);
-                constant_1=invChoL'*invChoL-alpha*alpha';
-                K_div_sigma_f=2/old_sigma*K_s;
+%                 invChoL=inv(choL);
+%                 constant_1=invChoL'*invChoL-alpha*alpha';
+%                 K_div_sigma_f=2/old_sigma*K_s;
                 %             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
-                obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f)+...
-                    obj.beta(1)*(1+obj.rho/obj.beta(1)*(old_sigma-obj.z(1)));
-
-                %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
-
-                K_div_l_1=obj.distX1.*K_s*old_l(1)^(-3);
-                obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1)+...
-                    obj.beta(2)*(1+obj.rho/obj.beta(2)*(old_l(1)-obj.z(2)));
-
-                K_div_l_2=obj.distX2.*K_s*old_l(2)^(-3);
-                obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2)+...
-                    obj.beta(3)*(1+obj.rho/obj.beta(3)*(old_l(2)-obj.z(3)));
-
-                K_div_l=[obj.pd_l(1);obj.pd_l(2)];
-                obj.pd_l=K_div_l;
+%                 obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f)+...
+%                     obj.beta(1)*(1+obj.rho/obj.beta(1)*(old_sigma-obj.z(1)));
+% 
+%                 %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
+% 
+%                 K_div_l_1=obj.distX1.*K_s*old_l(1)^(-3);
+%                 obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1)+...
+%                     obj.beta(2)*(1+obj.rho/obj.beta(2)*(old_l(1)-obj.z(2)));
+% 
+%                 K_div_l_2=obj.distX2.*K_s*old_l(2)^(-3);
+%                 obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2)+...
+%                     obj.beta(3)*(1+obj.rho/obj.beta(3)*(old_l(2)-obj.z(3)));
+% 
+%                 K_div_l=[obj.pd_l(1);obj.pd_l(2)];
+%                 obj.pd_l=K_div_l;
 
                 [pd,pdn] = getDiv(obj,obj.z);
                 obj.pd_l=pd(2:end);

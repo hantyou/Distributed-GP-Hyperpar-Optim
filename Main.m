@@ -292,7 +292,7 @@ if run_GD
     disp('Time of GD')
 
     tic
-    [sigma_GD,l_GD,Steps_GD]  = runGD(Agents,M,initial_sigma_f,initial_l,sigma_n,stepSize,epsilon,maxIter);
+    [sigma_GD,l_GD,Steps_GD]  = runGD(Agents,M,initial_sigma_f,initial_l,initial_sigma_n,stepSize,epsilon,maxIter);
     toc
 
     pause(0.1)
