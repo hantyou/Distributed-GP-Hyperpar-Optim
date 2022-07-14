@@ -6,3 +6,7 @@ SSTdata/
 results/
 workspaceForDebug.mat
 *.m~
+*.png
+*.eps
+*.jpg
+*.jpeg
