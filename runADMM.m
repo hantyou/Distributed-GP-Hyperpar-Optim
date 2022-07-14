@@ -52,10 +52,10 @@ while outADMMflag
         Steps{m}=[Steps{m},Steps_m];
         IterCounts{m}=[IterCounts{m},IterCounts{m}(outIterCount)+inIterCount_m];
     end
-    
+
     step = norm(updated_z-old_z);
     outSteps=[outSteps,step];
-    
+
     waitbar(outIterCount/maxOutIter,wb,sprintf('%s %.2f %s %f','ADMM: ',outIterCount/maxOutIter*100,'% , step:', step))
     if step < epsilon
         outADMMflag=0;
@@ -68,16 +68,68 @@ sigma_ADMM=updated_z(1);
 D=length(Agents(1).l);
 l_ADMM=updated_z(2:(2+D-1));
 sigma_n_ADMM=updated_z(end);
+
 % Plot
-figure,
-for m=1:M
-    for z_i=1:3
-        subplot(3,M,(z_i-1)*M+m);
+gcf=figure;
+tiledlayout(D+2,1,'TileSpacing','Compact','Padding','Compact');
+realDataSet=Agents(1).realdataset;
+for z_i=1:(D+2)
+    nexttile(z_i);
+    hold on
+    for m=1:M
         plot(Zs{m}(z_i,:));
     end
-    IterCounts{m}(1)=[];
+    xlabel('steps')
+    set(gca,'XScale','log')
+    if z_i==1
+        ylabel('\sigma_f');
+    elseif z_i==D+2
+        ylabel('\sigma_n');
+    else
+        ylabel(strcat('l_',num2str(z_i-1)));
+    end
+    y_c=yline(Zs{1}(z_i,end),'b-.');
+    if realDataSet==0
+        y_r=yline(Agents(1).realz(z_i),'r-.');
+    end
+    if z_i==D+2
+
+        if realDataSet==0
+            legendTxt=cell(2,1);
+            legendTxt{1}='converged value';
+            legendTxt{2}='real hyperparameter value';
+            lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
+        else
+            lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
+        end
+        lgd.Layout.Tile = 'north';
+    end
+
+    sgtitle('ADMM - hyperparameters')
+    hold off
 end
-figure,semilogy(IterCounts{1},outSteps);
+s=hgexport('factorystyle');
+s.Resolution=600;
+s.Format='png';
+fname='results/ADMM_vars';
+fname=strcat(fname,'_',num2str(M),'_agents');
+hgexport(gcf,fname,s);
+%
+gcf=figure;
+%% below there is bug
+semilogy(IterCounts{1},outSteps);
+set(gca,'XScale','log')
+xlabel('steps')
+ylabel('step length')
+title('ADMM - step size')
+s=hgexport('factorystyle');
+s.Resolution=600;
+s.Format='png';
+fname='results/ADMM_Steps';
+fname=strcat(fname,'_',num2str(M),'_agents');
+hgexport(gcf,fname,s);
+
+
 Steps=outSteps;
 delete(wb);
 

@@ -74,6 +74,16 @@ for m=1:M
     IterCounts{m}(1)=[];
 end
 figure,semilogy(IterCounts{1},outSteps);
+set(gca,'XScale','log')
+xlabel('steps')
+ylabel('step length')
+title('GD convergence')
+s=hgexport('factorystyle');
+s.Resolution=600;
+s.Format='png';
+fname='results/ADMM_fd_Steps';
+fname=strcat(fname,'_',num2str(M),'agents');
+hgexport(gcf,fname,s);
 Steps=outSteps;
 %delete(wb);
 

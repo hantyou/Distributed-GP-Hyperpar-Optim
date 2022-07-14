@@ -75,12 +75,25 @@ for i=1:inputDim+1
         yline(cvgValue(i),'-.r');
     hold off
 end
-figure,semilogy(Steps)
+fname='results/pxADMM_vars';
+fname=strcat(fname,'_',num2str(M),'_agents');
+s=hgexport('factorystyle');
+s.Resolution=600;
+s.Format='png';
+hgexport(gcf,fname,s)
+
+gcf=figure;
+semilogy(Steps)
+set(gca,'XScale','log')
 xlabel('steps')
 ylabel('step length')
 title('pxADMM convergence')
-fname='pxADMM convergence';
-saveas(gcf,fname,'png')
+fname='results/pxADMM_steps';
+fname=strcat(fname,'_',num2str(M),'_agents');
+s=hgexport('factorystyle');
+s.Resolution=600;
+s.Format='png';
+hgexport(gcf,fname,s)
 close gcf;
 
 

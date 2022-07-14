@@ -64,6 +64,8 @@ classdef agent
         currentStep
         maxIter
         runningHO
+        realz
+        realdataset
     end
 
     methods
@@ -73,10 +75,12 @@ classdef agent
             end
         end
 
-        function obj = initLocalGD(obj,sigma_f,l,stepSize)
+        function obj = initLocalGD(obj,sigma_f,l,sigma_n,stepSize)
             obj.sigma_f=sigma_f;
             obj.l=l;
+            obj.sigma_n=sigma_n;
             obj.mu=stepSize;
+            obj.z=[obj.sigma_f;obj.l;obj.sigma_n];
         end
 
         function obj = runLocalGD(obj)
@@ -104,10 +108,10 @@ classdef agent
             
             [pd,pdn] = getDiv(obj,obj.z);
             obj.pd_sigma_f=pd(1);
-            obj.pd_l=pd(2:(2+D-1));
+            obj.pd_l=pd(2:(2+length(obj.pd_l)-1));
             obj.pd_sigma_n=pdn;
 
-            obj.mu=0.99999*obj.mu;
+%             obj.mu=0.999999*obj.mu;
         end
 
         function [obj,Zs,Steps,inIterCount] = runLocalInnerADMM(obj,maxInIter,epsilon)

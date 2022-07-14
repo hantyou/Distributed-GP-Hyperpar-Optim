@@ -7,7 +7,16 @@ try
     opengl software
 catch
 end
-set(0,'DefaultFigureVisible','off')
+if usejava('desktop')
+    figureVisibility='on';
+else
+    figureVisibility='off';
+end
+
+
+set(0,'DefaultFigureVisible',figureVisibility)
+
+clear figureVisibility F
 %% Define field for monitoring
 range_x1=[-5,5];
 range_x2=[-5,5];
@@ -29,16 +38,18 @@ end
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=70;
+everyAgentsSampleNum=35;
 Agents_measure_range=4;
 realDataSet=0;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
     loadRealDataset
+    realz=[0,0,0,0];
 else
     disp('This exp is down with artificial dataset loaded')
     temp_data=0;
-    [F_true,reso]=loadDataset(1,reso,range,[5,1,1]);
+    realz=[5,1,1,0];
+    [F_true,reso]=loadDataset(1,reso,range,realz(1:(end-1)));
     [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
 
     %% Decide sample points
@@ -51,6 +62,7 @@ else
     X1=X(1,:);
     X2=X(2,:);
     sigma_n=sqrt(0.1);
+    realz(end)=sigma_n;
     sampleError=randn(1,sampleSize)*sigma_n;
     %% Take sample
     Y=interp2(mesh_x1,mesh_x2,F_true,X1,X2);
@@ -99,8 +111,9 @@ for m=1:M
     Agents(m).M=M;
     Agents(m).action_status=1;
     Agents(m).commuRange=4;
+    Agents(m).realdataset=realDataSet;
     %     Agents(m).commuRange=2.5;
-
+    Agents(m).realz=realz;
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
     Agents(m).distXd=zeros(subSize(m),subSize(m),inputDim);
@@ -109,7 +122,7 @@ for m=1:M
         Agents(m).distXd(:,:,d)=dist(Agents(m).X(d,:)).^2;
     end
 end
-
+clear idx1 idx idexedZ idexedX subDataSetsX
 %% Plot field and sampled points and noisy sample points
 if realDataSet==1&&temp_data==1
     figure,
@@ -142,7 +155,6 @@ theta_range=[[-2,1];[-2,1]];
 %% Set topology
 Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
 A_full=generateTopology(Agents,Topology_method);
-clear Topology_method;
 
 for m=1:M
     Agents(m).A=A_full(1:M,1:M);
@@ -158,7 +170,6 @@ v=diag(v);
 if v(end-1)==0
     disp("Error: graph not connected")
 end
-clear L;
 if realDataSet==0||temp_data==3
     gcf=figure('visible','off');
     hold on;
@@ -235,11 +246,13 @@ if realDataSet==0||temp_data==3
     saveas(gcf,fname,'png');
     close gcf;
 end
+
+clear Topology_method G L v posi;
 %% Experiment group setup
 run_GD=1;
-run_ADMM=0;
+run_ADMM=1;
 run_pxADMM=1;
-run_ADMM_fd=0;
+run_ADMM_fd=1;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
 run_pxADMM_async_realSimu=1;
@@ -269,14 +282,21 @@ fprintf("%s\n",show_txt);
 fprintf("\n");
 
 % initialize theta and other parameters
-initial_sigma_f=5.5;
-initial_sigma_n=0.5;
-initial_l=2*ones(1,inputDim);
-epsilon = 1e-5; % used for stop criteria
+if realDataSet==0
+    initial_sigma_f=3;
+    initial_sigma_n=1;
+    initial_l=2*ones(1,inputDim);
+else
+    initial_sigma_f=5.5;
+    initial_sigma_n=0.5;
+    initial_l=2*ones(1,inputDim);
+end
 
+epsilon = 1e-5; % used for stop criteria
 rho_glb=40;
 L_glb=500;
 
+clear show_txt
 %%
 delete(gcp('nocreate'))
 parpool(M)
@@ -287,7 +307,7 @@ parpool(M)
 if run_GD
     % run GD
     stepSize=0.0001;
-    maxIter=2000;
+    maxIter=8000;
 
     disp('Time of GD')
 
@@ -300,15 +320,15 @@ end
 %% Perform ADMM
 if run_ADMM
     % initialize ADMM
-    stepSize=0.000001; % step size of optimizing theta in inner interations
+    stepSize=0.0001; % step size of optimizing theta in inner interations
     initial_beta = [1;ones(length(initial_l),1);1];
     initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
-    maxOutIter=1000;
-    maxInIter=30;
+    maxOutIter=800;
+    maxInIter=10;
     for m=1:M
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
-        Agents(m).rho=20;
+        Agents(m).rho=rho_glb;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).sigma_n=initial_sigma_n;
