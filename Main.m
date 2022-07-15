@@ -255,7 +255,7 @@ run_pxADMM=1;
 run_ADMM_fd=1;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
-run_pxADMM_async_realSimu=1;
+run_pxADMM_async_realSimu=0;
 
 run_flags =    [run_GD;
     run_ADMM;
@@ -504,7 +504,7 @@ if run_pxADMM_fd_async
 end
 %% Perform pxADMM_async_realSimu
 if run_pxADMM_async_realSimu
-    maxIter=800;
+    maxIter=300;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = [1;ones(length(initial_l),1);1];
     for m=1:M
