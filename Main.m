@@ -38,7 +38,7 @@ end
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=35;
+everyAgentsSampleNum=100;
 Agents_measure_range=4;
 realDataSet=0;
 if realDataSet==1
