@@ -1,6 +1,13 @@
 function [sigma_pxADMM_fd,l_pxADMM_fd,sigma_n_pxADMM_fd,outSteps,Zs,thetas] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync)
 %RUNPXADMM_FD Summary of this function goes here
 %   Detailed explanation goes here
+D=length(Agents(1).l);
+realDataSet=Agents(1).realdataset;
+if usejava('desktop')
+    wbVisibility=true;
+else
+    wbVisibility=false;
+end
 if sync
     inputDim=size(Agents(1).X,1);
 
@@ -8,13 +15,7 @@ if sync
     thetas=zeros(inputDim+2,M);
 
 
-    sampleSize=M*length(Agents(1).Z);
     pxADMM_fd_flag=1;
-    Sigmas=[];
-    Sigmas=[Sigmas;Agents(1).sigma_f];
-    Ls=[];
-    Ls=[Ls,Agents(1).l];
-    Likelihood=[];
     iterCount=0;
     % the outer iteration begains here
     updated_z=[Agents(1).sigma_f;Agents(1).l;Agents(1).sigma_n];
@@ -35,8 +36,10 @@ if sync
         Steps{m}=[];
     end
     outSteps=[];
-    %wb=waitbar(0,'Preparing','Name','pxADMM_{fd}');
-    %set(wb,'color','w');
+    if wbVisibility
+        wb=waitbar(0,'Preparing','Name','pxADMM_{fd}');
+        set(wb,'color','w');
+    end
     sub_old_z=zeros(inputDim+2,M);
     for m=1:M
         sub_old_z(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
@@ -73,8 +76,9 @@ if sync
         step = max(vecnorm(updated_z(1:end)-old_z(1:end),2,2));
         outSteps=[outSteps,step];
 
-        %waitbar(iterCount/maxIter,wb,sprintf('%s %.2f %s %f','pxADMM_{fd}: ',iterCount/maxIter*100,'% , step:', step))
-
+        if wbVisibility
+            waitbar(iterCount/maxIter,wb,sprintf('%s %.2f %s %f','pxADMM_{fd}: ',iterCount/maxIter*100,'% , step:', step))
+        end
         if step < epsilon
             pxADMM_fd_flag=0;
         end
@@ -86,12 +90,17 @@ if sync
     l_pxADMM_fd=updated_z(2:end-1);
     sigma_n_pxADMM_fd=updated_z(end);
 
-    gcf=figure,
+    gcf=figure;
     cvgValue=Inf*ones(1,inputDim+2);
+
+    tiledlayout(D+2,1,'TileSpacing','Compact','Padding','Compact');
     for i=1:inputDim+2
-        subplot(inputDim+2,1,i)
+        %         subplot(inputDim+2,1,i)
+        nexttile(i);
         if i==1
-            ylabel('s_f')
+            ylabel('\sigma_f')
+        elseif i==D+2
+            ylabel('\sigma_n')
         else
             txt=strcat('l_',num2str(i-1));
             ylabel(txt)
@@ -101,22 +110,43 @@ if sync
             plot(Zs{m}(i,:));
             cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
         end
-        lgd=yline(cvgValue(i),'-.b');
-        if i==1
-            legend(lgd,'converged value', 'Location','northwest')
+        y_c=yline(cvgValue(i),'-.b');
+        if realDataSet==0
+            y_r=yline(Agents(1).realz(i),'r-.');
         end
+
         set(gca, 'XScale', 'log')
         hold off
 
+        if i==D+2
+
+            if realDataSet==0
+                legendTxt=cell(2,1);
+                legendTxt{1}='converged value';
+                legendTxt{2}='real hyperparameter value';
+                lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
+            else
+                lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
+            end
+            lgd.Layout.Tile = 'north';
+            sgtitle('pxADMM_{fd,sync} - hyperparameters')
+        end
         %     set(gca,'XScale','log')
     end
-    fname='results/pxADMM_fd_sync_cvg_value_direct_display';
-    saveas(gcf,fname,'png');
+    s=hgexport('factorystyle');
+    s.Resolution=600;
+    s.Format='png';
+    fname='results/pxADMM_fd_sync_vars';
+    fname=strcat(fname,'_',num2str(M),'_agents');
+    hgexport(gcf,fname,s);
+
     close gcf;
 
     outSteps=SubSteps;
 
-    gcf=figure,
+    gcf=figure;
+    tiledlayout(1,1,'TileSpacing','Compact','Padding','Compact');
+    nexttile(1)
     hold on;
     for m=1:M
         plot(outSteps{m})
@@ -129,30 +159,34 @@ if sync
             legendText=[legendText;strcat('agent-',num2str(m))];
         end
     end
-    legend(legendText);
+    lgd=legend(legendText,'Location','northeast','Orientation', 'Horizontal');
+    lgd.Layout.Tile = 'north';
+    lgd.NumColumns=4;
+
     xlabel('steps')
-    ylabel('step length')
-    title('pxADMMfd convergence')
+    ylabel('step size')
+    title('pxADMM_{fd,sync} - step size')
     set(gca,'YScale','log')
+    set(gca,'XScale','log')
     hold off;
-    fname='results/pxADMM_fd_sync_cvg_value_steps';
-    saveas(gcf,fname,'png');
+    s=hgexport('factorystyle');
+    s.Resolution=600;
+    s.Format='png';
+    fname='results/pxADMM_fd_sync_Steps';
+    fname=strcat(fname,'_',num2str(M),'_agents');
+    hgexport(gcf,fname,s);
     close gcf;
 
     for m=1:M
         thetas(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
     end
-    %delete(wb);
+    if wbVisibility
+        delete(wb);
+    end
 else
     inputDim=size(Agents(1).X,1);
     thetas=zeros(inputDim+2,M);
-    sampleSize=M*length(Agents(1).Z);
     pxADMM_fd_flag=1;
-    Sigmas=[];
-    Sigmas=[Sigmas;Agents(1).sigma_f];
-    Ls=[];
-    Ls=[Ls,Agents(1).l];
-    Likelihood=[];
     iterCount=0;
     % the outer iteration begains here
     updated_z=[Agents(1).sigma_f;Agents(1).l;Agents(1).sigma_n];
@@ -174,17 +208,16 @@ else
     end
     outSteps=[];
     stepForStops=[];
-    %     wb=waitbar(0,'Preparing','Name','pxADMM_{fd}');
-    %     set(wb,'color','w');
+    if wbVisibility
+        wb=waitbar(0,'Preparing','Name','pxADMM_{fd}');
+        set(wb,'color','w');
+    end
     sub_old_z=zeros(inputDim+2,M);
     for m=1:M
         sub_old_z(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
     end
-    p01=0.5;
-    p10=0.9;
 
     P01s=rand(1,M)*0.6+0.4;
-    P10s=rand(1,M)*0.4+0.6;
 
     AgentsActionStatus=[];
     while pxADMM_fd_flag
@@ -278,8 +311,9 @@ else
         end
         stepForStops=[stepForStops;stepForStop];
 
-        %         waitbar(iterCount/maxIter,wb,sprintf('%s %.2f %s %f','pxADMM_{fd,async}: ',iterCount/maxIter*100,'% , step:', step))
-
+        if wbVisibility
+            waitbar(iterCount/maxIter,wb,sprintf('%s %.2f %s %f','pxADMM_{fd,async}: ',iterCount/maxIter*100,'% , step:', step))
+        end
         if stepForStop < epsilon
             pxADMM_fd_flag=0;
         end
@@ -292,57 +326,56 @@ else
     l_pxADMM_fd=updated_z(2:(2+inputDim-1));
     sigma_n_pxADMM_fd=updated_z(end);
     % Plot
-    %     figure,
-    %     for m=1:M
-    %         for z_i=1:3
-    %             subplot(3,M,(z_i-1)*M+m);
-    %             plot(Zs{m}(z_i,:));
-    %         end
-    %     end
 
-    gcf=figure,
+
+    gcf=figure;
     cvgValue=Inf*ones(1,inputDim+2);
+
+    tiledlayout(D+2,1,'TileSpacing','Compact','Padding','Compact');
     for i=1:inputDim+2
-        subplot(inputDim+2,1,i)
+        %         subplot(inputDim+2,1,i)
+        nexttile(i);
         if i==1
-            ylabel('s_f')
+            ylabel('\sigma_f')
+        elseif i==D+2
+            ylabel('\sigma_n')
         else
             txt=strcat('l_',num2str(i-1));
             ylabel(txt)
         end
         hold on
-        if i==1
-            for m=1:M
-                plot(Zs{m}(i,:));
-                cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
-                %ylim([4 6.2])
-            end
-        else
-            for m=1:M
-                plot(Zs{m}(i,:));
-                cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
-                %ylim([-2 2])
-            end
+        for m=1:M
+            plot(Zs{m}(i,:));
+            cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
         end
-        lgd=yline(cvgValue(i),'-.b');
-        if i==1
-            lgd2=yline(5,'-.r')
-            legend([lgd,lgd2],{'converged value','real value'}, 'Location','northeast')
-            ylim([4.5,6])
-        elseif i<=inputDim+1
-            yline(1,'-.r')
-            ylim([0.5,2.1])
-        else
-            yline(sqrt(0.1),'-.r')
-            ylim([0.00001,2])
+        y_c=yline(cvgValue(i),'-.b');
+        if realDataSet==0
+            y_r=yline(Agents(1).realz(i),'r-.');
         end
+
         set(gca, 'XScale', 'log')
         hold off
 
-        %     set(gca,'XScale','log')
+        if i==D+2
+
+            if realDataSet==0
+                legendTxt=cell(2,1);
+                legendTxt{1}='converged value';
+                legendTxt{2}='real hyperparameter value';
+                lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
+            else
+                lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
+            end
+            lgd.Layout.Tile = 'north';
+            sgtitle('pxADMM_{fd,async} - hyperparameters')
+        end
     end
-    fname='results/pxADMM_fd_async_cvg_values_direct_display'
-    saveas(gcf,fname,'png');
+    s=hgexport('factorystyle');
+    s.Resolution=600;
+    s.Format='png';
+    fname='results/pxADMM_fd_async_vars';
+    fname=strcat(fname,'_',num2str(M),'_agents');
+    hgexport(gcf,fname,s);
     close gcf;
 
     figure,
@@ -352,16 +385,11 @@ else
         area(linspace(0,51,length(status)),status);
     end
 
-
-    %     figure,
-    %     for m=1:M
-    %         subplot(2,ceil(M/2),m);
-    %         semilogy(SubSteps{m});
-    %     end
-    %     outSteps=SubSteps{1};
     outSteps=SubSteps;
 
-    gcf=figure,
+    gcf=figure;
+    tiledlayout(1,1,'TileSpacing','Compact','Padding','Compact');
+    nexttile(1)
     hold on;
     for m=1:M
         plot(outSteps{m})
@@ -374,17 +402,24 @@ else
             legendText=[legendText;strcat('agent-',num2str(m))];
         end
     end
-    legend(legendText);
+    lgd=legend(legendText,'Location','northeast','Orientation', 'Horizontal');
+    lgd.Layout.Tile = 'north';
+    lgd.NumColumns=4;
+
+
     xlabel('steps')
-    ylabel('step length')
-    title('pxADMMfd convergence')
+    ylabel('step size')
+    sgtitle('pxADMM_{fd,async} - step size')
     set(gca,'YScale','log')
+    set(gca,'XScale','log')
     hold off;
 
-    fname='results/pxADMM_fd_async_steps_direct_display'
+    fname='results/pxADMM_fd_async_steps_direct_display';
     saveas(gcf,fname,'png');
     close gcf;
-    %     delete(wb);
+    if wbVisibility
+        delete(wb);
+    end
     for m=1:M
         thetas(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
     end

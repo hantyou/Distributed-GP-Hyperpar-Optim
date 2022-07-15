@@ -1,6 +1,11 @@
 function [sigma_pxADMM,l_pxADMM,sigma_n_pxADMM,Steps,Zs] = runPXADMM(Agents,M,epsilon,maxIter)
 %RUNPXADMM Summary of this function goes here
 %   Detailed explanation goes here
+if usejava('desktop')
+    wbVisibility=true;
+else
+    wbVisibility=false;
+end
 sampleSize=M*length(Agents(1).Z);
 pxADMMflag=1;
 Sigmas=[];
@@ -17,8 +22,10 @@ for m=1:M
     Zs{m}=[];
 end
 D=length(Agents(1).l);
-%wb=waitbar(0,'Preparing','Name','pxADMM');
-%set(wb,'color','w');
+if wbVisibility
+wb=waitbar(0,'Preparing','Name','pxADMM');
+set(wb,'color','w');
+end
 while pxADMMflag
     iterCount=iterCount+1;
     % Calculate z from agents' data
@@ -44,7 +51,9 @@ while pxADMMflag
     step = norm(updated_z(1:end)-old_z(1:end));
     Steps=[Steps,step];
     
-%    waitbar(iterCount/maxIter,wb,sprintf('%s %.2f %s %f','pxADMM: ', iterCount/maxIter*100,'% , step:', step))
+if wbVisibility
+   waitbar(iterCount/maxIter,wb,sprintf('%s %.2f %s %f','pxADMM: ', iterCount/maxIter*100,'% , step:', step))
+end
     if step < epsilon
         pxADMMflag=0;
     end
@@ -64,29 +73,58 @@ sigma_n_pxADMM=updated_z(end);
 %     end
 % end
 gcf=figure;
-cvgValue=Inf*ones(1,inputDim+1);
-for i=1:inputDim+1
-    subplot(inputDim+1,1,i)
+tiledlayout(D+2,1,'TileSpacing','Compact','Padding','Compact');
+realDataSet=Agents(1).realdataset;
+for z_i=1:(D+2)
+    nexttile(z_i);
     hold on
-    for m=1:1
-        plot(Zs{m}(i,:));
-        cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
+    for m=1:M
+        plot(Zs{m}(z_i,:));
     end
-        yline(cvgValue(i),'-.r');
+    xlabel('steps')
+    set(gca,'XScale','log')
+    if z_i==1
+        ylabel('\sigma_f');
+    elseif z_i==D+2
+        ylabel('\sigma_n');
+    else
+        ylabel(strcat('l_',num2str(z_i-1)));
+    end
+    y_c=yline(Zs{1}(z_i,end),'b-.');
+    if realDataSet==0
+        y_r=yline(Agents(1).realz(z_i),'r-.');
+    end
+    if z_i==D+2
+
+        if realDataSet==0
+            legendTxt=cell(2,1);
+            legendTxt{1}='converged value';
+            legendTxt{2}='real hyperparameter value';
+            lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
+        else
+            lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
+        end
+        lgd.Layout.Tile = 'north';
+    end
+
+    sgtitle('pxADMM - hyperparameters')
     hold off
 end
-fname='results/pxADMM_vars';
-fname=strcat(fname,'_',num2str(M),'_agents');
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
-hgexport(gcf,fname,s)
+fname='results/pxADMM_vars';
+fname=strcat(fname,'_',num2str(M),'_agents');
+hgexport(gcf,fname,s);
+
 
 gcf=figure;
+tiledlayout(1,1,'TileSpacing','Compact','Padding','Compact');
+nexttile(1);
 semilogy(Steps)
 set(gca,'XScale','log')
 xlabel('steps')
-ylabel('step length')
+ylabel('step size')
 title('pxADMM convergence')
 fname='results/pxADMM_steps';
 fname=strcat(fname,'_',num2str(M),'_agents');
@@ -97,7 +135,9 @@ hgexport(gcf,fname,s)
 close gcf;
 
 
-%delete(wb);
+if wbVisibility
+delete(wb);
+end
 
 end
 

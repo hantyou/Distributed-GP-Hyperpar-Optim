@@ -24,8 +24,17 @@ for m=1:M
     Steps{m}=[];
 end
 outSteps=[];
-wb=waitbar(0,'Preparing','Name','ADMM');
-set(wb,'color','w');
+if usejava('desktop')
+    wbVisibility=true;
+else
+    wbVisibility=false;
+end
+
+if wbVisibility
+    wb=waitbar(0,'Preparing','Name','ADMM');
+
+    set(wb,'color','w');
+end
 rho_0=Agents(1).rho;
 maxInIter_0=maxInIter;
 while outADMMflag
@@ -35,7 +44,7 @@ while outADMMflag
     old_z=updated_z;
     updated_z=zeros(size(updated_z));
     for m=1:M
-        Agents(m).mu=stepSize;
+        %         Agents(m).mu=stepSize;
         updated_z=updated_z+[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]+1/Agents(m).rho*Agents(m).beta;
     end
     updated_z=1/M*updated_z;
@@ -43,6 +52,9 @@ while outADMMflag
     for m=1:M
         Agents(m).z=updated_z;
     end
+
+    step = norm(updated_z-old_z);
+    outSteps=[outSteps,step];
     % at each agent, perform inner iteration
     % for each inner iteration, the theta=[sigma_f, l] is going to be
     % updated, and beta is also to be updated
@@ -53,10 +65,9 @@ while outADMMflag
         IterCounts{m}=[IterCounts{m},IterCounts{m}(outIterCount)+inIterCount_m];
     end
 
-    step = norm(updated_z-old_z);
-    outSteps=[outSteps,step];
-
-    waitbar(outIterCount/maxOutIter,wb,sprintf('%s %.2f %s %f','ADMM: ',outIterCount/maxOutIter*100,'% , step:', step))
+    if wbVisibility
+        waitbar(outIterCount/maxOutIter,wb,sprintf('%s %.2f %s %f','ADMM: ',outIterCount/maxOutIter*100,'% , step:', step))
+    end
     if step < epsilon
         outADMMflag=0;
     end
@@ -117,10 +128,10 @@ hgexport(gcf,fname,s);
 %
 gcf=figure;
 %% below there is bug
-semilogy(IterCounts{1},outSteps);
+semilogy(IterCounts{1}(2:end),outSteps);
 set(gca,'XScale','log')
 xlabel('steps')
-ylabel('step length')
+ylabel('step size')
 title('ADMM - step size')
 s=hgexport('factorystyle');
 s.Resolution=600;
@@ -131,7 +142,10 @@ hgexport(gcf,fname,s);
 
 
 Steps=outSteps;
-delete(wb);
+
+if wbVisibility
+    delete(wb);
+end
 
 end
 

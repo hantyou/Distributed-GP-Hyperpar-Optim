@@ -323,8 +323,8 @@ if run_ADMM
     stepSize=0.0001; % step size of optimizing theta in inner interations
     initial_beta = [1;ones(length(initial_l),1);1];
     initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
-    maxOutIter=800;
-    maxInIter=10;
+    maxOutIter=1000;
+    maxInIter=30;
     for m=1:M
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
@@ -372,16 +372,16 @@ end
 %% Perform ADMM_fd
 if run_ADMM_fd
     % initialize ADMM_fd
-    maxOutIter=2000;
-    maxInIter=10;
+    maxOutIter=1000;
+    maxInIter=30;
     stepSize=0.0001;
     for m=1:M
-        Agents(m).rho=200;
+        Agents(m).rho=rho_glb;
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).l=initial_l';
         Agents(m).sigma_n=initial_sigma_n;
         Agents(m).mu=stepSize;
-
+        Agents(m).z=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
         Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).beta_mn=ones(inputDim+2,Agents(m).N_size);
@@ -411,7 +411,7 @@ if run_pxADMM_fd_sync
     % initialize pxADMM_fd
     maxIter=8000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
-    initial_beta = 0.1*[1;ones(length(initial_l),1);1];
+    initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
         Agents(m).communicationAbility=1;
         Agents(m).beta=initial_beta;
@@ -455,7 +455,7 @@ if run_pxADMM_fd_async
     % initialize pxADMM_fd
     maxIter=10000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
-    initial_beta = 0.1*[1;ones(length(initial_l),1);1];
+    initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
         Agents(m).communicationAbility=1;
 

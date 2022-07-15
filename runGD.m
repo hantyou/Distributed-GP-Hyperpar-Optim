@@ -82,19 +82,7 @@ while GDflag
     if iterCount>=maxIter
         GDflag=0;
     end
-    %     if ~mod(iterCount,100)
-    %         disp(iterCount)
-    %         disp(newLikelihood)
-    %     end
 end
-% Plot
-% gcf=figure;
-% for m=1:M
-%     for z_i=1:(D+2)
-%         subplot(D+2,M,(z_i-1)*M+m);
-%         plot(Zs{m}(z_i,:));
-%     end
-% end
 
 gcf=figure;
 tiledlayout(D+2,1,'TileSpacing','Compact','Padding','Compact');
@@ -116,22 +104,22 @@ for z_i=1:(D+2)
     end
     y_c=yline(Zs{1}(z_i,end),'b-.');
     if realDataSet==0
-    y_r=yline(Agents(1).realz(z_i),'r-.');
+        y_r=yline(Agents(1).realz(z_i),'r-.');
     end
     if z_i==D+2
 
-    if realDataSet==0
-        legendTxt=cell(2,1);
-        legendTxt{1}='converged value';
-        legendTxt{2}='real hyperparameter value';
-        lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
-    else 
-        lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
-    end
+        if realDataSet==0
+            legendTxt=cell(2,1);
+            legendTxt{1}='converged value';
+            legendTxt{2}='real hyperparameter value';
+            lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
+        else
+            lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
+        end
         lgd.Layout.Tile = 'north';
     end
 
-sgtitle('GD - hyperparameters')
+    sgtitle('GD - hyperparameters')
     hold off
 end
 
@@ -151,7 +139,7 @@ nexttile(1);
 semilogy(Steps)
 set(gca,'XScale','log')
 xlabel('steps')
-ylabel('step length')
+ylabel('step size')
 title('GD - step size')
 s=hgexport('factorystyle');
 s.Resolution=600;
