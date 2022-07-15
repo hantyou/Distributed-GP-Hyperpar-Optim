@@ -594,7 +594,7 @@ if run_GD
     lgd_txt=[lgd_txt;"GD"];
 end
 if run_ADMM
-    semilogy(IterCounts{1},Steps_ADMM);
+    semilogy(IterCounts{1}(2:end),Steps_ADMM);
     hold on;
     lgd_txt=[lgd_txt;"ADMM"];
 end
@@ -604,9 +604,10 @@ if run_pxADMM
     lgd_txt=[lgd_txt;"pxADMM"];
 end
 if run_ADMM_fd
-    semilogy(IterCounts_fd{1},Steps_ADMM_fd);
+    IterCounts_fd{1}(1)=1;
+    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd);
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd}"];
+    lgd_txt=[lgd_txt;"ADMM_{fd}"];
 end
 if run_pxADMM_fd_sync
     semilogy(Steps_pxADMM_fd_sync);
@@ -624,6 +625,7 @@ if run_pxADMM_async_realSimu
     lgd_txt=[lgd_txt;"pxADMM_{async,realSimu}"];
 end
 set(gca, 'YScale', 'log');
+set(gca, 'XScale', 'log');
 xlabel('iterations');
 ylabel('norm(step)');
 title('log plot of steps-iterations');

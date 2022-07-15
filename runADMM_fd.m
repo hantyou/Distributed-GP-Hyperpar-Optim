@@ -25,8 +25,8 @@ for m=1:M
 end
 outSteps=[];
 if wbVisibility
-wb=waitbar(0,'Preparing','Name','ADMM_{fd}');
-set(wb,'color','w');
+    wb=waitbar(0,'Preparing','Name','ADMM_{fd}');
+    set(wb,'color','w');
 end
 sub_old_z=zeros(D+2,M);
 for m=1:M
@@ -38,7 +38,7 @@ while outADMMflag
     global_step=0;
     updated_z=0;
     parfor m=1:M
-%         [Agents(m),~,~,~]=Agents(m).runLocalInnerADMM_fd(maxInIter,epsilon);
+        %         [Agents(m),~,~,~]=Agents(m).runLocalInnerADMM_fd(maxInIter,epsilon);
         [Agents(m),Zs_m,Steps_m,inIterCount_m]=Agents(m).runLocalInnerADMM_fd(maxInIter,epsilon);
         Zs{m}=[Zs{m},Zs_m];
         Steps{m}=[Steps{m},Steps_m];
@@ -51,8 +51,8 @@ while outADMMflag
     updated_z=updated_z/M;
     step = global_step;
     outSteps=[outSteps,step];
-    
-   waitbar(outIterCount/maxOutIter,wb,sprintf('%s %.2f %s %f','ADMM_{fd}: ',outIterCount/maxOutIter*100,'% , step:', step))
+
+    waitbar(outIterCount/maxOutIter,wb,sprintf('%s %.2f %s %f','ADMM_{fd}: ',outIterCount/maxOutIter*100,'% , step:', step))
     if step < epsilon
         outADMMflag=0;
     end
@@ -124,7 +124,9 @@ fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
 
 Steps=outSteps;
-%delete(wb);
+if wbVisibility
+    delete(wb);
+end
 
 end
 

@@ -21,6 +21,8 @@ if nargin==8
 else
     if nargin==7
         consensusSolver=submean_old;
+    elseif nargin ==6
+        consensusSolver='DTCF';
     end
     parfor m=1:M
         [subMeans(m,:),subVars(m,:)]=subGP(Agents(m),newX,sigma_n);
