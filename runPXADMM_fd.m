@@ -118,17 +118,17 @@ if sync
         set(gca, 'XScale', 'log')
         hold off
 
-        if i==D+2
+        if i==1
 
             if realDataSet==0
                 legendTxt=cell(2,1);
                 legendTxt{1}='converged value';
                 legendTxt{2}='real hyperparameter value';
-                lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
+                lgd=legend([y_c;y_r],legendTxt,'Location','northoutside','Orientation', 'Horizontal');
             else
-                lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
+                lgd=legend(y_c,'converged value','Location','northoutside','Orientation', 'Horizontal');
             end
-            lgd.Layout.Tile = 'north';
+%             lgd.Layout.Tile = 'north';
             sgtitle('pxADMM_{fd,sync} - hyperparameters')
         end
         %     set(gca,'XScale','log')
@@ -159,8 +159,8 @@ if sync
             legendText=[legendText;strcat('agent-',num2str(m))];
         end
     end
-    lgd=legend(legendText,'Location','northeast','Orientation', 'Horizontal');
-    lgd.Layout.Tile = 'north';
+    lgd=legend(legendText,'Location','northoutside','Orientation', 'Horizontal');
+%     lgd.Layout.Tile = 'north';
     lgd.NumColumns=4;
 
     xlabel('steps')
@@ -356,17 +356,17 @@ else
         set(gca, 'XScale', 'log')
         hold off
 
-        if i==D+2
+        if i==1
 
             if realDataSet==0
                 legendTxt=cell(2,1);
                 legendTxt{1}='converged value';
                 legendTxt{2}='real hyperparameter value';
-                lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
+                lgd=legend([y_c;y_r],legendTxt,'Location','northoutside','Orientation', 'Horizontal');
             else
-                lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
+                lgd=legend(y_c,'converged value','Location','northoutside','Orientation', 'Horizontal');
             end
-            lgd.Layout.Tile = 'north';
+%             lgd.Layout.Tile = 'north';
             sgtitle('pxADMM_{fd,async} - hyperparameters')
         end
     end
@@ -402,8 +402,8 @@ else
             legendText=[legendText;strcat('agent-',num2str(m))];
         end
     end
-    lgd=legend(legendText,'Location','northeast','Orientation', 'Horizontal');
-    lgd.Layout.Tile = 'north';
+    lgd=legend(legendText,'Location','northoutside','Orientation', 'Horizontal');
+%     lgd.Layout.Tile = 'north';
     lgd.NumColumns=4;
 
 

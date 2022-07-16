@@ -133,11 +133,11 @@ classdef agent
             while localGDflag
                 inIterCount=inIterCount+1;
                 %%%%GD Iter START%%%%
-                distX = dist((diag(old_l)\eye(D))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
+%                 distX = dist((diag(old_l)\eye(D))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
                 %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
-                K_n=old_sigma_n^2*eye(obj.N_m);
-                K_s=old_sigma^(2)*exp(-0.5*distX);
-                obj.K=K_s+K_n;
+%                 K_n=old_sigma_n^2*eye(obj.N_m);
+%                 K_s=old_sigma^(2)*exp(-0.5*distX);
+%                 obj.K=K_s+K_n;
 
 %                                 choL = chol(obj.K, 'lower');
 %                                 alpha = choL'\(choL\obj.Z);

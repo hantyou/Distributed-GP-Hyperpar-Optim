@@ -106,17 +106,17 @@ for z_i=1:(D+2)
     if realDataSet==0
         y_r=yline(Agents(1).realz(z_i),'r-.');
     end
-    if z_i==D+2
-
+    if z_i==1
+% nexttile(1);
         if realDataSet==0
             legendTxt=cell(2,1);
             legendTxt{1}='converged value';
             legendTxt{2}='real hyperparameter value';
-            lgd=legend([y_c;y_r],legendTxt,'Location','northeast','Orientation', 'Horizontal');
+            lgd=legend([y_c;y_r],legendTxt,'Location','northoutside','Orientation', 'Horizontal');
         else
-            lgd=legend(y_c,'converged value','Location','northeast','Orientation', 'Horizontal');
+            lgd=legend(y_c,'converged value','Location','northoutside','Orientation', 'Horizontal');
         end
-        lgd.Layout.Tile = 'north';
+%         lgd.Layout.Tile = 'north';
     end
 
     sgtitle('GD - hyperparameters')
