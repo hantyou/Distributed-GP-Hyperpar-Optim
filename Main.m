@@ -293,7 +293,7 @@ else
 end
 
 epsilon = 1e-5; % used for stop criteria
-rho_glb=40;
+rho_glb=100;
 L_glb=500;
 
 clear show_txt
@@ -328,7 +328,7 @@ if run_ADMM
     for m=1:M
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
-        Agents(m).rho=2*rho_glb;
+        Agents(m).rho=rho_glb;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).sigma_n=initial_sigma_n;
@@ -373,7 +373,7 @@ end
 if run_ADMM_fd
     % initialize ADMM_fd
     maxOutIter=1000;
-    maxInIter=30;
+    maxInIter=50;
     stepSize=0.0001;
     for m=1:M
         Agents(m).rho=rho_glb;
@@ -629,7 +629,8 @@ set(gca, 'XScale', 'log');
 xlabel('iterations');
 ylabel('norm(step)');
 title('log plot of steps-iterations');
-legend(lgd_txt);
+lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
+lgd.NewColumns=4;
 hold off;
 s=hgexport('factorystyle');
 s.Resolution=600;

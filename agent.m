@@ -219,16 +219,16 @@ classdef agent
 
         function obj = runLocalPxADMM(obj)
             D=length(obj.l);
-            old_sigma=obj.z(1);
-            old_l=obj.z(2:(2+D-1));
+%             old_sigma=obj.z(1);
+%             old_l=obj.z(2:(2+D-1));
             old_sigma_n=obj.z(end);
-            inputDim=length(old_l);
-            K_n=obj.sigma_n^2*eye(obj.N_m);
-            %%%%local update START%%%%
-            distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
-            %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
-            K_s=old_sigma^(2)*exp(-0.5*distX);
-            obj.K=K_s+K_n;
+%             inputDim=length(old_l);
+%             K_n=obj.sigma_n^2*eye(obj.N_m);
+%             %%%%local update START%%%%
+%             distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
+%             %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
+%             K_s=old_sigma^(2)*exp(-0.5*distX);
+%             obj.K=K_s+K_n;
 
             % %             choL = chol(obj.K, 'lower');
             % %             alpha = choL'\(choL\obj.Z);

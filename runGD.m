@@ -132,6 +132,7 @@ s.Format='png';
 fname='results/GD_vars';
 fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
+close gcf
 
 gcf=figure;
 tiledlayout(1,1,'TileSpacing','Compact','Padding','Compact');
@@ -147,6 +148,7 @@ s.Format='png';
 fname='results/GD_Steps';
 fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
+close gcf
 if wbVisibility
     delete(wb);
 end

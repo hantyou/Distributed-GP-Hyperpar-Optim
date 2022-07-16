@@ -125,6 +125,7 @@ s.Format='png';
 fname='results/ADMM_vars';
 fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
+close gcf
 %
 gcf=figure;
 %% below there is bug

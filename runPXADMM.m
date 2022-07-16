@@ -44,7 +44,7 @@ while pxADMMflag
     end
     % at each agent, perform one step of proximal update, get the new
     % hyperparameters
-    for m=1:M
+    parfor m=1:M
         Agents(m)=Agents(m).runLocalPxADMM;
         Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]];
     end
@@ -116,7 +116,7 @@ s.Format='png';
 fname='results/pxADMM_vars';
 fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
-
+close gcf
 
 gcf=figure;
 tiledlayout(1,1,'TileSpacing','Compact','Padding','Compact');

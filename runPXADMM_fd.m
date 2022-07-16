@@ -57,7 +57,7 @@ if sync
         global_step=0;
 
 
-        for m=1:M
+        parfor m=1:M
             Agents(m)=Agents(m).runPxADMM_fd;
             Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]];
             step_m=max(vecnorm([Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]-sub_old_z(:,m),2,2));
@@ -378,7 +378,7 @@ else
     hgexport(gcf,fname,s);
     close gcf;
 
-    figure,
+    gcf=figure;
     for m=1:M
         subplot(M,1,m);
         status=kron(AgentsActionStatus(m,1:50),ones(1,10));
@@ -386,7 +386,8 @@ else
     end
 
     outSteps=SubSteps;
-
+    close gcf
+    
     gcf=figure;
     tiledlayout(1,1,'TileSpacing','Compact','Padding','Compact');
     nexttile(1)

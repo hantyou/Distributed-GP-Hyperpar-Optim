@@ -108,6 +108,7 @@ s.Format='png';
 fname='results/ADMM_fd_vars';
 fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
+close gcf
 %
 gcf=figure;
 %% below there is bug
@@ -122,7 +123,7 @@ s.Format='png';
 fname='results/ADMM_fd_Steps';
 fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
-
+close gcf
 Steps=outSteps;
 if wbVisibility
     delete(wb);
