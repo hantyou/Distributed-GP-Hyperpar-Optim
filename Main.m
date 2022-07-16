@@ -324,11 +324,11 @@ if run_ADMM
     initial_beta = [1;ones(length(initial_l),1);1];
     initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
     maxOutIter=1000;
-    maxInIter=30;
+    maxInIter=50;
     for m=1:M
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
-        Agents(m).rho=rho_glb;
+        Agents(m).rho=2*rho_glb;
         Agents(m).l=initial_l';
         Agents(m).sigma_f=initial_sigma_f;
         Agents(m).sigma_n=initial_sigma_n;
