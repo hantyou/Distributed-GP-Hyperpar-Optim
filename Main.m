@@ -630,7 +630,7 @@ xlabel('iterations');
 ylabel('norm(step)');
 title('log plot of steps-iterations');
 lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
-lgd.NewColumns=4;
+lgd.NumColumns=4;
 hold off;
 s=hgexport('factorystyle');
 s.Resolution=600;

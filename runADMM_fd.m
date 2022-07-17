@@ -52,7 +52,9 @@ while outADMMflag
     step = global_step;
     outSteps=[outSteps,step];
 
+if wbVisibility
     waitbar(outIterCount/maxOutIter,wb,sprintf('%s %.2f %s %f','ADMM_{fd}: ',outIterCount/maxOutIter*100,'% , step:', step))
+    end
     if step < epsilon
         outADMMflag=0;
     end
