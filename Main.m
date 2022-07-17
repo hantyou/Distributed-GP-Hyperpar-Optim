@@ -38,7 +38,7 @@ end
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=100;
+everyAgentsSampleNum=20;
 Agents_measure_range=4;
 realDataSet=0;
 if realDataSet==1
@@ -124,8 +124,8 @@ for m=1:M
 end
 clear idx1 idx idexedZ idexedX subDataSetsX
 %% Plot field and sampled points and noisy sample points
+    gcf=figure;
 if realDataSet==1&&temp_data==1
-    figure,
     hold on;
     for i=1:cityNum
         plot(temp_17(:,i));
@@ -145,13 +145,10 @@ elseif realDataSet==0
     zlabel('environmental scalar value')
     pause(0.01)
 end
-
-
-theta_range=[[-2,1];[-2,1]];
+close gcf
+%%
+% theta_range=[[0.1,1.1];[-1,log(5)/log(10)]];
 % LL=generateLikelihoodMap(X,Z,theta_range,sigma_n);
-
-
-
 %% Set topology
 Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
 A_full=generateTopology(Agents,Topology_method);
