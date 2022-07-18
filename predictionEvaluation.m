@@ -2,7 +2,7 @@ clc,clear;
 close all;
 set(0,'DefaultFigureVisible','off')
 delete(gcp('nocreate'))
-
+%%
 try
     parpool(30);
 catch
@@ -338,7 +338,7 @@ close all
 clearvars -except A_full Agents Agents_Posi cVec pVec X Y Z range sampleSize sigma_n
 %% Evaluation setup
 Ms=[2,4,8,12,16]; % different number of agents for different exp groups
-tempFlag=[1,1,1,1,1];
+tempFlag=[0,0,1,0,0];
 
 maxRange=max(range(:))-min(range(:));
 commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/7];
@@ -384,14 +384,14 @@ MethodsFlag=[
     0;
     0;
     0;
+    0;
+    0;
+    0;
+    0;
+    0;
     1;
-    1;
-    1;
-    1;
-    1;
-    1;
-    1;
-    1];
+    0;
+    0];
 MethodsExamined=MethodsName(MethodsFlag==1);
 Num_MethodsExamined=sum(MethodsFlag);
 disp("Methods to be examined are:")

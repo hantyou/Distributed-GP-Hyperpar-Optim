@@ -29,7 +29,7 @@ if sync
     end
     IterCounts=cell(M,1);
     for m=1:M
-        IterCounts{m}=0;
+        IterCounts{m}=1;
     end
     SubSteps=cell(M,1);
     for m=1:M
@@ -53,6 +53,7 @@ if sync
 
         if mod(iterCount,250)==0
             disp(iterCount);
+            disp(step);
         end
 
         Agents=Agents.obtain_data_from_Neighbor_ADMM_fd;
@@ -207,7 +208,7 @@ else
     end
     IterCounts=cell(M,1);
     for m=1:M
-        IterCounts{m}=0;
+        IterCounts{m}=1;
     end
     Steps=cell(M,1);
     for m=1:M
@@ -286,6 +287,10 @@ else
         % for those agents who are activated, obtain variables from their
         % activated neighbours
         iterCount=iterCount+1;
+    if ~mod(iterCount,250)
+    disp(iterCount);
+            disp(step);
+    end
         Agents=Agents.obtain_data_from_Neighbor_ADMM_fd;
         old_z=updated_z;
         updated_z=zeros(inputDim+2,1);

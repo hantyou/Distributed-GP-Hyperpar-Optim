@@ -17,7 +17,7 @@ for m=1:M
 end
 IterCounts=cell(M,1);
 for m=1:M
-    IterCounts{m}=0;
+    IterCounts{m}=1;
 end
 Steps=cell(M,1);
 for m=1:M
@@ -39,6 +39,11 @@ rho_0=Agents(1).rho;
 maxInIter_0=maxInIter;
 while outADMMflag
     outIterCount=outIterCount+1;
+    
+    if ~mod(outIterCount,500)
+    disp(outIterCount);
+            disp(step);
+    end
     %     disp(outIterCount)
     % Calculate z from agents' data
     old_z=updated_z;
@@ -132,7 +137,7 @@ close gcf
 %
 gcf=figure;
 %% below there is bug
-semilogy(IterCounts{1}(2:end),outSteps);
+semilogy(IterCounts{1}(1:end-1),outSteps);
 set(gca,'XScale','log')
 xlabel('steps')
 ylabel('step size')

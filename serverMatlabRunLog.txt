@@ -9,40 +9,25 @@ To get started, type doc.
 For product information, visit www.mathworks.com.
  
 Starting parallel pool (parpool) using the 'local' profile ...
-
-Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 8).
-
-ans = 
-
- Pool with properties: 
-
-            Connected: true
-           NumWorkers: 8
-              Cluster: local
-        AttachedFiles: {}
-    AutoAddClientPath: true
-          IdleTimeout: Inf (no automatic shut down)
-          SpmdEnabled: true
-
+Connected to the parallel pool (number of workers: 32).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 1.155145 seconds.
+Elapsed time is 1.108527 seconds.
 
 subSize =
 
-    51
-    71
-    79
-    83
-    45
-    83
-    49
-    75
-    45
-    83
-    50
-    66
+   132
+   194
+   196
+   208
+   134
+   208
+   127
+   184
+   130
+   208
+   131
+   174
 
 [Warning: Directory already exists.] 
 [> In Main (line 129)] 
@@ -54,20 +39,68 @@ ADMM_fd
 pxADMM_fd_sync
 pxADMM_fd_async
 
-Parallel pool using the 'local' profile is shutting down.
-Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 12).
-
-ans = 
-
- Pool with properties: 
-
-            Connected: true
-           NumWorkers: 12
-              Cluster: local
-        AttachedFiles: {}
-    AutoAddClientPath: true
-          IdleTimeout: Inf (no automatic shut down)
-          SpmdEnabled: true
-
 Time of GD
+   500
+
+        1000
+
+        1500
+
+        2000
+
+        2500
+
+        3000
+
+        3500
+
+        4000
+
+        4500
+
+        5000
+
+        5500
+
+        6000
+
+        6500
+
+        7000
+
+        7500
+
+        8000
+
+Elapsed time is 728.331441 seconds.
+Time of ADMM
+   500
+
+   1.1750e-04
+
+Elapsed time is 494.247154 seconds.
+Time of pxADMM
+   500
+
+   1.0266e-04
+
+Elapsed time is 88.756057 seconds.
+Time of ADMM_{fd}
+   500
+
+   4.7692e-04
+
+        1000
+
+   2.1832e-04
+
+Elapsed time is 556.598247 seconds.
+Time of pxADMM_{fd}
+Elapsed time is 23.003101 seconds.
+Time of pxADMM_{fd}
+   250
+
+   3.0565e-05
+
+Elapsed time is 25.230966 seconds.
+Code end at HO

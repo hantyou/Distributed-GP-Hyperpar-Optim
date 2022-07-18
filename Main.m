@@ -38,7 +38,7 @@ end
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-TotalNumLevel=5000;
+TotalNumLevel=2500;
 everyAgentsSampleNum=floor(TotalNumLevel/M);
 Agents_measure_range=4;
 realDataSet=0;
@@ -295,14 +295,14 @@ else
     initial_l=2*ones(1,inputDim);
 end
 
-epsilon = 1e-4; % used for stop criteria
-rho_glb=TotalNumLevel*0.1;
+epsilon = 1e-5; % used for stop criteria
+rho_glb=TotalNumLevel*0.2;
 L_glb=TotalNumLevel*0.8;
 
 clear show_txt
 %%
-delete(gcp('nocreate'))
-parpool(M)
+% delete(gcp('nocreate'))
+% parpool(M)
 % rng('shuffle')
 %% Perform naive GD
 % initial_l=3*[1,1];
@@ -327,7 +327,7 @@ if run_ADMM
     initial_beta = [1;ones(length(initial_l),1);1];
     initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
     maxOutIter=1000;
-    maxInIter=10;
+    maxInIter=50;
     for m=1:M
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
@@ -507,6 +507,8 @@ if run_pxADMM_fd_async
 end
 %% Perform pxADMM_async_realSimu
 if run_pxADMM_async_realSimu
+delete(gcp('nocreate'))
+parpool(M)
     maxIter=300;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = [1;ones(length(initial_l),1);1];
@@ -597,7 +599,7 @@ if run_GD
     lgd_txt=[lgd_txt;"GD"];
 end
 if run_ADMM
-    semilogy(IterCounts{1}(2:end),Steps_ADMM);
+    semilogy(IterCounts{1}(1:end-1),Steps_ADMM);
     hold on;
     lgd_txt=[lgd_txt;"ADMM"];
 end
@@ -641,10 +643,11 @@ s.Format='png';
 fname=strcat(results_dir,'/HOMethodsCompare');
 hgexport(gcf,fname,s);
 pause(0.01)
-save('workspaceForDebug.mat');
+%%
+save(strcat(results_dir,'/workspaceForDebug.mat'));
 
-
-
+disp('Code end at HO')
+return
 %% GPR real
 realDataSet=0;
 range_x1=[min(X(1,:)),max(X(1,:))];

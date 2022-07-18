@@ -28,6 +28,10 @@ set(wb,'color','w');
 end
 while pxADMMflag
     iterCount=iterCount+1;
+    if ~mod(iterCount,500)
+    disp(iterCount);
+    disp(step);
+    end
     % Calculate z from agents' data
     old_z=updated_z;
     inputDim=size(Agents(1).X,1);

@@ -101,6 +101,10 @@ end
 
 end
 
+function [mu,var]=NN_NPAE2(Agents,newX,subMean,subVar,sigma_n)
+
+end
+
 function [Mean,Var]=subGP(Agent,newX,sigma_n)
 if nargin==2
     sigma_n=0;

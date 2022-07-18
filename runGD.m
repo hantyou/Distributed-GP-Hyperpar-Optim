@@ -36,6 +36,10 @@ if wbVisibility
 end
 while GDflag
     iterCount=iterCount+1;
+    if ~mod(iterCount,500)
+    disp(iterCount);
+    disp(step);
+    end
     oldSigma=Sigmas(iterCount-1);
     oldL=Ls(:,iterCount-1);
     oldSigma_n=Sigma_ns(iterCount-1);
@@ -70,7 +74,7 @@ while GDflag
     end
     %         step=max(abs(Sigmas(iterCount)-Sigmas(iterCount-1)),abs(Ls(1,iterCount)-Ls(1,iterCount-1)));
     step=max(vecnorm([newSigma;newL;newSigma_n]-[oldSigma;oldL;oldSigma_n],2,2))  ;
-    Steps(iterCount)=step;
+    Steps(iterCount-1)=step;
 
     if wbVisibility
         waitbar(iterCount/maxIter,wb,sprintf('%s %.2f %s %f','GD: ',iterCount/maxIter*100,'% , step:', step))
@@ -83,7 +87,7 @@ while GDflag
         GDflag=0;
     end
 end
-
+Steps(iterCount:end)=[];
 gcf=figure;
 tiledlayout(D+2,1,'TileSpacing','Compact','Padding','Compact');
 realDataSet=Agents(1).realdataset;

@@ -17,7 +17,7 @@ for m=1:M
 end
 IterCounts=cell(M,1);
 for m=1:M
-    IterCounts{m}=0;
+    IterCounts{m}=1;
 end
 Steps=cell(M,1);
 for m=1:M
@@ -34,6 +34,10 @@ for m=1:M
 end
 while outADMMflag
     outIterCount=outIterCount+1;
+    if ~mod(outIterCount,500)
+    disp(outIterCount);
+            disp(step);
+    end
     Agents=Agents.obtain_data_from_Neighbor_ADMM_fd;
     global_step=0;
     updated_z=0;
