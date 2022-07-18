@@ -8,7 +8,7 @@ else
     wbVisibility=false;
 end
 D=length(initial_l);
-sampleSize=M*length(Agents(1).Z);
+% sampleSize=M*length(Agents(1).Z);
 epsilon=stopCriteria;
 GDflag=1;
 Sigmas=zeros(maxIter,1);
@@ -18,7 +18,7 @@ Sigma_ns(1)=sigma_n;
 Ls=zeros(2,maxIter);
 Ls(:,1)=initial_l;
 Steps=zeros(maxIter,1);
-Likelihoods=zeros(maxIter,1);
+% Likelihoods=zeros(maxIter,1);
 iterCount=1;
 Zs=cell(M,1);
 for m=1:M
@@ -43,24 +43,24 @@ while GDflag
     newL=Ls(:,iterCount-1);
     newSigma_n=Sigma_ns(iterCount-1);
     %     newSigma_n=Sigma_ns(iterCount-1);
-    newLikelihood=0;
+%     newLikelihood=0;
     %     spmd(M)
     %         obj=Agents(labindex);
     %         obj = obj.runLocalGD;
     %     end
     %     Agents=[obj{:}];
-    for m=1:M
+    parfor m=1:M
         Agents(m) = Agents(m).runLocalGD;
         newSigma=newSigma-Agents(m).mu*Agents(m).pd_sigma_f;
         newL=newL-Agents(m).mu*Agents(m).pd_l;
         newSigma_n=newSigma_n-Agents(m).mu*Agents(m).pd_sigma_n;
-        newLikelihood=newLikelihood+Agents(m).Z'*inv(Agents(m).K)*Agents(m).Z+log(det(Agents(m).K));
+%         newLikelihood=newLikelihood+Agents(m).Z'*inv(Agents(m).K)*Agents(m).Z+log(det(Agents(m).K));
     end
 
     Sigmas(iterCount)=newSigma;
     Ls(:,iterCount)=newL;
     Sigma_ns(iterCount)=newSigma_n;
-    Likelihoods(iterCount)=-0.5*newLikelihood+0.5*sampleSize*log(2*pi);
+%     Likelihoods(iterCount)=-0.5*newLikelihood+0.5*sampleSize*log(2*pi);
     for m=1:M
         Agents(m).sigma_f=newSigma;
         Agents(m).l=newL;
@@ -90,8 +90,12 @@ realDataSet=Agents(1).realdataset;
 for z_i=1:(D+2)
     nexttile(z_i);
     hold on
+    y_c=yline(Zs{1}(z_i,end),'b-.');
+    if realDataSet==0
+        y_r=yline(Agents(1).realz(z_i),'r-.');
+    end
     for m=1:M
-        plot(Zs{m}(z_i,:));
+        plot(Zs{m}(z_i,:),'g');
     end
     xlabel('steps')
     set(gca,'XScale','log')
@@ -101,10 +105,6 @@ for z_i=1:(D+2)
         ylabel('\sigma_n');
     else
         ylabel(strcat('l_',num2str(z_i-1)));
-    end
-    y_c=yline(Zs{1}(z_i,end),'b-.');
-    if realDataSet==0
-        y_r=yline(Agents(1).realz(z_i),'r-.');
     end
     if z_i==1
 % nexttile(1);
@@ -129,8 +129,11 @@ end
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
-fname='results/GD_vars';
-fname=strcat(fname,'_',num2str(M),'_agents');
+top_dir_path=strcat('results/HO');
+folder_name=strcat(num2str(M),'_a_',num2str(Agents(1).TotalNumLevel),'_pl');
+full_path=strcat(top_dir_path,'/',folder_name,'/');
+fname=strcat(full_path,'GD_vars');
+% fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
 close gcf
 
@@ -145,8 +148,8 @@ title('GD - step size')
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
-fname='results/GD_Steps';
-fname=strcat(fname,'_',num2str(M),'_agents');
+fname=strcat(full_path,'GD_Steps');
+% fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
 close gcf
 if wbVisibility

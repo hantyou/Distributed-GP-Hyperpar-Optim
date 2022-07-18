@@ -24,7 +24,7 @@ range=[range_x1;range_x2];
 
 rng(990611,'twister')
 rand(17+16,1);
-M=8;
+M=12;
 region=[];
 %% parpool setup
 delete(gcp('nocreate'))
@@ -38,7 +38,8 @@ end
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-everyAgentsSampleNum=20;
+TotalNumLevel=5000;
+everyAgentsSampleNum=floor(TotalNumLevel/M);
 Agents_measure_range=4;
 realDataSet=0;
 if realDataSet==1
@@ -104,6 +105,7 @@ subSize
 Agents=agent.empty(M,0);
 for m=1:M
     Agents(m).Code=m;
+    Agents(m).TotalNumLevel=TotalNumLevel;
     Agents(m).Z=subDataSetsZ(m,1:subSize(m))';
     Agents(m).X=subDataSetsX(:,1:subSize(m),m);
     Agents(m).idx=idx(m,1:subSize(m));
@@ -122,6 +124,10 @@ for m=1:M
         Agents(m).distXd(:,:,d)=dist(Agents(m).X(d,:)).^2;
     end
 end
+top_dir_path='results/HO/';
+folder_name=strcat(num2str(M),'_a_',num2str(TotalNumLevel),'_pl');
+mkdir(top_dir_path,folder_name);
+results_dir=strcat(top_dir_path,'/',folder_name);
 clear idx1 idx idexedZ idexedX subDataSetsX
 %% Plot field and sampled points and noisy sample points
     gcf=figure;
@@ -205,7 +211,7 @@ if realDataSet==0||temp_data==3
     ylim([range_x2(1) range_x2(2)])
     title('network topology on 2D field')
     hold off
-    fname='results/topology_background';
+    fname=strcat(results_dir,'/topology_background');
     saveas(gcf,fname,'png');
     close gcf;
 
@@ -239,7 +245,7 @@ if realDataSet==0||temp_data==3
     ylabel('x2')
     title('network topology')
     hold off
-    fname='results/just_topology';
+    fname=strcat(results_dir,'/just_topology');
     saveas(gcf,fname,'png');
     close gcf;
 end
@@ -289,9 +295,9 @@ else
     initial_l=2*ones(1,inputDim);
 end
 
-epsilon = 1e-5; % used for stop criteria
-rho_glb=100;
-L_glb=500;
+epsilon = 1e-4; % used for stop criteria
+rho_glb=TotalNumLevel*0.1;
+L_glb=TotalNumLevel*0.8;
 
 clear show_txt
 %%
@@ -303,7 +309,7 @@ parpool(M)
 % initial_l(1)=initial_l(1)*0.8;
 if run_GD
     % run GD
-    stepSize=0.0001;
+    stepSize=0.00001;
     maxIter=8000;
 
     disp('Time of GD')
@@ -317,11 +323,11 @@ end
 %% Perform ADMM
 if run_ADMM
     % initialize ADMM
-    stepSize=0.0001; % step size of optimizing theta in inner interations
+    stepSize=0.00001; % step size of optimizing theta in inner interations
     initial_beta = [1;ones(length(initial_l),1);1];
     initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
     maxOutIter=1000;
-    maxInIter=50;
+    maxInIter=10;
     for m=1:M
         Agents(m).beta=initial_beta;
         Agents(m).z=initial_z;
@@ -371,7 +377,7 @@ if run_ADMM_fd
     % initialize ADMM_fd
     maxOutIter=1000;
     maxInIter=50;
-    stepSize=0.0001;
+    stepSize=0.00001;
     for m=1:M
         Agents(m).rho=rho_glb;
         Agents(m).sigma_f=initial_sigma_f;
@@ -552,7 +558,7 @@ if run_pxADMM_async_realSimu
     end
     hold off
     set(gca,'YScale','log')
-    fname='results/pxADMM_fd_spmd_steps';
+    fname=strcat(results_dir,'/pxADMM_fd_spmd_steps');
     saveas(gcf,fname,'png');
     close gcf
 
@@ -575,7 +581,7 @@ if run_pxADMM_async_realSimu
         %set(gca,'YScale','log')
         set(gca,'XScale','log')
     end
-    fname='results/pxADMM_fd_spmd_vars';
+    fname=strcat(results_dir,'/pxADMM_fd_spmd_vars');
     saveas(gcf,fname,'png');
     close gcf
 
@@ -632,7 +638,7 @@ hold off;
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
-fname='results/HOMethodsCompare';
+fname=strcat(results_dir,'/HOMethodsCompare');
 hgexport(gcf,fname,s);
 pause(0.01)
 save('workspaceForDebug.mat');

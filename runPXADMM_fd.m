@@ -8,6 +8,10 @@ if usejava('desktop')
 else
     wbVisibility=false;
 end
+
+top_dir_path=strcat('results/HO');
+folder_name=strcat(num2str(M),'_a_',num2str(Agents(1).TotalNumLevel),'_pl');
+full_path=strcat(top_dir_path,'/',folder_name,'/');
 if sync
     inputDim=size(Agents(1).X,1);
 
@@ -107,12 +111,15 @@ if sync
         end
         hold on
         for m=1:M
-            plot(Zs{m}(i,:));
+            
             cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
         end
         y_c=yline(cvgValue(i),'-.b');
         if realDataSet==0
             y_r=yline(Agents(1).realz(i),'r-.');
+        end
+        for m=1:M
+            plot(Zs{m}(i,:));
         end
 
         set(gca, 'XScale', 'log')
@@ -136,7 +143,7 @@ if sync
     s=hgexport('factorystyle');
     s.Resolution=600;
     s.Format='png';
-    fname='results/pxADMM_fd_sync_vars';
+fname=strcat(full_path,'pxADMM_fd_sync_vars');
     fname=strcat(fname,'_',num2str(M),'_agents');
     hgexport(gcf,fname,s);
 
@@ -172,7 +179,7 @@ if sync
     s=hgexport('factorystyle');
     s.Resolution=600;
     s.Format='png';
-    fname='results/pxADMM_fd_sync_Steps';
+fname=strcat(full_path,'pxADMM_fd_sync_Steps');
     fname=strcat(fname,'_',num2str(M),'_agents');
     hgexport(gcf,fname,s);
     close gcf;
@@ -345,12 +352,15 @@ else
         end
         hold on
         for m=1:M
-            plot(Zs{m}(i,:));
-            cvgValue(i)=min(cvgValue(i),Zs{m}(i,end));
+           
+            cvgValue(i)=min(cvgValue(i),Zs{m}(i,end)); 
         end
         y_c=yline(cvgValue(i),'-.b');
         if realDataSet==0
             y_r=yline(Agents(1).realz(i),'r-.');
+        end
+        for m=1:M
+            plot(Zs{m}(i,:));
         end
 
         set(gca, 'XScale', 'log')
@@ -373,8 +383,8 @@ else
     s=hgexport('factorystyle');
     s.Resolution=600;
     s.Format='png';
-    fname='results/pxADMM_fd_async_vars';
-    fname=strcat(fname,'_',num2str(M),'_agents');
+fname=strcat(full_path,'pxADMM_fd_async_vars');
+%     fname=strcat(fname,'_',num2str(M),'_agents');
     hgexport(gcf,fname,s);
     close gcf;
 
@@ -415,8 +425,10 @@ else
     set(gca,'XScale','log')
     hold off;
 
-    fname='results/pxADMM_fd_async_steps_direct_display';
-    saveas(gcf,fname,'png');
+fname=strcat(full_path,'pxADMM_fd_async_Steps');
+%     fname=strcat(fname,'_',num2str(M),'_agents');
+    hgexport(gcf,fname,s);
+%     saveas(gcf,fname,'png');
     close gcf;
     if wbVisibility
         delete(wb);

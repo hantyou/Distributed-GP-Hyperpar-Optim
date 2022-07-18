@@ -9,31 +9,7 @@ To get started, type doc.
 For product information, visit www.mathworks.com.
  
 Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 32).
-This exp is down with artificial dataset loaded
-Generate GP according to given GP_hyperpar
-Elapsed time is 1.229551 seconds.
 
-subSize =
-
-    97
-   100
-    68
-   100
-    48
-    93
-    61
-    93
-
-The method(s) to be evaluated in this experiment is(are):
-GD
-ADMM
-pxADMM
-ADMM_fd
-pxADMM_fd_sync
-pxADMM_fd_async
-
-Parallel pool using the 'local' profile is shutting down.
 Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 8).
 
@@ -49,241 +25,49 @@ ans =
           IdleTimeout: Inf (no automatic shut down)
           SpmdEnabled: true
 
-Time of GD
-Elapsed time is 88.334091 seconds.
-Time of ADMM
-Elapsed time is 58.620025 seconds.
-Time of pxADMM
-Elapsed time is 33.758873 seconds.
-Time of ADMM_{fd}
-Elapsed time is 183.261358 seconds.
-Time of pxADMM_{fd}
-Elapsed time is 15.531883 seconds.
-Time of pxADMM_{fd}
-Elapsed time is 9.125139 seconds.
+This exp is down with artificial dataset loaded
+Generate GP according to given GP_hyperpar
+Elapsed time is 1.155145 seconds.
+
+subSize =
+
+    51
+    71
+    79
+    83
+    45
+    83
+    49
+    75
+    45
+    83
+    50
+    66
+
+[Warning: Directory already exists.] 
+[> In Main (line 129)] 
+The method(s) to be evaluated in this experiment is(are):
+GD
+ADMM
+pxADMM
+ADMM_fd
+pxADMM_fd_sync
+pxADMM_fd_async
+
 Parallel pool using the 'local' profile is shutting down.
 Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 24).
+Connected to the parallel pool (number of workers: 12).
 
-theta =
+ans = 
 
-    3.4983
-    0.9159
-    0.9710
+ Pool with properties: 
 
+            Connected: true
+           NumWorkers: 12
+              Cluster: local
+        AttachedFiles: {}
+    AutoAddClientPath: true
+          IdleTimeout: Inf (no automatic shut down)
+          SpmdEnabled: true
 
-ans =
-
-    3.4983
-    0.9159
-    0.9711
-    0.2922
-
-
-ans =
-
-    3.4983
-    0.9159
-    0.9711
-    0.2922
-
-
-ans =
-
-    3.4983
-    0.9159
-    0.9710
-    0.2923
-
-
-ans =
-
-    3.4983
-    0.9159
-    0.9710
-    0.2922
-
-
-ans =
-
-    3.4983
-    0.9159
-    0.9710
-    0.2923
-
-
-ans =
-
-    3.4983
-    0.9159
-    0.9711
-    0.2922
-
-
-ans =
-
-    3.4983
-    0.9159
-    0.9710
-    0.2922
-
-
-ans =
-
-    3.4983
-    0.9159
-    0.9710
-    0.2922
-
-
-sigma_n =
-
-    0.3162
-
-PoE
-
-ax5 = 
-
-  Axes with properties:
-
-             XLim: [0 1]
-             YLim: [0 1]
-           XScale: 'linear'
-           YScale: 'linear'
-    GridLineStyle: '-'
-         Position: [0.0650 0.0550 0.2044 0.3972]
-            Units: 'normalized'
-
-  Use GET to show all properties
-
-gPoE
-BCM
-rBCM
-png file saved
-Full
-Elapsed time is 5.463720 seconds.
-No-Agg
-Elapsed time is 4.074015 seconds.
-png file saved
-DEC-PoE
-
-toc_agg =
-
-    0.3300
-
-Elapsed time is 5.945781 seconds.
-png file saved
-DEC-gPoE
-
-toc_agg =
-
-    0.4840
-
-Elapsed time is 5.903290 seconds.
-png file saved
-DEC-BCM
-
-toc_agg =
-
-    0.4702
-
-Elapsed time is 7.124929 seconds.
-png file saved
-DEC-rBCM
-
-toc_agg =
-
-    0.4365
-
-Elapsed time is 7.027191 seconds.
-png file saved
-DEC-NPAE
-Elapsed time is 83.272977 seconds.
-png file saved
-NN-NPAE
-Elapsed time is 100.203695 seconds.
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 1082)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 1082)] 
-[Warning: Negative data ignored] 
-[> In xlabel (line 56)
-  In agentsPredictionPlot (line 45)
-  In Main (line 1082)] 
-png file saved
-evaluating
-
-pfmcMean_NoAg =
-
-   23.6560
-
-
-pfmcVar_NoAg =
-
-   13.6102
-
-
-pfmcMean_PoE =
-
-    0.5849
-
-
-pfmcVar_PoE =
-
-    0.6166
-
-
-pfmcMean_gPoE =
-
-    0.5792
-
-
-pfmcVar_gPoE =
-
-    2.2275
-
-
-pfmcMean_BCM =
-
-    0.0992
-
-
-pfmcVar_BCM =
-
-    0.0028
-
-
-pfmcMean_rBCM =
-
-    0.1274
-
-
-pfmcVar_rBCM =
-
-    0.2082
-
-
-pfmcMean_DEC_NPAE =
-
-    0.0564
-
-
-pfmcVar_DEC_NPAE =
-
-    0.0211
-
-
-pfmcMean_NN_NPAE =
-
-    3.5141
-
-
-pfmcVar_NN_NPAE =
-
-   8.0413e+08
-
-all code ended
+Time of GD

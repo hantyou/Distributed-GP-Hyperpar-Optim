@@ -87,6 +87,10 @@ realDataSet=Agents(1).realdataset;
 for z_i=1:(D+2)
     nexttile(z_i);
     hold on
+    y_c=yline(Zs{1}(z_i,end),'b-.');
+    if realDataSet==0
+        y_r=yline(Agents(1).realz(z_i),'r-.');
+    end
     for m=1:M
         plot(Zs{m}(z_i,:));
     end
@@ -98,10 +102,6 @@ for z_i=1:(D+2)
         ylabel('\sigma_n');
     else
         ylabel(strcat('l_',num2str(z_i-1)));
-    end
-    y_c=yline(Zs{1}(z_i,end),'b-.');
-    if realDataSet==0
-        y_r=yline(Agents(1).realz(z_i),'r-.');
     end
     if z_i==1
 
@@ -122,8 +122,11 @@ end
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
-fname='results/ADMM_vars';
-fname=strcat(fname,'_',num2str(M),'_agents');
+top_dir_path=strcat('results/HO');
+folder_name=strcat(num2str(M),'_a_',num2str(Agents(1).TotalNumLevel),'_pl');
+full_path=strcat(top_dir_path,'/',folder_name,'/');
+fname=strcat(full_path,'ADMM_vars');
+% fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
 close gcf
 %
@@ -137,8 +140,8 @@ title('ADMM - step size')
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
-fname='results/ADMM_Steps';
-fname=strcat(fname,'_',num2str(M),'_agents');
+fname=strcat(full_path,'ADMM_Steps');
+% fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
 
 
