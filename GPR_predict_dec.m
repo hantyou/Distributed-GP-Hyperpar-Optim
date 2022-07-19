@@ -13,39 +13,45 @@ N_newX=size(newX,2);
 subMeans=zeros(M,N_newX);
 subVars=zeros(M,N_newX);
 
-
-if nargin==8
-    subMeans=submean_old;
-    subVars=subvar_old;
-    consensusSolver='DTCF';
-else
-    if nargin==7
-        consensusSolver=submean_old;
-    elseif nargin ==6
+switch nargin
+    case 8
+        
+        subMeans=submean_old;
+        subVars=subvar_old;
         consensusSolver='DTCF';
-    end
-    parfor m=1:M
-        [subMeans(m,:),subVars(m,:)]=subGP(Agents(m),newX,sigma_n);
-    end
+    case 9
+        subMeans=submean_old;
+        subVars=subvar_old;
+    case 7
+        consensusSolver=submean_old;
+        parfor m=1:M
+            [subMeans(m,:),subVars(m,:)]=subGP(Agents(m),newX,sigma_n);
+        end
+    case 6
+        consensusSolver='DTCF';
+        parfor m=1:M
+            [subMeans(m,:),subVars(m,:)]=subGP(Agents(m),newX,sigma_n);
+        end
 end
+
 
 switch upper(method)
     case {'DEC-POE'}
-        disp('DEC-PoE')
+        disp(strcat(upper(method),'_with_',consensusSolver))
         %%%
         beta=ones(M,1);
         [Mean,Var,mean,var]=DEC_gPoE(A,subMeans,subVars,beta,maxIter,consensusSolver);
         %%%
         %         disp('Function Under Construction')
-    case {'DEC-GPOE'}
-        disp('DEC-gPoE')
+    case {'DEC-GPOE'} 
+        disp(strcat(upper(method),'_with_',consensusSolver))
         %%%
         beta=ones(M,1)/M;
         [Mean,Var,mean,var]=DEC_gPoE(A,subMeans,subVars,beta,maxIter,consensusSolver);
         %%%
         %         disp('Function Under Construction')
     case {'DEC-BCM'}
-        disp('DEC-BCM')
+        disp(strcat(upper(method),'_with_',consensusSolver))
         %%%
         k_star_star=zeros(M,N_newX);
         for m=1:M
@@ -56,29 +62,29 @@ switch upper(method)
         end
         beta=ones(M,N_newX);
         [Mean,Var,mean,var]=DEC_rBCM(A,subMeans,subVars,beta,k_star_star,maxIter,consensusSolver);
-
+        
         %%%
         %         disp('Function Under Construction')
     case {'DEC-RBCM'}
-        disp('DEC-rBCM')
+        disp(strcat(upper(method),'_with_',consensusSolver))
         %%%
         k_star_star=zeros(M,N_newX);
         for m=1:M
             theta=[Agents(m).sigma_f;Agents(m).l];
-            parfor n=1:N_newX
+            for n=1:N_newX
                 k_star_star(m,n)=kernelFunc(newX(:,n),newX(:,n),theta,sigma_n,'RBF');
             end
         end
         %         beta=ones(M,N_newX);
         beta=0.5*(log(k_star_star)-log(subVars));
         [Mean,Var,mean,var]=DEC_rBCM(A,subMeans,subVars,beta,k_star_star,maxIter,consensusSolver);
-
+        
         %%%
         %         disp('Function Under Construction')
     case {'DEC-GRBCM'}
-        disp('DEC-grBCM')
+        disp(strcat(upper(method),'_with_',consensusSolver))
         %%%
-
+        
         %%%
         disp('Function Under Construction')
     case {'DEC-NPAE'}
@@ -89,7 +95,7 @@ switch upper(method)
         Var=0;
         %%%
         %         disp('Function Under Construction')
-
+        
 end
 
 end
@@ -106,9 +112,13 @@ inv_Vars=zeros(M,N_newX,maxIter+1);
 Means(:,:,1)=beta.*(1./subVar).*subMean;
 inv_Vars(:,:,1)=beta.*(1./subVar);
 toc1=toc;
+d_max=0;
+for m=1:M
+    d_max=max(sum(A(m,:)),d_max);
+end
+epsilon=1/d_max*0.9;
 switch consensusSolver
     case 'DTCF'
-        epsilon=0.15;
         [inv_Vars,Means]=DTCF_solver(inv_Vars,Means,M,A,N_newX,maxIter,epsilon);
     case 'PDMM'
         c=0.3;
@@ -129,8 +139,13 @@ function [Means,inv_Vars,mu,var]=DEC_rBCM(A,subMean,subVar,beta,k_star_star,maxI
 if nargin ==6
     consensusSolver='DTCF';
 end
-epsilon=0.1;
 [M,N_newX]=size(subMean);
+% epsilon=0.1;
+d_max=0;
+for m=1:M
+    d_max=max(sum(A(m,:)),d_max);
+end
+epsilon=1/d_max*0.9;
 Means=zeros(M,N_newX,maxIter+1);
 inv_Vars=zeros(M,N_newX,maxIter+1);
 Means(:,:,1)=beta.*(1./subVar).*subMean;
@@ -139,7 +154,6 @@ inv_Vars(:,:,1)=beta.*(1./subVar);
 toc1=toc;
 switch consensusSolver
     case 'DTCF'
-        epsilon=0.15;
         [inv_Vars,Means]=DTCF_solver(inv_Vars,Means,M,A,N_newX,maxIter,epsilon);
     case 'PDMM'
         c=0.3;
@@ -177,6 +191,7 @@ end
 
 %%
 function [inv_Vars,Means]=DTCF_solver(inv_Vars,Means,M,A,N_newX,maxIter,epsilon)
+
 for i=1:maxIter
     for m=1:M
         % Var
@@ -229,12 +244,12 @@ for t=1:maxIter
         a_inv_var_i=a_inv_vars(i,:);
         %                 inv_var_m_i=inv_Vars(i,:,t);
         inv_Vars(i,:,t+1)=1/(1+c*d(i)).*(a_inv_var_i+sum(c*x_var_j(neighborList,:)+xi_var_ji(neighborList,:),1));
-
-
-
+        
+        
+        
         xi_var_ij(neighborList,:)=-xi_var_ji(neighborList,:)+c*(inv_Vars(i,:,t+1)-x_var_j(neighborList,:));
         xi_var_ijs{i}=xi_var_ij;
-
+        
         %% mu update
         xi_mu_ji=zeros(M,N_newX);
         x_mu_j=zeros(M,N_newX);
@@ -246,12 +261,12 @@ for t=1:maxIter
         a_mu_i=a_mu(i,:);
         %                 mu_m_i=Means(i,:,t);
         Means(i,:,t+1)=1/(1+c*d(i)).*(a_mu_i+sum(c*x_mu_j(neighborList,:)+xi_mu_ji(neighborList,:),1));
-
-
-
+        
+        
+        
         xi_mu_ij=-xi_mu_ji+c*(Means(i,:,t+1)-x_mu_j);
         xi_mu_ijs{i}=xi_mu_ij;
-
+        
     end
 end
 end
@@ -283,9 +298,9 @@ for t=1:maxIter
             x_var_j(neighborId,:)=inv_Vars(neighborId,:,t);
         end
         inv_Vars(i,:,t+1)=1/(1+c*d(i)).*(a_inv_vars(i,:)+sum(ita_var_ji(neighborList,:),1));
-
+        
         ita_var{i}=-ita_var_ji+2*c*inv_Vars(i,:,t+1);
-
+        
         %% mu update
         x_mu_j=zeros(M,N_newX);
         for j=1:d(i)
@@ -294,9 +309,9 @@ for t=1:maxIter
             x_mu_j(neighborId,:)=Means(neighborId,:,t);
         end
         Means(i,:,t+1)=1/(1+c*d(i)).*(a_mu(i,:)+sum(ita_mu_ji(neighborList,:),1));
-
+        
         ita_mu{i}=-ita_mu_ji+2*c*Means(i,:,t+1);
-
+        
     end
 end
 end
@@ -323,7 +338,7 @@ for m=1:M
     X1=Agents(m).X;
     theta=[Agents(m).sigma_f;Agents(m).l];
     %theta=[Agents(1).sigma_f;Agents(1).l];
-    for n=1:N_newX
+    parfor n=1:N_newX
         k_star_star(m,n)=kernelFunc(newX(:,n),newX(:,n),theta,sigma_n,'RBF');
     end
     for n=1:M
@@ -341,17 +356,18 @@ for m=1:M
     k_m=k_ms{m};
     %     k_A(m,:)=diag(k_m*invKs{m}*k_m');
     invKs_m=invKs{m};
-    for n=1:N_newX
+    parfor n=1:N_newX
         k_A(m,n)=k_m(n,:)*invKs_m*k_m(n,:)';
     end
     for n=1:M
+        %     for n=[m,Agents(m).Neighbors]
         k_n=k_ms{n};
-
+        
         for num=1:N_newX
             K_A_m(n,num)=k_m(num,:)*invKs_m*C_mn{m,n}*invKs{n}*k_n(num,:)';
             K_A(m,n,num)=k_m(num,:)*invKs_m*C_mn{m,n}*invKs{n}*k_n(num,:)';
         end
-
+        
     end
     % pre initial JOR
     q_mu_old(m,:)=subMean(m,:)./K_A_m(m,:);
@@ -373,10 +389,11 @@ while maxIterJOR>0
     for i=1:M
         a_part_mu=(1-w).*q_mu_old(i,:);
         c_part_mu=zeros(1,N_newX);
-
+        
         a_part_sigma=(1-w).*q_sigma_old(i,:);
         c_part_sigma=zeros(1,N_newX);
         for j=1:M
+            %         for j=[m,Agents(m).Neighbors]
             K_A_i_j=squeeze(K_A(i,j,:))';
             if j>i
                 c_part_mu=c_part_mu+K_A_i_j.*q_mu_old(j,:);
@@ -387,12 +404,12 @@ while maxIterJOR>0
             else
                 continue;
             end
-
+            
         end
         K_A_i_i=squeeze(K_A(i,i,:))';
         b_part_mu=w./K_A_i_i.*(subMean(i,:)-c_part_mu);
         b_part_sigma=w./K_A_i_i.*(k_A(i,:)-c_part_sigma);
-
+        
         q_mu_new(i,:)=a_part_mu+b_part_mu;
         q_sigma_new(i,:)=a_part_sigma+b_part_sigma;
     end
@@ -483,7 +500,7 @@ function K=getK(X1,X2,theta,sigma_n)
 if nargin<4
     sigma_n=theta;
     theta=X2;
-
+    
     X=X1;
     X2=X1;
 end

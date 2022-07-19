@@ -12,7 +12,7 @@ Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 32).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 1.108527 seconds.
+Elapsed time is 1.055739 seconds.
 
 subSize =
 
@@ -42,65 +42,89 @@ pxADMM_fd_async
 Time of GD
    500
 
+   3.1518e-04
+
         1000
+
+   2.1782e-04
 
         1500
 
+   1.5822e-04
+
         2000
+
+   1.1857e-04
 
         2500
 
+   9.0754e-05
+
         3000
+
+   7.0509e-05
 
         3500
 
+   5.5384e-05
+
         4000
+
+   4.3863e-05
 
         4500
 
+   3.4957e-05
+
         5000
+
+   2.7996e-05
 
         5500
 
+   2.2507e-05
+
         6000
+
+   1.8149e-05
 
         6500
 
+   1.4670e-05
+
         7000
 
-        7500
+   1.1881e-05
 
-        8000
-
-Elapsed time is 728.331441 seconds.
+Elapsed time is 679.816202 seconds.
 Time of ADMM
    500
 
-   1.1750e-04
+   1.0391e-04
 
-Elapsed time is 494.247154 seconds.
+Elapsed time is 464.244604 seconds.
 Time of pxADMM
    500
 
    1.0266e-04
 
-Elapsed time is 88.756057 seconds.
+Elapsed time is 87.684297 seconds.
 Time of ADMM_{fd}
    500
 
-   4.7692e-04
+   4.5072e-04
 
         1000
 
-   2.1832e-04
+   2.3587e-04
 
-Elapsed time is 556.598247 seconds.
+Elapsed time is 548.734585 seconds.
 Time of pxADMM_{fd}
-Elapsed time is 23.003101 seconds.
+Elapsed time is 25.457032 seconds.
 Time of pxADMM_{fd}
    250
 
    3.0565e-05
 
-Elapsed time is 25.230966 seconds.
+Elapsed time is 27.150231 seconds.
 Code end at HO

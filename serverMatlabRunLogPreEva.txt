@@ -10,14 +10,20 @@ For product information, visit www.mathworks.com.
  
 Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 30).
-This exp is down with artificial dataset loaded
-Generate GP according to given GP_hyperpar
-Elapsed time is 1.342179 seconds.
-decide agents positions
-also deciding sampling points
-Elapsed time is 3.934565 seconds.
-data loading/generation end
-%%%%%%%%%%%%%%%%%%%%Examine Part Begin%%%%%%%%%%%%%%%%%%%%%%%
+Methods Connected to the parallel pool (number of workers: 8).
+
+ans = 
+
+ Pool with properties: 
+
+            Connected: true
+           NumWorkers: 8
+              Cluster: local
+        AttachedFiles: {}
+    AutoAddClientPath: true
+          IdleTimeout: Inf (no automatic shut down)
+          SpmdEnabled: true
+
 Methods to be examined are:
 DEC-PoE
 DEC-gPoE
@@ -27,415 +33,86 @@ DEC-NPAE
 NN-NPAE
 CON-NPAE
 No-Ag
-Now calculating Full GP
-Elapsed time is 4.916534 seconds.
+This exp is dElapsed time is 8.197933 seconds.
 Agent number:
      2
 
-DEC-PoE
-DEC-PoE
+DEC-POE_with_PDMM
 
 toc_agg =
 
-    0.0388
+    0.0521
 
-Elapsed time is 14.165064 seconds.
-DEC-PoE
-
-toc_agg =
-
-    0.0211
-
-Elapsed time is 28.648688 seconds.
-DEC-gPoE
-DEC-gPoE
+Elapsed time is 0.156410 seconds.
+DEC-POE_with_DTCF
 
 toc_agg =
 
-    0.0244
+    0.0249
 
-Elapsed time is 14.249810 seconds.
-DEC-gPoE
-
-toc_agg =
-
-    0.0146
-
-Elapsed time is 28.270868 seconds.
-DEC-BCM
-DEC-BCM
+Elapsed time is 0.186678 seconds.
+DEC-GPOE_with_PDMM
 
 toc_agg =
 
-    0.0191
+    0.0536
 
-Elapsed time is 13.227379 seconds.
-DEC-BCM
-
-toc_agg =
-
-    0.0100
-
-Elapsed time is 28.082142 seconds.
-DEC-rBCM
-DEC-rBCM
+Elapsed time is 0.062975 seconds.
+DEC-GPOE_with_DTCF
 
 toc_agg =
 
-    0.0163
+    0.0206
 
-Elapsed time is 16.012990 seconds.
-DEC-rBCM
+Elapsed time is 0.087300 seconds.
+DEC-BCM_wDEC-POE_with_PDMM
 
 toc_agg =
 
-    0.0080
+    0.0580
 
-Elapsed time is 29.006556 seconds.
+Elapsed time is 0.128899 seconds.
+DEC-POE_with_DTCF
+
+toc_agg =
+
+    0.0269
+
+Elapsed time is 0.161898 seconds.
+DEC-GPOE_with_PDMM
+
+toc_agg =
+
+    0.0408
+
+Elapsed time is 0.045042 seconds.
+DEC-GPOE_with_DTCF
+
+toc_agg =
+
+    0.0182
+
+Elapsed time is 0.066224 seconds.
+Elapsed time is 84.643194 seconds.
+The identifier was:
+MATLAB:minrhsThere was an error! The message was:
+Not enough input arguments.s 0.506254 seconds.
+DEC-RBCM_with_PDMM
+
+toc_agg =
+
+    0.0331
+
+Elapsed time is 0.391752 seconds.
+DEC-RBCM_with_DTCF
+
+toc_agg =
+
+    0.0171
+
+Elapsed time is 0.700337 seconds.
 DEC-NPAE
-DEC-NPAE
-Elapsed time is 60.571379 seconds.
-DEC-NPAE
-Elapsed time is 121.955733 seconds.
-NN-NPAE
-NN-NPAE
-Elapsed time is 36.419791 seconds.
-CON-NPAE
-DEC-BCM
-
-toc_agg =
-
-    0.0096
-
-Elapsed time is 0.205552 seconds.
-No-Ag
-No-Agg
-Elapsed time is 2.370444 seconds.
-Agent number:
-     4
-
-DEC-PoE
-DEC-PoE
-
-toc_agg =
-
-    0.0589
-
-Elapsed time is 9.249064 seconds.
-DEC-PoE
-
-toc_agg =
-
-    0.0347
-
-Elapsed time is 17.421335 seconds.
-DEC-gPoE
-DEC-gPoE
-
-toc_agg =
-
-    0.0513
-
-Elapsed time is 7.886799 seconds.
-DEC-gPoE
-
-toc_agg =
-
-    0.0694
-
-Elapsed time is 16.299949 seconds.
-DEC-BCM
-DEC-BCM
-
-toc_agg =
-
-    0.0471
-
-Elapsed time is 9.648924 seconds.
-DEC-BCM
-
-toc_agg =
-
-    0.0368
-
-Elapsed time is 17.984164 seconds.
-DEC-rBCM
-DEC-rBCM
-
-toc_agg =
-
-    0.0587
-
-Elapsed time is 9.209849 seconds.
-DEC-rBCM
-
-toc_agg =
-
-    0.0358
-
-Elapsed time is 18.656695 seconds.
-DEC-NPAE
-DEC-NPAE
-Elapsed time is 61.106674 seconds.
-DEC-NPAE
-Elapsed time is 122.270551 seconds.
-NN-NPAE
-NN-NPAE
-Elapsed time is 38.653019 seconds.
-CON-NPAE
-DEC-BCM
-
-toc_agg =
-
-    0.0333
-
-Elapsed time is 0.473933 seconds.
-No-Ag
-No-Agg
-Elapsed time is 2.478851 seconds.
-Agent number:
-     8
-
-DEC-PoE
-DEC-PoE
-
-toc_agg =
-
-    0.2389
-
-Elapsed time is 5.399476 seconds.
-DEC-PoE
-
-toc_agg =
-
-    0.1984
-
-Elapsed time is 10.670347 seconds.
-DEC-gPoE
-DEC-gPoE
-
-toc_agg =
-
-    0.1925
-
-Elapsed time is 5.151896 seconds.
-DEC-gPoE
-
-toc_agg =
-
-    0.1597
-
-Elapsed time is 11.236558 seconds.
-DEC-BCM
-DEC-BCM
-
-toc_agg =
-
-    0.1561
-
-Elapsed time is 6.002339 seconds.
-DEC-BCM
-
-toc_agg =
-
-    0.1986
-
-Elapsed time is 11.834873 seconds.
-DEC-rBCM
-DEC-rBCM
-
-toc_agg =
-
-    0.1440
-
-Elapsed time is 6.201004 seconds.
-DEC-rBCM
-
-toc_agg =
-
-    0.1349
-
-Elapsed time is 12.904052 seconds.
-DEC-NPAE
-DEC-NPAE
-Elapsed time is 54.289405 seconds.
-DEC-NPAE
-Elapsed time is 111.617060 seconds.
-NN-NPAE
-NN-NPAE
-Elapsed time is 37.816378 seconds.
-CON-NPAE
-DEC-BCM
-
-toc_agg =
-
-    0.1531
-
-Elapsed time is 0.967563 seconds.
-No-Ag
-No-Agg
-Elapsed time is 3.049445 seconds.
-Agent number:
-    12
-
-DEC-PoE
-DEC-PoE
-
-toc_agg =
-
-    0.5324
-
-Elapsed time is 4.492286 seconds.
-DEC-PoE
-
-toc_agg =
-
-    0.4025
-
-Elapsed time is 9.081548 seconds.
-DEC-gPoE
-DEC-gPoE
-
-toc_agg =
-
-    0.5718
-
-Elapsed time is 4.327754 seconds.
-DEC-gPoE
-
-toc_agg =
-
-    0.4112
-
-Elapsed time is 9.182474 seconds.
-DEC-BCM
-DEC-BCM
-
-toc_agg =
-
-    0.5946
-
-Elapsed time is 4.975020 seconds.
-DEC-BCM
-
-toc_agg =
-
-    0.3576
-
-Elapsed time is 10.506257 seconds.
-DEC-rBCM
-DEC-rBCM
-
-toc_agg =
-
-    0.5366
-
-Elapsed time is 7.104271 seconds.
-DEC-rBCM
-
-toc_agg =
-
-    0.3275
-
-Elapsed time is 12.272753 seconds.
-DEC-NPAE
-DEC-NPAE
-Elapsed time is 73.248569 seconds.
-DEC-NPAE
-Elapsed time is 140.806596 seconds.
-NN-NPAE
-NN-NPAE
-Elapsed time is 76.458910 seconds.
-CON-NPAE
-DEC-BCM
-
-toc_agg =
-
-    0.3288
-
-Elapsed time is 1.685868 seconds.
-No-Ag
-No-Agg
-Elapsed time is 3.305800 seconds.
-Agent number:
-    16
-
-DEC-PoE
-DEC-PoE
-
-toc_agg =
-
-    0.8552
-
-Elapsed time is 3.809970 seconds.
-DEC-PoE
-
-toc_agg =
-
-    0.6844
-
-Elapsed time is 7.550364 seconds.
-DEC-gPoE
-DEC-gPoE
-
-toc_agg =
-
-    0.7048
-
-Elapsed time is 3.534138 seconds.
-DEC-gPoE
-
-toc_agg =
-
-    0.5504
-
-Elapsed time is 6.911798 seconds.
-DEC-BCM
-DEC-BCM
-
-toc_agg =
-
-    0.9291
-
-Elapsed time is 5.128374 seconds.
-DEC-BCM
-
-toc_agg =
-
-    0.6724
-
-Elapsed time is 11.625720 seconds.
-DEC-rBCM
-DEC-rBCM
-
-toc_agg =
-
-    0.9862
-
-Elapsed time is 7.147385 seconds.
-DEC-rBCM
-
-toc_agg =
-
-    0.6252
-
-Elapsed time is 13.603364 seconds.
-DEC-NPAE
-DEC-NPAE
-Elapsed time is 72.522967 seconds.
-DEC-NPAE
-Elapsed time is 152.804360 seconds.
-NN-NPAE
-NN-NPAE
-Elapsed time is 80.772842 seconds.
-CON-NPAE
-DEC-BCM
-
-toc_agg =
-
-    0.6896
-
-Elapsed time is 2.212961 seconds.
-No-Ag
-No-Agg
-Elapsed time is 4.250927 seconds.
+Elapsed time is 89.107895 seconds.
+The identifier was:
+MATLAB:minrhsThere was an error! The message was:
+Not enough input arguments.

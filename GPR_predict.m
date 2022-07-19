@@ -1,6 +1,9 @@
-function [Mean,Uncertainty] = GPR_predict(X,Z,theta,range,sigma_n,plotFlag)
+function [Mean,Uncertainty] = GPR_predict(X,Z,theta,range,sigma_n,plotFlag,reso)
 %GPR_PREDICT Summary of this function goes here
 %   Detailed explanation goes here
+if nargin==6
+   reso=[100,100]; 
+end
 range_x1=range(1,:);
 range_x2=range(2,:);
 sigma_f=theta(1);
@@ -26,8 +29,8 @@ y=Z';
 
 mean=[];
 var=[];
-ts_1=linspace(range_x1(1),range_x1(2),100);
-ts_2=linspace(range_x2(1),range_x2(2),100);
+ts_1=linspace(range_x1(1),range_x1(2),reso(1));
+ts_2=linspace(range_x2(1),range_x2(2),reso(2));
 try
     L=chol(K)';
     [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
