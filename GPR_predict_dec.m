@@ -194,6 +194,8 @@ function [inv_Vars,Means]=DTCF_solver(inv_Vars,Means,M,A,N_newX,maxIter,epsilon)
 
 for i=1:maxIter
     for m=1:M
+%         d_m=sum(A(m,:));
+%         epsilon=1/d_m*0.9;
         % Var
         inv_var_m_i=inv_Vars(m,:,i);
         inv_var_m_j_i=zeros(1,N_newX);
@@ -383,7 +385,7 @@ parfor n=1:N_newX
     q_sigma_direct(:,n)=pinv(K_A(:,:,n))*k_A(:,n);
 end
 maxIterJOR=400;
-w=0.15;
+w=0.1;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
     for i=1:M

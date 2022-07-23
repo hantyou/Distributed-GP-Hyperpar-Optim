@@ -1,6 +1,8 @@
 %% This is branch main
 clc, clear;
 close all;
+start_time=datetime('now');
+disp(strcat("The code begins at ",datestr(start_time)))
 F = findall(0,'type','figure','tag','TMWWaitbar');
 delete(F);
 try
@@ -647,6 +649,11 @@ pause(0.01)
 save(strcat(results_dir,'/workspaceForDebug.mat'));
 
 disp('Code end at HO')
+
+end_time=datetime('now');
+disp(strcat("The code ends at ",datestr(end_time)))
+code_duration=end_time-start_time;
+disp(strcat("The code duration is ",string(code_duration)))
 return
 %% GPR real
 realDataSet=0;

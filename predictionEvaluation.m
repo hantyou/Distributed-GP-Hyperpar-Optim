@@ -1,5 +1,7 @@
 clc,clear;
 close all;
+start_time=datetime('now');
+disp(strcat("The code begins at ",datestr(start_time)))
 set(0,'DefaultFigureVisible','off')
 %%
 delete(gcp('nocreate'))
@@ -16,7 +18,7 @@ maxM=16;
 reso_m=256;
 reso_n=256;
 everyAgentsSampleNum=50;
-Agents_measure_range=3;
+Agents_measure_range=4;
 realDataSet=0;
 samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
 agentsScatterMethod=2; % 1. Randomly distributed accross the area; 2. K_means center
@@ -159,6 +161,7 @@ for exp_r_id=1:repeatNum
         commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/7];
     for expId=1:Num_expGroup
         M=Ms(expId);
+        maxIter=100;
         disp("Agent number:")
         disp(M)
         connected=0;
@@ -203,7 +206,8 @@ for exp_r_id=1:repeatNum
         end
         
         for n=1:Num_MethodsExamined
-            clear mean1 var1 mean2 var2
+            clear mean_1 var_1 mean_2 var_2 Means Vars Means2 Vars2
+            outputPDMM_DTCF_compare=0;
             method=MethodsExamined(n);
             tic
             switch method
@@ -212,10 +216,12 @@ for exp_r_id=1:repeatNum
                     A=A_full(1:M,1:M);
                     [Means,Vars,mean_1,var_1] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,subMeans_precal,subVars_precal,'PDMM');
                     
-                    
+                        mean_2=[];
+                    var_2=[];
                     if method~="DEC-NPAE"
                         toc
                         [Means2,Vars2,mean_2,var_2] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,subMeans_precal,subVars_precal,'DTCF');
+                    outputPDMM_DTCF_compare=1;
                     end
                 case NNNAME
 %                     disp(method)
@@ -260,13 +266,45 @@ for exp_r_id=1:repeatNum
             times(n,expId)=TOC;
             [meanRMSE(n,expId),varRMSE(n,expId)] = ...
                 evaluatePredictionPerformanceMetrices(realMean,realVar,mean_1,var_1,evaMethod);
-            if length(mean_2)~=0
+            if ~isempty(mean_2)
                 [meanRMSE2(n,expId),varRMSE2(n,expId)] = ...
                     evaluatePredictionPerformanceMetrices(realMean,realVar,mean_2,var_2,evaMethod);
-                clear mean2 var2
+                clear mean_2 var_2
             else
                 [meanRMSE2(n,expId),varRMSE2(n,expId)] = ...
                     evaluatePredictionPerformanceMetrices(realMean,realVar,mean_1,var_1,evaMethod);
+            end
+            if outputPDMM_DTCF_compare==1
+                gcf=figure;
+                [pm2,pv2] = ...
+                    evaluatePredictionPerformanceMetrices(realMean,realVar,Means2,Vars2,'consensusRMSE');
+                [pm,pv] = ...
+                    evaluatePredictionPerformanceMetrices(realMean,realVar,Means,Vars,'consensusRMSE');
+                tiledlayout(2,1,'Padding','none','TileSpacing','compact');
+                nexttile(1);
+                plot(pm2),hold on,plot(pm),title('Mean Error'),hold off;
+                legend(['DTCF';'PDMM'],'Location','northoutside','Orientation','horizontal')
+                set(gca,'XScale','log','YScale','log');
+                xlabel('iterations')
+                ylabel('consensus error')
+                nexttile(2);
+                plot(pv2),hold on,plot(pv),title('Variance Error'),hold off;
+                set(gca,'XScale','log','YScale','log');
+                xlabel('iterations')
+                ylabel('consensus error')
+                
+                sgtitle(strcat(method,' Mean and Variance consensus error'));
+                fname=strcat('results\Agg\PerformanceEva\',method,'_expRep_',num2str(exp_r_id),'_a_',num2str(M),'_maxIter_',num2str(maxIter),'_PDMM_DTCF_Compare');
+                s=hgexport('factorystyle');
+                s.Format='eps';
+                s.FontSizeMin=10;
+                s.Resolution=600;
+                s.width=8;
+                s.height=6;
+                hgexport(gcf,fname,s);
+                s.Format='png';
+                hgexport(gcf,fname,s);
+                close 
             end
         end
         
@@ -375,6 +413,10 @@ fname='results/Agg/PerformanceEva/Times';
 saveas(gcf,fname,'png');
 close gcf;
 
+end_time=datetime('now');
+disp(strcat("The code ends at ",datestr(end_time)))
+code_duration=end_time-start_time;
+disp(strcat("The code duration is ",string(code_duration)))
 %%
 function [Mean,Var]=subGP(Agent,newX,sigma_n)
 if nargin==2

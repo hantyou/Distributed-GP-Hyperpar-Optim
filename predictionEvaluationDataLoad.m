@@ -269,6 +269,7 @@ dataSourceOption=2;
         title('network topology on 2D field')
         hold off
         fname='results/Agg/PerformanceEva/topology_background';
+        fname=strcat(fname,'_exp_',num2str(exp_r_id));
         saveas(gcf,fname,'png');
         close gcf;
 
@@ -303,6 +304,7 @@ dataSourceOption=2;
         title('network topology')
         hold off
         fname='results/Agg/PerformanceEva/just_topology';
+        fname=strcat(fname,'_exp_',num2str(exp_r_id));
         saveas(gcf,fname,'png');
         close gcf;
     end
