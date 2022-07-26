@@ -14,8 +14,6 @@ if usejava('desktop')
 else
     figureVisibility='off';
 end
-
-
 set(0,'DefaultFigureVisible',figureVisibility)
 
 clear figureVisibility F

@@ -1,4 +1,4 @@
-function [F_true,reso] = loadDataset(select,reso,range,GP_hyperpar)
+function [F_true,reso,range] = loadDataset(select,reso,range,theta)
 %LOADDATASET Summary of this function goes here
 %   Detailed explanation goes here
 if nargin==1
@@ -32,7 +32,7 @@ elseif nargin==3
             disp('Generate GP according to given GP_hyperpar')
             disp('You have not yet decide the GP hyperparameters')
             disp('sigma_f=5, l=[1,1] will be used')
-            GP_hyperpar=[5,1,1]';
+            theta=[5,1,1]';
         case 2
             disp('Generate field according to some function')
         otherwise
@@ -60,8 +60,8 @@ if select == 1
     [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
     %The parameter of generated GP
     
-    l=1;
-    sigma_f=5;
+    l=theta(2:3);
+    sigma_f=theta(1);
     tic
     F_true=gen2D_GP(reso_m,reso_n,l,sigma_f,range_x1,range_x2)';
     toc

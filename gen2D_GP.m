@@ -46,6 +46,6 @@ end
 end
 
 function a=k2(x,t,sigma_f,l)
-    L=diag([l,l]);
+    l=diag(l);
     a=sigma_f^2*exp(-norm([inv(l)*x,inv(l)*t])^2/2);
 end
