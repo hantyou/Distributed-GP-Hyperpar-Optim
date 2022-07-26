@@ -7,11 +7,11 @@ if nargin<4
     X2=X1;
 end
 
-sigma_f=theta(1);
-l=theta(2:end);
 
 [D,M]=size(X1);
 [~,N]=size(X2);
+sigma_f=theta(1);
+l=theta(2:(2+D-1));
 K=zeros(M,N);
 
 for i=1:M
