@@ -1,5 +1,7 @@
 function [A_full,Agents]=generateTopology(Agents,methods)
-    M=Agents(1).M;
+
+
+M=Agents(1).M;
 if methods==1
     %% method 1: stacking squares
     A4=zeros(4,4);

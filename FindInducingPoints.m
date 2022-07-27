@@ -1,4 +1,4 @@
-function [X_m,y_m]= FindInducingPoints(X,y,m_ind,theta,sigma_n)
+function [X_m,y_m,Fv_iterations]= FindInducingPoints(X,y,m_ind,theta,sigma_n)
 %FINDIDUCINGPOINTS Summary of this function goes here
 %   X is the full training input set
 %   y is the full training output set
@@ -27,7 +27,7 @@ Fv_iterations=[];
 while point_left_to_add>0
     [~,n_m]=size(X_n_m);
     Fv_values=zeros(1,n_m);
-    for i=1:n_m
+    parfor i=1:n_m
         x_test=X_n_m(:,i);
         y_test=y_n_m(:,i);
         X_m_test=[X_m,x_test];

@@ -29,6 +29,8 @@ classdef agent
         distX2
         distXd
         sigma_n % Noise variance
+        X_induced
+        Z_induced
 
         % GD parameters
         mu % Step size for GD

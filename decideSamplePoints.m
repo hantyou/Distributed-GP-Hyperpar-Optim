@@ -1,6 +1,7 @@
 function [X,subSize,sampleIdx] = decideSamplePoints(method,subSize,range,Agents_Posi,Agents_measure_range)
 %DECIDESAMPLEPOINTS Summary of this function goes here
 %   Detailed explanation goes here
+%   method: 1. random generation; 2. around agents
 M=length(subSize);
 
 sampleSize=sum(subSize);

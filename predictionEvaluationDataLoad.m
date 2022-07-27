@@ -256,10 +256,6 @@ dataSourceOption=2;
             end
         end
         scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
-        %     for m=1:M
-        %         text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
-        %     end
-        %     % colormap("jet")
 
         xlabel('x1')
         ylabel('x2')

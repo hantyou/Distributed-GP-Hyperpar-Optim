@@ -4,7 +4,7 @@ start_time=datetime('now');
 disp(strcat("The code begins at ",datestr(start_time)))
 
 if usejava('desktop')
-    figureVisibility='on';
+    figureVisibility='off';
 else
     figureVisibility='off';
 end
@@ -16,293 +16,357 @@ set(0,'DefaultFigureVisible',figureVisibility)
 % catch
 %     parpool(8)
 % end
-%%
+%% Evaluation setup
 range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
-maxM=16;
-reso_m=256;
-reso_n=256;
-everyAgentsSampleNum=50;
-Agents_measure_range=4;
-realDataSet=0;
+M=8;
+AgentCommuDist=4;
+reso_x=256;
+reso_y=256;
+everyAgentsSampleNum=70;
+Agents_measure_range=3;
 samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
 agentsScatterMethod=2; % 1. Randomly distributed accross the area; 2. K_means center
-overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
-reso=[reso_m,reso_n];
+reso=[reso_x,reso_y];
 repeatNum=3;
 theta=[5;1;1];
-%% Evaluation setup
-Ms=[2,4,8,12,16]; % different number of agents for different exp groups
-tempFlag=[1,1,1,1,1];
-
+sigma_n=sqrt(0.1);
 maxRange=max(range(:))-min(range(:));
-commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/7];
-tempFlag=tempFlag==1;
-Ms=Ms(tempFlag);
-commuRange=commuRange(tempFlag);
-rngNum=10;
+rngNum=11;
+D=2;
+
+cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
+% pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
+pVec='*o+xsd^p*o+xsd^p*o+xsd^p*o+xsd^p*o+xsd^p*o+xsd^p';
+
 %% data loading
-rng(10,"twister");
+rng(rngNum,"twister");
 realDataSet=0;
+overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
 [F_true,range,reso] = standard_field_loading(range,reso,realDataSet,theta);
+
+[reso_x,reso_y]=size(F_true);
+range_x1=range(1,:); range_x2=range(2,:);
+% generate grid for later use
+t_x=linspace(range_x1(1),range_x1(2),reso_x);
+t_y=linspace(range_x2(1),range_x2(2),reso_y);
+[mesh_x1,mesh_x2]=meshgrid(t_x,t_y);
+
 %% Decide agents position
-Method=1; % 0. totally random; 1. equal generation
+AgentPosiMethod=1; % 0. totally random; 1. equal generation
+%  [Agents_Posi,X,subSize]= generateAgentsPosi(Method,range,M,everyAgentsSampleNum,overlap)
+%   Method: 0. totally random; 1. equal generation
+%   X, subSize: When Method = 0, [] output for these two variables
+[Agents_Posi,Xs,subSize]= generateAgentsPosi(AgentPosiMethod,range,M,...
+    Agents_measure_range,everyAgentsSampleNum,overlap);
+%% Decide sampling points position
+% if not yet decided
+SamplingPointsMethod=2;
+independentSamplingPoints=1;
+if independentSamplingPoints
+    subSize=ones(M,1)*everyAgentsSampleNum;
+    [X_temp,subSize,sampleIdx] = decideSamplePoints(SamplingPointsMethod,...
+        subSize,range,Agents_Posi,Agents_measure_range);
+    Xs=cell(M,1);
+    for m=1:M
+        Xs{m}=X_temp(:,sampleIdx(m)+1:sampleIdx(m+1));
+    end
+    clear X_temp sampleIdx
+end
+% Collect Xs into global dataset
+X=[];
+for m=1:M
+    X=[X,Xs{m}];
+end
+%% Take measurement values
+Ys=cell(M,1); % Clean samples, cell structure
+Y=[];
+Zs=cell(M,1); % Noisy samples, cell structure
+Z=[];
+for m=1:M
+    Ys{m}=interp2(mesh_x1,mesh_x2,F_true,Xs{m}(1,:),Xs{m}(2,:));
+    Y=[Y,Ys{m}];
+    Zs{m}=Ys{m}+sigma_n*randn(size(Ys{m}));
+    Z=[Z,Zs{m}];
+end
+%% Agents target initialization
+Agents=agent.empty(M,0);
+for m=1:M
+    Agents(m).Code=m;
+    Agents(m).Z=Zs{m}';
+    Agents(m).X=Xs{m};
+    Agents(m).N_m=subSize(m);
+    Agents(m).M=M;
+    Agents(m).commuRange=AgentCommuDist;
 
-return
+    Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
+    Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
+    Agents(m).distXd=zeros(subSize(m),subSize(m),D);
+    Agents(m).Position=Agents_Posi(:,m);
+    for d=1:D
+        Agents(m).distXd(:,:,d)=dist(Agents(m).X(d,:)).^2;
+    end
+end
+%% Generate Topology
+TopologyMethod=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
+[A_full,Agents]=generateTopology(Agents,TopologyMethod);
+G=graph(A_full);
+gcf=figure;
+plot(G,'b','XData',Agents_Posi(1,:),'YData',Agents_Posi(2,:));
+close gcf;
+%% Field Setting In One Figure
+for i=1
+    gcf=figure;
+    tiledlayout(1,2,"Padding","none",'TileSpacing','compact');
+    gca1=nexttile(1); % draw field
+    surf(t_x,t_y,F_true,'EdgeColor','none','FaceAlpha',0.8);
+    maxValue_mean=max(F_true(:));
+    minValue_mean=min(F_true(:));
+    colormap('gray');
+    set(gca,"CLim",[minValue_mean,maxValue_mean]);
+    % colorbar;
+    pbaspect([1 1 1])
+    set(gca,"YDir","normal");
+    [colors,pc]=pcsel(Agents_Posi',5);
+    title("Field shown in 3D")
+    gca2=nexttile(2); % draw field and samples
+    hold on;
+    imagesc(t_x,t_y,F_true);
+    maxValue_mean=max(F_true(:));
+    minValue_mean=min(F_true(:));
+    colormap(gca,'gray');
+    set(gca,"CLim",[minValue_mean,maxValue_mean]);
+    colorbar;
+    set(gca,"YDir","normal");
+    sc=zeros(M,1);
+    ap=zeros(M,1);
+    for m=1:M
+        sc(m)=scatter(Agents(m).X(1,:),Agents(m).X(2,:),...
+            25,strcat(pc{colors(m)}(1),pVec(m)));
+    end
+    % for m=1:M
+    %     scatter(Agents(m).Position(1),Agents(m).Position(2),100,strcat(cVec(m),'^'),"filled");
+    % end
+    pg=plot(G,'b','XData',Agents_Posi(1,:),...
+        'YData',Agents_Posi(2,:),'LineWidth',2);
+    for m=1:M
+        highlight(pg, m, 'NodeColor',pc{colors(m)}(1));
+    end
+    ylim(range_x2)
+    xlim(range_x1)
+    pbaspect([1 1 1])
+    title("Field and sampling inputs");
+    hold off
+    s=hgexport('factorystyle');
+    s.Resolution=600;
+    s.Width=8;
+    s.Height=4;
+    s.Format='png';
+    mkdir('results','InducingCompare');
+    fname='results/InducingCompare/ExpSetting';
+    hgexport(gcf,fname,s);
+    close gcf
+    %
+    gcf=figure;
+    tiledlayout(1,1,"Padding","none",'TileSpacing','compact');
+    nexttile(1);
+    surf(t_x,t_y,F_true,'EdgeColor','none','FaceAlpha',0.8);
+    maxValue_mean=max(F_true(:));
+    minValue_mean=min(F_true(:));
+    colormap('gray');
+    set(gca,"CLim",[minValue_mean,maxValue_mean]);
+    colorbar;
+    pbaspect([1 1 1])
+    set(gca,"YDir","normal");
+%     [colors,pc]=pcsel(Agents_Posi',5);
+    title("Field shown in 3D");
+    s=hgexport('factorystyle');
+    s.Resolution=600;
+    scaleFig=0.8;
+    s.Width=4.5*scaleFig;
+    s.Height=4*scaleFig;
+    s.Format='png';
+    s.FontSizeMin=11;
+    fname='results/InducingCompare/Field3D';
+    hgexport(gcf,fname,s);
+    close gcf
+    %
+    gcf=figure;
+    tiledlayout(1,1,"Padding","none",'TileSpacing','compact');
+    nexttile(1);
+    hold on;
+    imagesc(t_x,t_y,F_true);
+    maxValue_mean=max(F_true(:));
+    minValue_mean=min(F_true(:));
+    colormap(gca,'gray');
+    set(gca,"CLim",[minValue_mean,maxValue_mean]);
+    colorbar;
+    set(gca,"YDir","normal");
+    sc=zeros(M,1);
+    ap=zeros(M,1);
+    lgdTex=cell(M+2,1);
+    for m=1:M
+        sc(m)=scatter(Agents(m).X(1,:),Agents(m).X(2,:),...
+            25,strcat(pc{colors(m)}(1),pVec(m)),"filled");
+        lgdTex{m}=strcat('$\mathcal{D}_',num2str(m),'$');
+    end
+    pg=plot(G,'b','XData',Agents_Posi(1,:),...
+        'YData',Agents_Posi(2,:),'LineWidth',2);
+    lgd_node=plot(NaN,NaN,'k.','MarkerSize',18);
+    lgdTex{M+1}='agents';
+    lgd_edge=plot([NaN NaN],[NaN NaN],'b-','LineWidth',2);
+    lgdTex{M+2}='links';
+    for m=1:M
+        highlight(pg, m, 'NodeColor',pc{colors(m)}(1));
+    end
+    ylim(range_x2)
+    xlim(range_x1)
+    legend([sc;lgd_node;lgd_edge],lgdTex,'Location','eastoutside','Interpreter','latex');
+    pbaspect([1 1 1])
+    title("Field and sampling inputs");
+    hold off
+    s=hgexport('factorystyle');
+    s.Resolution=600;
+    s.FontSizeMin=11;
+    s.Width=6*scaleFig;
+    s.Height=4*scaleFig;
+    s.Format='png';
+    fname='results/InducingCompare/FieldAndTopo';
+    hgexport(gcf,fname,s);
+    close gcf
+end
+%% Prepare for predict
+pre_reso_x=100;
+pre_reso_y=100;
+ts_1=linspace(range_x1(1),range_x1(2),pre_reso_x);
+ts_2=linspace(range_x2(1),range_x2(2),pre_reso_y);
+[mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
+vecX=mesh_x(:);
+vecY=mesh_y(:);
+newX=[vecX,vecY]';
+clear vecX vecY
 
-    if realDataSet==1
-        disp('This exp is down with real dataset loaded')
-        loadRealDataset
-    else
-        disp('This exp is down with artificial dataset loaded')
-        [F_true,reso]=loadDataset(1,reso,range,[5,1,1]);
-        [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
-
-        %% Decide sample points
-
-        % renew twister
-        rng(rngNum,'twister')
-
-        tic
-        disp('decide agents positions');
-        if agentsScatterMethod==1
-            Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,maxM)*0.9;
-                unifrnd(range_x2(1),range_x2(2),1,maxM)*0.9];
+%% Apply Inducing Point Algorithm
+Scales=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1];
+exp_num=length(Scales);
+Means_ind=cell(M,exp_num);
+Vars_ind=cell(M,exp_num);
+Fv_values=zeros(M,exp_num);
+maxValue_mean=-Inf;
+minValue_mean=Inf;
+for exp_id=exp_num:-1:1
+    indScale=Scales(exp_id);
+    tic
+    disp(strcat("Now the inducing scale is ",num2str(indScale)));
+    for m=1:M
+        m_ind=ceil(indScale*Agents(m).N_m);
+        if exp_id==exp_num
+        [Agents(m).X_induced,Agents(m).Z_induced,Fvs]=...
+            FindInducingPoints(Agents(m).X,Agents(m).Z',m_ind,theta,sigma_n);
+        Fv_values(m,exp_id)=Fvs(m_ind);
         else
-            disp('also deciding sampling points');
-            Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,maxM)*0.9;
-                unifrnd(range_x2(1),range_x2(2),1,maxM)*0.9];
-            subSize=ones(maxM,1)*everyAgentsSampleNum;
-            [X_temp,subSize,sampleIdx] = decideSamplePoints(1,subSize,range,Agents_Posi,Agents_measure_range);
-
-            X_temp=X_temp';
-            cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
-            pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
-
-            numC=maxM;
-            if overlap==1
-                fcm_option=[3,50,1e-6,false];
-                [centers,U] = fcm(X_temp,numC,fcm_option);
-                fcm_idx=zeros(size(U,2),1);
-                for n=1:size(U,2)
-                    U_n=U(:,n);
-                    ind1=find(U_n==max(U_n));
-                    p_ind1=U_n(ind1);
-                    U_n(U_n==max(U_n))=0;
-                    ind2=find(U_n==max(U_n));
-                    p_ind2=U_n(ind2);
-                    p_ind1=p_ind1/(p_ind1+p_ind2);
-                    if rand>p_ind1
-                        ind=ind2;
-                    else
-                        ind=ind1;
-                    end
-
-                    fcm_idx(n)=ind;
-                end
-                idx=fcm_idx;C=centers;
-                clear p_ind1 ind1 ind2
-            else
-                opts = statset('Display','final');
-                [idx,C] = kmeans(X_temp,numC,'Distance','cityblock',...
-                    'Replicates',5,'Options',opts);
-            end
-            Agents_Posi=C';
-            clusterIdx=idx;
-
-            figure;
-            hold on
-            LegendTxt=cell(numC+1,1);
-            for id=1:numC
-                plot(X_temp(idx==id,1),X_temp(idx==id,2),[cVec(id) pVec(id)],'MarkerSize',10)
-                LegendTxt{id}=strcat('Cluster',num2str(id));
-            end
-            title 'Cluster Assignments and Centroids'
-            LegendTxt{end}='Centroids';
-            plot(C(:,1),C(:,2),'kx',...
-                'MarkerSize',15,'LineWidth',3)
-            legend(LegendTxt,'Location','NW')
-            hold off
+            Agents(m).X_induced=Agents(m).X_induced(:,1:m_ind);
+            Agents(m).Z_induced=Agents(m).Z_induced(:,1:m_ind);
+            Fv_values(m,exp_id)=Fvs(m_ind);
         end
-        toc
-
-
-        subSize=ones(maxM,1)*everyAgentsSampleNum;
-
-        [X,subSize,sampleIdx] = decideSamplePoints(samplingMethod,subSize,range,Agents_Posi,Agents_measure_range);
-
-        if agentsScatterMethod==2
-            X=X_temp';
-            subSize=zeros(maxM,1);
-            for m=1:maxM
-                subSize(m)=length(idx(idx==m));
-                sampleIdx=cumsum(subSize)';
-                sampleIdx=[0,sampleIdx];
-            end
-
-        end
-
-
-        sampleSize=sum(subSize);
-        X1=X(1,:);
-        X2=X(2,:);
-        sigma_n=sqrt(0.1);
-        sampleError=randn(1,sampleSize)*sigma_n;
-        %% Take sample
-        Y=interp2(mesh_x1,mesh_x2,F_true,X1,X2);
-        agentsPosiY=interp2(mesh_x1,mesh_x2,F_true,Agents_Posi(1,:),Agents_Posi(2,:));
-        Z=Y+sampleError; % The observation model (measurement model)
     end
-    %% Dataset division and agents initialization
-    % agents initialization
-    % Distribute according to range of detection
-    localDataSetsSize=subSize;
-    idx1=1:sampleSize;
-    idx=ones(maxM,max(subSize));
-    %     clusterIdx=clusterIdx';
-    for m=1:maxM
-        if agentsScatterMethod==2
-            idx(m,1:subSize(m))=find(clusterIdx==m)';
+    toc
+    % plot part
+    for i=1
+        %
+        gcf=figure;
+        tiledlayout(1,1,"Padding","none",'TileSpacing','compact');
+        nexttile(1);
+        hold on;
+        imagesc(t_x,t_y,F_true);
+        maxValue_mean=max(F_true(:));
+        minValue_mean=min(F_true(:));
+        colormap(gca,'gray');
+        set(gca,"CLim",[minValue_mean,maxValue_mean]);
+        colorbar;
+        set(gca,"YDir","normal");
+        sc=zeros(M,1);
+        ap=zeros(M,1);
+        lgdTex=cell(M+2,1);
+        for m=1:M
+            sc(m)=scatter(Agents(m).X_induced(1,:),Agents(m).X_induced(2,:),...
+                25,strcat(pc{colors(m)}(1),pVec(m)));
+            lgdTex{m}=strcat('$\mathcal{D}_{',num2str(m),'}^{-}$');
+        end
+        pg=plot(G,'b','XData',Agents_Posi(1,:),...
+            'YData',Agents_Posi(2,:),'LineWidth',2);
+        lgd_node=plot(NaN,NaN,'k.','MarkerSize',18);
+        lgdTex{M+1}='agents';
+        lgd_edge=plot([NaN NaN],[NaN NaN],'b-','LineWidth',2);
+        lgdTex{M+2}='links';
+        for m=1:M
+            highlight(pg, m, 'NodeColor',pc{colors(m)}(1));
+        end
+        ylim(range_x2)
+        xlim(range_x1)
+        legend([sc;lgd_node;lgd_edge],lgdTex,'Location','eastoutside','Interpreter','latex');
+        pbaspect([1 1 1])
+        title("Field and sampling inputs");
+        hold off
+        s=hgexport('factorystyle');
+        s.Resolution=300;
+        s.FontSizeMin=11;
+        s.Width=6*scaleFig;
+        s.Height=4*scaleFig;
+        s.Format='png';
+        fname=strcat('results/InducingCompare/FieldAndInducedPoints_indScale_',num2str(indScale));
+        hgexport(gcf,fname,s);
+        close gcf
+    end
+    % Predict
+    for m=1:M
+        [Mean_temp,Var_temp]=...
+            subGP2(Agents(m).X_induced,Agents(m).Z_induced,...
+            newX,theta,sigma_n);
+        maxValue_mean=max(maxValue_mean,max(Mean_temp(:)));
+        minValue_mean=min(minValue_mean,min(Mean_temp(:)));
+        Means_ind{m,exp_id}=reshape(Mean_temp,[pre_reso_x,pre_reso_x]);
+        Vars_ind{m,exp_id}=reshape(Var_temp,[pre_reso_x,pre_reso_x]);
+    end
+end
+%%
+gcf=figure;
+tiledlayout(M,exp_num,'Padding','compact','TileSpacing','compact');
+for m=1:M
+    for exp_id=1:exp_num
+        nexttile((m-1)*exp_num+exp_id);
+        imagesc(ts_1,ts_2,Means_ind{m,exp_id});
+        set(gca,'CLim',[minValue_mean,maxValue_mean]);
+        if m==1
+            ttlTex={num2str(Scales(exp_id));num2str(Fv_values(m,exp_id))};
+            title(ttlTex);
         else
-            idx(m,1:subSize(m))=idx1(sampleIdx(m)+1:sampleIdx(m+1));
+            ttlTex=num2str(Fv_values(m,exp_id));
+            title(ttlTex);
+        end
+        if exp_id==1
+            ylabel(strcat("agent ",num2str(m)));
         end
     end
-    idxedZ=Z(idx);
-    subDataSetsZ=idxedZ;
-    inputDim=size(X,1);
-    idxedX=zeros(inputDim,max(subSize),maxM);
-    for m=1:maxM
-        idxedX(:,:,m)=X(:,idx(m,:));
-    end
-    subDataSetsX=idxedX;
-    % Generate agents
-    subSize;
-    Agents=agent.empty(maxM,0);
-    for m=1:maxM
-        Agents(m).Code=m;
-        Agents(m).Z=subDataSetsZ(m,1:subSize(m))';
-        Agents(m).X=subDataSetsX(:,1:subSize(m),m);
-        Agents(m).idx=idx(m,1:subSize(m));
-        Agents(m).N_m=localDataSetsSize(m);
-        Agents(m).M=maxM;
-        Agents(m).action_status=1;
-        Agents(m).commuRange=3.5;
-        %     Agents(m).commuRange=2.5;
+end
+colorbar;
+s=hgexport('factorystyle');
+s.Resolution=200;
+% s.FontSizeMin=10;
+s.Width=exp_num*40*1.1;
+s.Height=M*40;
+s.Format='eps';
+% s.Bounds='tight';
+% s.FixedFontSize=5;
+% s.ScaledFontSize=5;
+% s.FontMode='fixed';
+fname=strcat('results/InducingCompare/InducedMeanCompare');
+hgexport(gcf,fname,s);
+close gcf
 
-        Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
-        Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
-        Agents(m).distXd=zeros(subSize(m),subSize(m),inputDim);
-        Agents(m).Position=Agents_Posi(:,m);
-        for d=1:inputDim
-            Agents(m).distXd(:,:,d)=dist(Agents(m).X(d,:)).^2;
-        end
-    end
-
-
-
-    %% Set topology
-    Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
-    A_full=generateTopology(Agents,Topology_method);
-    clear Topology_method;
-
-    for m=1:maxM
-        Agents(m).A=A_full(1:maxM,1:maxM);
-        Agents(m).Neighbors=find(Agents(m).A(Agents(m).Code,:)~=0);
-        Agents(m).N_size=length(Agents(m).Neighbors);
-    end
-
-    G=graph(A_full(1:maxM,1:maxM));
-    % figure,plot(G)
-    L = laplacian(G);
-    [~,v]=svd(full(L));
-    v=diag(v);
-    if v(end-1)==0
-        disp("Error: graph not connected")
-    end
-    clear L;
-    if realDataSet==0||temp_data==3
-        gcf=figure('visible','off');
-        hold on;
-        if realDataSet==0
-            imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n),F_true);
-        end
-        if temp_data==3
-            imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(2),range_x2(1),reso_n),F_true);
-            %        contour(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m),F_true,linspace(0,25,10),'-k','LineWidth',0.6);
-        end
-        scatter(X1,X2,'k*');
-        scatter(Agents_Posi(1,:),Agents_Posi(2,:))
-        for m=1:maxM
-            for n=m:maxM
-                if A_full(m,n)>0
-                    posi=[Agents(m).Position,Agents(n).Position];
-                    Posi_dim=length(Agents(m).Position);
-                    if Posi_dim==2
-                        plot(posi(1,:),posi(2,:),'r','LineWidth',1);
-                    elseif Posi_dim==3
-                        plot(posi(1,:),posi(2,:),posi(3,:),'r','LineWidth',1);
-                    end
-                end
-            end
-        end
-        scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
-        %     for m=1:M
-        %         text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
-        %     end
-        %     % colormap("jet")
-
-        xlabel('x1')
-        ylabel('x2')
-        colorbar
-        xlim([range_x1(1) range_x1(2)])
-        ylim([range_x2(1) range_x2(2)])
-        title('network topology on 2D field')
-        hold off
-        fname='results/Agg/PerformanceEva/topology_background';
-        fname=strcat(fname,'_exp_',num2str(exp_r_id));
-%         saveas(gcf,fname,'png');
-        close gcf;
-
-
-
-        gcf=figure('visible','on');
-        hold on;
-        scatter(Agents_Posi(1,:),Agents_Posi(2,:))
-        for m=1:maxM
-            for n=m:maxM
-                if A_full(m,n)>0
-                    posi=[Agents(m).Position,Agents(n).Position];
-                    Posi_dim=length(Agents(m).Position);
-                    if Posi_dim==2
-                        plot(posi(1,:),posi(2,:),'r','LineWidth',1);
-                    elseif Posi_dim==3
-                        plot(posi(1,:),posi(2,:),posi(3,:),'r','LineWidth',1);
-                    end
-                end
-            end
-        end
-        scatter(Agents_Posi(1,:),Agents_Posi(2,:),600,'r','.')
-        for m=1:maxM
-            text(Agents_Posi(1,m),Agents_Posi(2,m),num2str(m));
-        end
-        %     % colormap("jet")
-        %     xlim([range_x1(1) range_x1(2)])
-        %     ylim([range_x2(1) range_x2(2)])
-
-        xlabel('x1')
-        ylabel('x2')
-        title('network topology')
-        hold off
-        fname='results/Agg/PerformanceEva/just_topology';
-        fname=strcat(fname,'_exp_',num2str(exp_r_id));
-%         saveas(gcf,fname,'png');
-        close gcf;
-    end
-
-
-
-% end
+%% Predict based on induced points
+%%
 disp('data loading/generation end')
 disp('%%%%%%%%%%%%%%%%%%%%Examine Part Begin%%%%%%%%%%%%%%%%%%%%%%%')
 close all
