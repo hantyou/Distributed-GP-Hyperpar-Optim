@@ -4,7 +4,7 @@ start_time=datetime('now');
 disp(strcat("The code begins at ",datestr(start_time)))
 
 if usejava('desktop')
-    figureVisibility='off';
+    figureVisibility='on';
 else
     figureVisibility='off';
 end
