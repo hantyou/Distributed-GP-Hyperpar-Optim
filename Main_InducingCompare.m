@@ -4,7 +4,7 @@ start_time=datetime('now');
 disp(strcat("The code begins at ",datestr(start_time)))
 
 if usejava('desktop')
-    figureVisibility='on';
+    figureVisibility='off';
 else
     figureVisibility='off';
 end
@@ -208,7 +208,7 @@ for i=1
     lgdTex=cell(M+2,1);
     for m=1:M
         sc(m)=scatter(Agents(m).X(1,:),Agents(m).X(2,:),...
-            25,strcat(pc{colors(m)}(1),pVec(m)),"filled");
+            25,strcat(pc{colors(m)}(1),pVec(m)));
         lgdTex{m}=strcat('$\mathcal{D}_',num2str(m),'$');
     end
     pg=plot(G,'b','XData',Agents_Posi(1,:),...
@@ -315,7 +315,7 @@ for exp_id=exp_num:-1:1
         s.Width=6*scaleFig;
         s.Height=4*scaleFig;
         s.Format='png';
-        fname=strcat('results/InducingCompare/FieldAndInducedPoints_indScale_',num2str(indScale));
+        fname=strcat('results/InducingCompare/FieldAndInducedPoints_indScale_',num2str(indScale),'.png');
         hgexport(gcf,fname,s);
         close gcf
     end
@@ -354,12 +354,12 @@ colorbar;
 s=hgexport('factorystyle');
 s.Resolution=200;
 % s.FontSizeMin=10;
-s.Width=exp_num*40*1.1;
-s.Height=M*40;
-s.Format='eps';
-% s.Bounds='tight';
-% s.FixedFontSize=5;
-% s.ScaledFontSize=5;
+s.Width=exp_num*1.1;
+s.Height=M;
+s.Format='png';
+s.Bounds='tight';
+s.FixedFontSize=5;
+s.ScaledFontSize=5;
 % s.FontMode='fixed';
 fname=strcat('results/InducingCompare/InducedMeanCompare');
 hgexport(gcf,fname,s);
