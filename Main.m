@@ -29,7 +29,7 @@ region=[];
 %% parpool setup
 delete(gcp('nocreate'))
 try
-    parpool(32);
+    parpool(16);
 catch
     parpool(8)
 end
