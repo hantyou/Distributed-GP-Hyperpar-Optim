@@ -87,11 +87,11 @@ classdef agent
         end
 
         function obj = runLocalGD(obj)
-%             distX = dist((diag(obj.l)\eye(2))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
-%             %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
-%             K_s=obj.sigma_f^(2)*exp(-0.5*distX);
-%             K_n=obj.sigma_n^2*eye(obj.N_m);
-%             obj.K=K_s+K_n;
+            %             distX = dist((diag(obj.l)\eye(2))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
+            %             %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
+            %             K_s=obj.sigma_f^(2)*exp(-0.5*distX);
+            %             K_n=obj.sigma_n^2*eye(obj.N_m);
+            %             obj.K=K_s+K_n;
 
             %             choL = chol(obj.K, 'lower');
             %             alpha = choL'\(choL\obj.Z);
@@ -136,34 +136,34 @@ classdef agent
             while localGDflag
                 inIterCount=inIterCount+1;
                 %%%%GD Iter START%%%%
-%                 distX = dist((diag(old_l)\eye(D))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
+                %                 distX = dist((diag(old_l)\eye(D))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
                 %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
-%                 K_n=old_sigma_n^2*eye(obj.N_m);
-%                 K_s=old_sigma^(2)*exp(-0.5*distX);
-%                 obj.K=K_s+K_n;
+                %                 K_n=old_sigma_n^2*eye(obj.N_m);
+                %                 K_s=old_sigma^(2)*exp(-0.5*distX);
+                %                 obj.K=K_s+K_n;
 
-%                                 choL = chol(obj.K, 'lower');
-%                                 alpha = choL'\(choL\obj.Z);
-%                             invK=inv(obj.K);
-%                                 invChoL=inv(choL);
-%                                 constant_1=invChoL'*invChoL-alpha*alpha';
-% %                                 K_div_sigma_f=2/old_sigma*K_s;
-%                             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
-%                                 obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f)+...
-%                                     obj.beta(1)*(1+obj.rho/obj.beta(1)*(old_sigma-obj.z(1)));
-%                 
-%                                 %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
-%                 
-%                                 K_div_l_1=obj.distX1.*K_s*old_l(1)^(-3);
-%                                 obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1)+...
-%                                     obj.beta(2)*(1+obj.rho/obj.beta(2)*(old_l(1)-obj.z(2)));
-%                 
-%                                 K_div_l_2=obj.distX2.*K_s*old_l(2)^(-3);
-%                                 obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2)+...
-%                                     obj.beta(3)*(1+obj.rho/obj.beta(3)*(old_l(2)-obj.z(3)));
-%                 
-%                                 K_div_l=[obj.pd_l(1);obj.pd_l(2)];
-%                                 obj.pd_l=K_div_l;
+                %                                 choL = chol(obj.K, 'lower');
+                %                                 alpha = choL'\(choL\obj.Z);
+                %                             invK=inv(obj.K);
+                %                                 invChoL=inv(choL);
+                %                                 constant_1=invChoL'*invChoL-alpha*alpha';
+                % %                                 K_div_sigma_f=2/old_sigma*K_s;
+                %                             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
+                %                                 obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f)+...
+                %                                     obj.beta(1)*(1+obj.rho/obj.beta(1)*(old_sigma-obj.z(1)));
+                %
+                %                                 %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
+                %
+                %                                 K_div_l_1=obj.distX1.*K_s*old_l(1)^(-3);
+                %                                 obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1)+...
+                %                                     obj.beta(2)*(1+obj.rho/obj.beta(2)*(old_l(1)-obj.z(2)));
+                %
+                %                                 K_div_l_2=obj.distX2.*K_s*old_l(2)^(-3);
+                %                                 obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2)+...
+                %                                     obj.beta(3)*(1+obj.rho/obj.beta(3)*(old_l(2)-obj.z(3)));
+                %
+                %                                 K_div_l=[obj.pd_l(1);obj.pd_l(2)];
+                %                                 obj.pd_l=K_div_l;
                 old_z=[old_sigma;old_l;old_sigma_n];
 
                 [pd,pdn] = getDiv(obj,old_z);
@@ -222,16 +222,16 @@ classdef agent
 
         function obj = runLocalPxADMM(obj)
             D=length(obj.l);
-%             old_sigma=obj.z(1);
-%             old_l=obj.z(2:(2+D-1));
+            %             old_sigma=obj.z(1);
+            %             old_l=obj.z(2:(2+D-1));
             old_sigma_n=obj.z(end);
-%             inputDim=length(old_l);
-%             K_n=obj.sigma_n^2*eye(obj.N_m);
-%             %%%%local update START%%%%
-%             distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
-%             %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
-%             K_s=old_sigma^(2)*exp(-0.5*distX);
-%             obj.K=K_s+K_n;
+            %             inputDim=length(old_l);
+            %             K_n=obj.sigma_n^2*eye(obj.N_m);
+            %             %%%%local update START%%%%
+            %             distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
+            %             %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
+            %             K_s=old_sigma^(2)*exp(-0.5*distX);
+            %             obj.K=K_s+K_n;
 
             % %             choL = chol(obj.K, 'lower');
             % %             alpha = choL'\(choL\obj.Z);
@@ -402,12 +402,15 @@ classdef agent
             D=length(obj.l);
             obj.action_status=0;
             obj.updatedVars=0*obj.updatedVars;
+
+            % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
             % update z_mn
             for n=1:obj.N_size
                 obj.z_mn(:,n) =((obj.beta_mn(:,n))/obj.rho +([obj.sigma_f;obj.l;obj.sigma_n])+obj.beta_nm(:,n)/obj.rho+obj.theta_n(:,n))/2;
             end
             new_z=mean([obj.z,obj.z_mn],2);
 
+            % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
             % update theta_m
             old_sigma=new_z(1);
             old_l=new_z(2:(2+D-1));
@@ -417,24 +420,6 @@ classdef agent
             obj.z(2:(2+D-1))=old_l;
             obj.z(end)=old_sigma_n;
 
-%             K_n=obj.sigma_n^2*eye(obj.N_m);
-%             distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
-%             K_s=old_sigma^(2)*exp(-0.5*distX);
-%             obj.K=K_s+K_n;
-
-            % %             choL = chol(obj.K, 'lower');
-            % %             alpha = choL'\(choL\obj.Z);
-            % %             try
-            % %                 invChoL=inv(choL);
-            % %             catch
-            % %                 invChoL=pinv(choL);
-            % %                 disp("A non-PSD K matrix exists, now changed to psudo inverse mood.")
-            % %             end
-
-            %
-            %             constant_1=invChoL'*invChoL-alpha*alpha';
-            %             K_div_sigma_f=2/old_sigma*K_s;
-            %             obj.pd_sigma_f =0.5* trace(constant_1*K_div_sigma_f);
 
             [pd,pdn] = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
@@ -457,66 +442,51 @@ classdef agent
             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z);
         end
 
-        %         function obj=runPxADMM_fd(obj)
-        %             obj.action_status=0;
-        %             obj.updatedVars=0*obj.updatedVars;
-        %             % update z_mn
-        %             for n=1:obj.N_size
-        %                 obj.z_mn(:,n) =((obj.beta_mn(:,n))/obj.rho +([obj.sigma_f;obj.l])+obj.beta_nm(:,n)/obj.rho+obj.theta_n(:,n))/2;
-        %             end
-        %             new_z=mean([obj.z,obj.z_mn],2);
-        %
-        %             % update theta_m
-        % %             old_sigma=new_z(1);
-        % %             old_l=new_z(2:end);
-        %             old_sigma=obj.sigma_f;
-        %             old_l=obj.l;
-        %             old_theta=[old_sigma;old_l];
-        %
-        %
-        %             inputDim=length(old_l);
-        %             obj.z(1)=old_sigma;
-        %             obj.z(2:end)=old_l;
-        %
-        %             K_n=obj.sigma_n^2*eye(obj.N_m);
-        %             distX = dist((diag(old_l)\eye(inputDim))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
-        %             K_s=old_sigma^(2)*exp(-0.5*distX);
-        %             obj.K=K_s+K_n;
-        %
-        %             choL = chol(obj.K, 'lower');
-        %             alpha = choL'\(choL\obj.Z);
-        %             try
-        %                 invChoL=inv(choL);
-        %             catch
-        %                 invChoL=pinv(choL);
-        %                 disp("A non-PSD K matrix exists, now changed to psudo inverse mood.")
-        %             end
-        %
-        %
-        %             constant_1=invChoL'*invChoL-alpha*alpha';
-        %             K_div_sigma_f=2/old_sigma*K_s;
-        %             obj.pd_sigma_f =0.5* trace(constant_1*K_div_sigma_f);
-        %
-        %             pd = getDiv(obj,obj.z);
-        % 	    obj.pd_sigma_f = pd(1);
-        %             obj.pd_l=pd(2:end);
-        %             old_beta=mean([obj.beta,obj.beta_mn],2);
-        %             pd_theta=[obj.pd_sigma_f;obj.pd_l];
-        %
-        % %             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
-        %             new_theta=(1/(obj.L+obj.rho*obj.N_size)) * (sum( (obj.rho*obj.z_mn-obj.beta_mn) ,2) + obj.L * old_theta-pd_theta) ;
-        %
-        %
-        %             obj.sigma_f=new_theta(1);
-        %             obj.l=new_theta(2:end);
-        %             % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-        %             % beta update
-        %             for n=1:obj.N_size
-        %                 obj.beta_mn(:,n) = obj.beta_mn(:,n) + ...
-        %                     obj.rho * ([obj.sigma_f;obj.l]-obj.z_mn(:,n));
-        %             end
-        %             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l]-new_z);
-        %         end
+        function obj=runPxADMM_fd_thetac(obj)
+            D=length(obj.l);
+            obj.action_status=0;
+            obj.updatedVars=0*obj.updatedVars;
+
+            % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+            % update z_mn
+            for n=1:obj.N_size
+                obj.z_mn(:,n) =((obj.beta_mn(:,n))/obj.rho +([obj.sigma_f;obj.l;obj.sigma_n])+obj.beta_nm(:,n)/obj.rho+obj.theta_n(:,n))/2;
+            end
+            new_z=mean([obj.z,obj.z_mn],2);
+
+            % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+            % update theta_m
+            old_sigma=new_z(1);
+            old_l=new_z(2:(2+D-1));
+            old_sigma_n=new_z(end);
+            old_theta=[old_sigma;old_l;old_sigma_n];
+            inputDim=length(old_l);
+            obj.z(1)=old_sigma;
+            obj.z(2:(2+D-1))=old_l;
+            obj.z(end)=old_sigma_n;
+
+
+            [pd,pdn] = getDiv(obj,obj.z);
+            obj.pd_l=pd(2:end);
+            obj.pd_sigma_f=pd(1);
+
+            old_beta=mean([obj.beta,obj.beta_mn],2);
+
+            new_theta=(1/(obj.L+obj.rho*obj.N_size))*(sum(obj.rho*obj.z_mn-obj.beta_mn,2)+obj.L*old_theta-[pd;pdn]);
+%             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
+
+
+            obj.sigma_f=new_theta(1);
+            obj.l=new_theta(2:(2+D-1));
+            obj.sigma_n=new_theta(end);
+            % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+            % beta update
+            for n=1:obj.N_size
+                obj.beta_mn(:,n) = obj.beta_mn(:,n) + ...
+                    obj.rho * ([obj.sigma_f;obj.l;obj.sigma_n]-obj.z_mn(:,n));
+            end
+            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z);
+        end
 
     end
 end

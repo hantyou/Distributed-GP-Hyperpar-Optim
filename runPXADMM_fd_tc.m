@@ -1,4 +1,4 @@
-function [sigma_pxADMM_fd,l_pxADMM_fd,sigma_n_pxADMM_fd,outSteps,Zs,thetas] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync)
+function [sigma_pxADMM_fd,l_pxADMM_fd,sigma_n_pxADMM_fd,outSteps,Zs,thetas] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync)
 %RUNPXADMM_FD Summary of this function goes here
 %   Detailed explanation goes here
 D=length(Agents(1).l);
@@ -60,7 +60,7 @@ if sync==1
 
 
         parfor m=1:M
-            Agents(m)=Agents(m).runPxADMM_fd;
+            Agents(m)=Agents(m).runPxADMM_fd_thetac;
             Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]];
             step_m=max(vecnorm([Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]-sub_old_z(:,m),2,2));
             %             step_m=max(vecnorm(Agents(m).l-sub_old_z(2:end,m),2,2));
@@ -239,7 +239,7 @@ elseif sync==0
 
         for i=1:length(activated_agents)
             m=activated_agents(i);
-            Agents(m)=Agents(m).runPxADMM_fd;
+            Agents(m)=Agents(m).runPxADMM_fd_thetac;
             Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]];
             step_m=max(vecnorm([Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]-sub_old_z(:,m),2,2));
             %             step_m=max(vecnorm(Agents(m).l-sub_old_z(2:end,m),2,2));

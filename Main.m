@@ -259,6 +259,9 @@ run_ADMM_fd=1;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
 run_pxADMM_async_realSimu=0;
+run_pxADMM_fd_tc_sync=1;
+run_pxADMM_fd_tc_async=1;
+
 
 run_flags =    [run_GD;
     run_ADMM;
@@ -266,14 +269,18 @@ run_flags =    [run_GD;
     run_ADMM_fd;
     run_pxADMM_fd_sync;
     run_pxADMM_fd_async;
-    run_pxADMM_async_realSimu];
+    run_pxADMM_async_realSimu;
+    run_pxADMM_fd_tc_sync;
+    run_pxADMM_fd_tc_async];
 methods_pool=["GD";
     "ADMM";
     "pxADMM";
     "ADMM_fd";
     "pxADMM_fd_sync";
     "pxADMM_fd_async";
-    "pxADMM_async_realSimu"];
+    "pxADMM_async_realSimu";
+    "pxADMM_fd_tc_sync";
+    "pxADMM_fd_tc_async"];
 show_txt=[];
 for i=1:length(run_flags)
     if run_flags(i)
@@ -589,6 +596,95 @@ parpool(M)
 
     warning('on','all')
 end
+%% run_pxADMM_fd_tc_sync
+if run_pxADMM_fd_tc_sync
+    % initialize pxADMM_fd_tc
+    maxIter=8000;
+    initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
+    initial_beta = 1*[1;ones(length(initial_l),1);1];
+    for m=1:M
+        Agents(m).communicationAbility=1;
+        Agents(m).beta=initial_beta;
+        Agents(m).z=initial_z;
+        Agents(m).rho=rho_glb;
+        Agents(m).l=initial_l';
+        Agents(m).sigma_f=initial_sigma_f;
+        Agents(m).sigma_n=initial_sigma_n;
+        Agents(m).L=L_glb;
+
+        Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=0.1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=0.1*ones(inputDim+2,Agents(m).N_size);
+
+        Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).updatedVars=zeros(1,Agents(m).N_size);
+        Agents(m).updatedVarsNumberThreshold=2;
+    end
+    for m=1:M
+        for n=1:Agents(m).N_size
+            neighbor_idx=Agents(m).Neighbors(n);
+            Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l;Agents(neighbor_idx).sigma_n];
+        end
+    end
+    sync=1;
+    % run pxADMM_fd
+
+    disp('Time of pxADMM_{fd,tc}')
+
+    tic
+    [sigma_pxADMM_fd_tc_sync,l_pxADMM_fd_tc_sync,sigma_n_pxADMM_fd_tc_sync,Steps_pxADMM_fd_tc_sync,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_sync] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
+    toc
+
+    pause(0.1)
+    Steps_pxADMM_fd_tc_sync=Steps_pxADMM_fd_tc_sync{1};
+end
+
+%% run_pxADMM_fd_tc_async
+if run_pxADMM_fd_tc_async
+    % initialize pxADMM_fd_tc
+    maxIter=8000;
+    initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
+    initial_beta = 1*[1;ones(length(initial_l),1);1];
+    for m=1:M
+        Agents(m).communicationAbility=1;
+        Agents(m).beta=initial_beta;
+        Agents(m).z=initial_z;
+        Agents(m).rho=rho_glb;
+        Agents(m).l=initial_l';
+        Agents(m).sigma_f=initial_sigma_f;
+        Agents(m).sigma_n=initial_sigma_n;
+        Agents(m).L=L_glb;
+
+        Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=0.1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=0.1*ones(inputDim+2,Agents(m).N_size);
+
+        Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
+        Agents(m).updatedVars=zeros(1,Agents(m).N_size);
+        Agents(m).updatedVarsNumberThreshold=2;
+    end
+    for m=1:M
+        for n=1:Agents(m).N_size
+            neighbor_idx=Agents(m).Neighbors(n);
+            Agents(m).theta_n(:,n)=[Agents(neighbor_idx).sigma_f;Agents(neighbor_idx).l;Agents(neighbor_idx).sigma_n];
+        end
+    end
+    sync=0;
+    % run pxADMM_fd
+
+    disp('Time of pxADMM_{fd,tc}')
+
+    tic
+    [sigma_pxADMM_fd_tc_async,l_pxADMM_fd_tc_async,sigma_n_pxADMM_fd_tc_async,Steps_pxADMM_fd_tc_async,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_async] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
+    toc
+
+    pause(0.1)
+    Steps_pxADMM_fd_tc_async=Steps_pxADMM_fd_tc_async{1};
+end
 %% Compare convergence speed in terms of iterations
 gcf=figure;
 lgd_txt=[];
@@ -628,6 +724,16 @@ if run_pxADMM_async_realSimu
     semilogy(Agents(1).Steps(2:end));
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{async,realSimu}"];
+end
+if run_pxADMM_fd_tc_sync
+    semilogy(Steps_pxADMM_fd_tc_sync);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,tc,sync}"];
+end
+if run_pxADMM_fd_tc_async
+    semilogy(Steps_pxADMM_fd_tc_async);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,tc,async}"];
 end
 set(gca, 'YScale', 'log');
 set(gca, 'XScale', 'log');
