@@ -9,7 +9,7 @@ try
     opengl software
 catch
 end
-if usejava('desktop')
+if usejava('desktop')   
     figureVisibility='on';
 else
     figureVisibility='off';
@@ -22,7 +22,7 @@ range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
 
-rng(990611,'twister')
+rng(990613,'twister')
 rand(17+16,1);
 M=8;
 region=[];
@@ -252,10 +252,10 @@ end
 
 clear Topology_method G L v posi;
 %% Experiment group setup
-run_GD=1;
-run_ADMM=1;
+run_GD=0;
+run_ADMM=0;
 run_pxADMM=1;
-run_ADMM_fd=1;
+run_ADMM_fd=0;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
 run_pxADMM_async_realSimu=0;
@@ -451,10 +451,11 @@ if run_pxADMM_fd_sync
     sync=1;
     % run pxADMM_fd
 
-    disp('Time of pxADMM_{fd}')
+    disp('Time of pxADMM_{fd,sync}')
 
     tic
-    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,sigma_n_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
+    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,sigma_n_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync] = ...
+        runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
 
     pause(0.1)
@@ -501,7 +502,7 @@ if run_pxADMM_fd_async
     sync=0;
     % run pxADMM_fd
 
-    disp('Time of pxADMM_{fd}')
+    disp('Time of pxADMM_{fd,async}')
 
     tic
     [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] =...
@@ -598,7 +599,7 @@ parpool(M)
 end
 %% run_pxADMM_fd_tc_sync
 if run_pxADMM_fd_tc_sync
-    % initialize pxADMM_fd_tc
+    % initialize pxADMM_fd_tc_sync
     maxIter=8000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
@@ -631,7 +632,7 @@ if run_pxADMM_fd_tc_sync
     sync=1;
     % run pxADMM_fd
 
-    disp('Time of pxADMM_{fd,tc}')
+    disp('Time of pxADMM_{fd,tc,sync}')
 
     tic
     [sigma_pxADMM_fd_tc_sync,l_pxADMM_fd_tc_sync,sigma_n_pxADMM_fd_tc_sync,Steps_pxADMM_fd_tc_sync,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_sync] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
@@ -665,7 +666,8 @@ if run_pxADMM_fd_tc_async
         Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).updatedVars=zeros(1,Agents(m).N_size);
-        Agents(m).updatedVarsNumberThreshold=2;
+        Agents(m).updatedVarsNumberThreshold=3;
+        Agents(m).updatedVarsNumberThreshold=min(Agents(m).updatedVarsNumberThreshold,Agents(m).N_size);
     end
     for m=1:M
         for n=1:Agents(m).N_size
@@ -676,7 +678,7 @@ if run_pxADMM_fd_tc_async
     sync=0;
     % run pxADMM_fd
 
-    disp('Time of pxADMM_{fd,tc}')
+    disp('Time of pxADMM_{fd,tc,async}')
 
     tic
     [sigma_pxADMM_fd_tc_async,l_pxADMM_fd_tc_async,sigma_n_pxADMM_fd_tc_async,Steps_pxADMM_fd_tc_async,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_async] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
@@ -689,66 +691,76 @@ end
 gcf=figure;
 lgd_txt=[];
 hold on;
+lwd=1.2;
+lwd_async=1;
+tiledlayout(1,1,'TileSpacing','compact');
+nexttile(1)
 if run_GD
-    semilogy(Steps_GD);
+    semilogy(Steps_GD,"LineWidth",lwd);
     hold on;
     lgd_txt=[lgd_txt;"GD"];
 end
 if run_ADMM
-    semilogy(IterCounts{1}(1:end-1),Steps_ADMM);
+    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd);
     hold on;
     lgd_txt=[lgd_txt;"ADMM"];
 end
 if run_pxADMM
-    semilogy(Steps_pxADMM);
+    semilogy(Steps_pxADMM,"LineWidth",lwd);
     hold on;
     lgd_txt=[lgd_txt;"pxADMM"];
 end
 if run_ADMM_fd
     IterCounts_fd{1}(1)=1;
-    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd);
+    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd);
     hold on;
     lgd_txt=[lgd_txt;"ADMM_{fd}"];
 end
-if run_pxADMM_fd_sync
-    semilogy(Steps_pxADMM_fd_sync);
-    hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
-end
 if run_pxADMM_fd_async
-    semilogy(Steps_pxADMM_fd_async);
+    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async);
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
 end
+if run_pxADMM_fd_sync
+    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
+end
 if run_pxADMM_async_realSimu
-    semilogy(Agents(1).Steps(2:end));
+    semilogy(Agents(1).Steps(2:end),"LineWidth",lwd);
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{async,realSimu}"];
 end
-if run_pxADMM_fd_tc_sync
-    semilogy(Steps_pxADMM_fd_tc_sync);
-    hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,tc,sync}"];
-end
 if run_pxADMM_fd_tc_async
-    semilogy(Steps_pxADMM_fd_tc_async);
+    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async);
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,tc,async}"];
+end
+if run_pxADMM_fd_tc_sync
+    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,tc,sync}"];
 end
 set(gca, 'YScale', 'log');
 set(gca, 'XScale', 'log');
 xlabel('iterations');
-ylabel('norm(step)');
+ylabel('step size');
 title('log plot of steps-iterations');
 lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
 lgd.NumColumns=4;
 hold off;
 s=hgexport('factorystyle');
-s.Resolution=600;
-s.Format='png';
+s.Resolution=900;
+s.Width=10;
+s.Height=7;
+s.FontSizeMin=12;
 fname=strcat(results_dir,'/HOMethodsCompare');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
 hgexport(gcf,fname,s);
 pause(0.01)
+close gcf
 %%
 save(strcat(results_dir,'/workspaceForDebug.mat'));
 

@@ -75,7 +75,8 @@ if sync==1
             %     Agents(m).rho=Agents(m).rho*0.9999;
         end
         updated_z=updated_z/M;
-        step = max(vecnorm(updated_z(1:end)-old_z(1:end),2,2));
+        step = max(vecnorm(global_step,2,2));
+%         step = max(vecnorm(updated_z(1:end)-old_z(1:end),2,2));
         outSteps=[outSteps,step];
 
         if wbVisibility
@@ -253,6 +254,7 @@ elseif sync==0
             %     Agents(m).rho=Agents(m).rho*0.9999;
         end
         updated_z=updated_z/M;
+%         step = max(vecnorm(global_step,2,2));
         step = max(vecnorm(global_step,2,2));
         %         step = max(vecnorm(updated_z-old_z,2,2));
         outSteps=[outSteps,step];

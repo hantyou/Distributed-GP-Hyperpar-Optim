@@ -75,7 +75,8 @@ if sync==1
             %     Agents(m).rho=Agents(m).rho*0.9999;
         end
         updated_z=updated_z/M;
-        step = max(vecnorm(updated_z(1:end)-old_z(1:end),2,2));
+%         step = max(vecnorm(updated_z(1:end)-old_z(1:end),2,2));
+        step = max(vecnorm(global_step,2,2));
         outSteps=[outSteps,step];
 
         if wbVisibility
@@ -140,7 +141,7 @@ if sync==1
         s=hgexport('factorystyle');
         s.Resolution=600;
         s.Format='png';
-        fname=strcat(full_path,'pxADMM_fd_sync_vars');
+        fname=strcat(full_path,'pxADMM_fd_tc_sync_vars');
         fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
 
@@ -176,7 +177,7 @@ if sync==1
         s=hgexport('factorystyle');
         s.Resolution=600;
         s.Format='png';
-        fname=strcat(full_path,'pxADMM_fd_sync_Steps');
+        fname=strcat(full_path,'pxADMM_fd_tc_sync_Steps');
         fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
         close gcf;
@@ -326,7 +327,8 @@ elseif sync==0
         s=hgexport('factorystyle');
         s.Resolution=600;
         s.Format='png';
-        fname=strcat(full_path,'pxADMM_fd_async_vars');
+%         s.Width=9;
+        fname=strcat(full_path,'pxADMM_fd_tc_async_vars');
         %     fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
         close gcf;
@@ -368,7 +370,7 @@ elseif sync==0
         set(gca,'XScale','log')
         hold off;
 
-        fname=strcat(full_path,'pxADMM_fd_async_Steps');
+        fname=strcat(full_path,'pxADMM_fd_tc_async_Steps');
         %     fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
         %     saveas(gcf,fname,'png');
