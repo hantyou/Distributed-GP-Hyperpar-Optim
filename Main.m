@@ -22,7 +22,7 @@ range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
 
-rng(990613,'twister')
+rng(990611,'twister')
 rand(17+16,1);
 M=8;
 region=[];
