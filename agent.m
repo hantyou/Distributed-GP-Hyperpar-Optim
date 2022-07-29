@@ -417,9 +417,7 @@ classdef agent
             old_l=new_z(2:(2+D-1));
             old_sigma_n=new_z(end);
             inputDim=length(old_l);
-            obj.z(1)=old_sigma;
-            obj.z(2:(2+D-1))=old_l;
-            obj.z(end)=old_sigma_n;
+            obj.z=new_z;
 
 
             [pd,pdn] = getDiv(obj,obj.z);
@@ -430,7 +428,8 @@ classdef agent
 
 %             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
 %             new_theta=(obj.L*obj.z-[obj.pd_sigma_f;obj.pd_l;pdn]-sum([obj.beta_mn],2)+obj.rho*sum([obj.z_mn],2))/((obj.rho*obj.N_size+obj.L));
-            new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+mean([obj.beta,obj.beta_mn],2))/((obj.rho+obj.L));
+%             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+mean([obj.beta,obj.beta_mn],2))/((obj.rho+obj.L));
+            new_theta=(1/(obj.L+obj.rho*obj.N_size))*(sum(obj.rho*obj.z_mn-obj.beta_mn,2)+obj.L*obj.z-[pd;pdn]);
 
             obj.sigma_f=new_theta(1);
             obj.l=new_theta(2:(2+D-1));
@@ -441,9 +440,9 @@ classdef agent
                 obj.beta_mn(:,n) = obj.beta_mn(:,n) + ...
                     obj.rho * ([obj.sigma_f;obj.l;obj.sigma_n]-obj.z_mn(:,n));
             end
-            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z);
+%             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z);
 %             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-mean(obj.z_mn,2));
-%             obj.beta=mean([obj.beta,obj.rho * ([obj.sigma_f;obj.l;obj.sigma_n]-obj.z_mn(:,n))],2);
+            obj.beta=mean([obj.beta,obj.beta_mn],2);
         end
 
         function obj=runPxADMM_fd_thetac(obj)
@@ -463,14 +462,14 @@ classdef agent
             old_sigma=new_z(1);
             old_l=new_z(2:(2+D-1));
             old_sigma_n=new_z(end);
-            old_theta=[old_sigma;old_l;old_sigma_n];
+            old_theta=[obj.sigma_f;obj.l;obj.sigma_n];
             inputDim=length(old_l);
             obj.z(1)=old_sigma;
             obj.z(2:(2+D-1))=old_l;
             obj.z(end)=old_sigma_n;
 
 
-            [pd,pdn] = getDiv(obj,[obj.sigma_f;obj.l;obj.sigma_n]);
+            [pd,pdn] = getDiv(obj,old_theta);
             obj.pd_l=pd(2:end);
             obj.pd_sigma_f=pd(1);
 

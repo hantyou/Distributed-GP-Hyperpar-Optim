@@ -302,7 +302,7 @@ else
     initial_l=2*ones(1,inputDim);
 end
 
-epsilon = 1e-5; % used for stop criteria
+epsilon = 1e-4; % used for stop criteria
 rho_glb=TotalNumLevel*0.2;
 L_glb=TotalNumLevel*0.8;
 
@@ -688,6 +688,7 @@ if run_pxADMM_fd_tc_async
     Steps_pxADMM_fd_tc_async=Steps_pxADMM_fd_tc_async{1};
 end
 %% Compare convergence speed in terms of iterations
+close all
 gcf=figure;
 lgd_txt=[];
 hold on;
@@ -750,7 +751,7 @@ lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
 lgd.NumColumns=4;
 hold off;
 s=hgexport('factorystyle');
-s.Resolution=900;
+s.Resolution=300;
 s.Width=10;
 s.Height=7;
 s.FontSizeMin=12;
@@ -760,7 +761,7 @@ hgexport(gcf,fname,s);
 s.Format='eps';
 hgexport(gcf,fname,s);
 pause(0.01)
-close gcf
+% close gcf
 %%
 save(strcat(results_dir,'/workspaceForDebug.mat'));
 
