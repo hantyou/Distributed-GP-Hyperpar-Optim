@@ -27,7 +27,7 @@ reso=[reso_m,reso_n];
 repeatNum=3;    
 %% Evaluation setup
     Ms=[2,4,8,12,16]; % different number of agents for different exp groups
-    tempFlag=[0,0,1,1,0];
+    tempFlag=[1,1,1,1,1];
     
     maxRange=max(range(:))-min(range(:));
     commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/7];
