@@ -24,7 +24,7 @@ range=[range_x1;range_x2];
 
 rng(990611,'twister')
 rand(17+16,1);
-M=8;
+M=4;
 region=[];
 %% parpool setup
 delete(gcp('nocreate'))
@@ -112,7 +112,7 @@ for m=1:M
     Agents(m).N_m=localDataSetsSize(m);
     Agents(m).M=M;
     Agents(m).action_status=1;
-    Agents(m).commuRange=4;
+    Agents(m).commuRange=6;
     Agents(m).realdataset=realDataSet;
     %     Agents(m).commuRange=2.5;
     Agents(m).realz=realz;
@@ -141,7 +141,14 @@ if realDataSet==1&&temp_data==1
     ylabel('temperature')
     figure,scatter(coord45(1:cityNum,1),coord45(1:cityNum,2))
 elseif realDataSet==0
-    surf(mesh_x1,mesh_x2,F_true,'edgecolor','none') % plot the field
+    reso_plot_x=64;
+    reso_plot_y=64;
+    [mesh_show_x,mesh_show_y]=meshgrid(linspace(range_x1(1),range_x1(2),reso_plot_x),...
+        linspace(range_x2(1),range_x2(2),reso_plot_y));
+
+    F_true_show=interp2(mesh_x1,mesh_x2,F_true,mesh_show_x,mesh_show_y);
+
+    surf(mesh_show_x,mesh_show_y,F_true_show,'EdgeColor','interp','FaceColor','interp','FaceAlpha',0.3) % plot the field
     hold on;
     scatter3(X1,X2,Y,'r*')
     scatter3(X1,X2,Z,'b.')
@@ -151,7 +158,6 @@ elseif realDataSet==0
     zlabel('environmental scalar value')
     pause(0.01)
 end
-close gcf
 %%
 % theta_range=[[0.1,1.1];[-1,log(5)/log(10)]];
 % LL=generateLikelihoodMap(X,Z,theta_range,sigma_n);
