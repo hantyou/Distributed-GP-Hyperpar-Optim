@@ -1,4 +1,4 @@
-function [sigma_pxADMM_fd,l_pxADMM_fd,sigma_n_pxADMM_fd,outSteps,Zs,thetas] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync)
+function [sigma_pxADMM_fd,l_pxADMM_fd,sigma_n_pxADMM_fd,outSteps,Zs,thetas,DataTransNum] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync)
 %RUNPXADMM_FD Summary of this function goes here
 %   Detailed explanation goes here
 D=length(Agents(1).l);
@@ -39,6 +39,10 @@ sub_old_z=zeros(inputDim+2,M);
 for m=1:M
     sub_old_z(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
 end
+DataTransNum=cell(M,1);
+for m=1:M
+    DataTransNum{m}=[];
+end
 if sync==1
     %% sync
     if wbVisibility
@@ -61,6 +65,7 @@ if sync==1
 
         parfor m=1:M
             Agents(m)=Agents(m).runPxADMM_fd_thetac;
+            DataTransNum{m}=[DataTransNum{m},Agents(m).N_size];
             Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]];
             step_m=max(vecnorm([Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]-sub_old_z(:,m),2,2));
             %             step_m=max(vecnorm(Agents(m).l-sub_old_z(2:end,m),2,2));
@@ -121,7 +126,7 @@ if sync==1
                 plot(Zs{m}(i,:));
             end
 
-            set(gca, 'XScale', 'log')
+%             set(gca, 'XScale', 'log')
             hold off
 
             if i==1
@@ -139,17 +144,21 @@ if sync==1
             %     set(gca,'XScale','log')
         end
         s=hgexport('factorystyle');
-s.LineWidthMin=1.2;
+s.LineWidthMin=1.5;
 s.Resolution=600;
 s.Format='png';
-s.Width=5;
-s.Height=5;
 s.FontSizeMin=14;
 s.Format='png';
         fname=strcat(full_path,'pxADMM_fd_tc_sync_vars');
         fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
 
+for z_i=1:(D+2)
+   nexttile(z_i);
+    set(gca,'XScale','log')
+end
+fname=strcat(fname,'_logx');
+hgexport(gcf,fname,s);
         close gcf;
 
         outSteps=SubSteps;
@@ -177,19 +186,19 @@ s.Format='png';
         ylabel('step size')
         sgtitle('pxADMM_{fd,sync} - step size')
         set(gca,'YScale','log')
-        set(gca,'XScale','log')
         hold off;
         s=hgexport('factorystyle');
-s.LineWidthMin=1.2;
+s.LineWidthMin=1.5;
 s.Resolution=600;
 s.Format='png';
-s.Width=5;
-s.Height=5;
 s.FontSizeMin=14;
 s.Format='png';
         fname=strcat(full_path,'pxADMM_fd_tc_sync_Steps');
         fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
+        set(gca,'XScale','log')
+fname=strcat(fname,'_logx');
+hgexport(gcf,fname,s);
         close gcf;
     end
 
@@ -247,10 +256,14 @@ elseif sync==0
         updated_z=zeros(inputDim+2,1);
         global_step=0;
 
+        for m=1:M
+            DataTransNum{m}=[DataTransNum{m},0];
+        end
 
         for i=1:length(activated_agents)
             m=activated_agents(i);
             Agents(m)=Agents(m).runPxADMM_fd_thetac;
+            DataTransNum{m}(:,end)=Agents(m).N_size;
             Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]];
             step_m=max(vecnorm([Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]-sub_old_z(:,m),2,2));
             %             step_m=max(vecnorm(Agents(m).l-sub_old_z(2:end,m),2,2));
@@ -318,7 +331,7 @@ elseif sync==0
                 plot(Zs{m}(i,:));
             end
 
-            set(gca, 'XScale', 'log')
+%             set(gca, 'XScale', 'log')
             hold off
 
             if i==1
@@ -335,17 +348,21 @@ elseif sync==0
             end
         end
         s=hgexport('factorystyle');
-s.LineWidthMin=1.2;
+s.LineWidthMin=1.5;
 s.Resolution=600;
 s.Format='png';
-s.Width=5;
-s.Height=5;
 s.FontSizeMin=14;
 s.Format='png';
 %         s.Width=9;
         fname=strcat(full_path,'pxADMM_fd_tc_async_vars');
         %     fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
+for z_i=1:(D+2)
+   nexttile(z_i);
+    set(gca,'XScale','log')
+end
+fname=strcat(fname,'_logx');
+hgexport(gcf,fname,s);
         close gcf;
 
         gcf=figure;
@@ -382,19 +399,23 @@ s.Format='png';
         ylabel('step size')
         sgtitle('pxADMM_{fd,async} - step size')
         set(gca,'YScale','log')
-        set(gca,'XScale','log')
         hold off;
 
         fname=strcat(full_path,'pxADMM_fd_tc_async_Steps');
         %     fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
-        %     saveas(gcf,fname,'png');
+        set(gca,'XScale','log')
+        fname=strcat(fname,'_logx');
+        hgexport(gcf,fname,s);
         close gcf;
     end
 
 end
+
+
 for m=1:M
     thetas(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
+    DataTransNum{m}=cumsum(DataTransNum{m});
 end
 if wbVisibility
     delete(wb);

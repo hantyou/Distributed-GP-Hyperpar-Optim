@@ -334,7 +334,7 @@ clear show_txt
 if run_GD
     % run GD
     stepSize=0.00001;
-    maxIter=8000;
+    maxIter=11000;
 
     disp('Time of GD')
 
@@ -350,7 +350,7 @@ if run_ADMM
     stepSize=0.00001; % step size of optimizing theta in inner interations
     initial_beta = [1;ones(length(initial_l),1);1];
     initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
-    maxOutIter=1000;
+    maxOutIter=1500;
     maxInIter=50;
     for m=1:M
         Agents(m).beta=initial_beta;
@@ -399,7 +399,7 @@ end
 %% Perform ADMM_fd
 if run_ADMM_fd
     % initialize ADMM_fd
-    maxOutIter=1000;
+    maxOutIter=1500;
     maxInIter=50;
     stepSize=0.00001;
     for m=1:M
@@ -436,7 +436,7 @@ end
 %% Perform pxADMM_fd_sync
 if run_pxADMM_fd_sync
     % initialize pxADMM_fd
-    maxIter=8000;
+    maxIter=11000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -471,7 +471,7 @@ if run_pxADMM_fd_sync
     disp('Time of pxADMM_{fd,sync}')
 
     tic
-    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,sigma_n_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync] = ...
+    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,sigma_n_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync,DataTransNum_pxADMM_fd_sync] = ...
         runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
 
@@ -481,7 +481,7 @@ end
 %% Perform pxADMM_fd_async
 if run_pxADMM_fd_async
     % initialize pxADMM_fd
-    maxIter=10000;
+    maxIter=11000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -522,7 +522,7 @@ if run_pxADMM_fd_async
     disp('Time of pxADMM_{fd,async}')
 
     tic
-    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async] =...
+    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async,DataTransNum_pxADMM_fd_async] =...
         runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
     Agents(1).sigma_f=sigma_pxADMM_fd_async;
@@ -617,7 +617,7 @@ end
 %% run_pxADMM_fd_tc_sync
 if run_pxADMM_fd_tc_sync
     % initialize pxADMM_fd_tc_sync
-    maxIter=8000;
+    maxIter=11000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -652,7 +652,8 @@ if run_pxADMM_fd_tc_sync
     disp('Time of pxADMM_{fd,tc,sync}')
 
     tic
-    [sigma_pxADMM_fd_tc_sync,l_pxADMM_fd_tc_sync,sigma_n_pxADMM_fd_tc_sync,Steps_pxADMM_fd_tc_sync,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_sync] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
+    [sigma_pxADMM_fd_tc_sync,l_pxADMM_fd_tc_sync,sigma_n_pxADMM_fd_tc_sync,Steps_pxADMM_fd_tc_sync,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_sync,DataTransNum_pxADMM_fd_tc_sync] = ...
+        runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
     toc
 
     pause(0.1)
@@ -662,7 +663,7 @@ end
 %% run_pxADMM_fd_tc_async
 if run_pxADMM_fd_tc_async
     % initialize pxADMM_fd_tc
-    maxIter=8000;
+    maxIter=11000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -698,7 +699,8 @@ if run_pxADMM_fd_tc_async
     disp('Time of pxADMM_{fd,tc,async}')
 
     tic
-    [sigma_pxADMM_fd_tc_async,l_pxADMM_fd_tc_async,sigma_n_pxADMM_fd_tc_async,Steps_pxADMM_fd_tc_async,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_async] = runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
+    [sigma_pxADMM_fd_tc_async,l_pxADMM_fd_tc_async,sigma_n_pxADMM_fd_tc_async,Steps_pxADMM_fd_tc_async,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_async,DataTransNum_pxADMM_fd_tc_async] =...
+        runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
     toc
 
     pause(0.1)
@@ -714,12 +716,12 @@ lwd_async=1;
 tiledlayout(1,1,'TileSpacing','compact');
 nexttile(1)
 if run_GD
-    semilogy(Steps_GD,"LineWidth",lwd);
+    semilogy(Steps_GD,"LineWidth",lwd,'LineStyle','--');
     hold on;
     lgd_txt=[lgd_txt;"GD"];
 end
 if run_ADMM
-    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd);
+    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd,'LineStyle','--');
     hold on;
     lgd_txt=[lgd_txt;"ADMM"];
 end
@@ -730,7 +732,7 @@ if run_pxADMM
 end
 if run_ADMM_fd
     IterCounts_fd{1}(1)=1;
-    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd);
+    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','--');
     hold on;
     lgd_txt=[lgd_txt;"ADMM_{fd}"];
 end
@@ -760,7 +762,6 @@ if run_pxADMM_fd_tc_sync
     lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
 end
 set(gca, 'YScale', 'log');
-set(gca, 'XScale', 'log');
 xlabel('iterations');
 ylabel('step size');
 % title('log plot of steps-iterations');
@@ -777,6 +778,13 @@ s.Format='png';
 hgexport(gcf,fname,s);
 s.Format='eps';
 hgexport(gcf,fname,s);
+set(gca, 'XScale', 'log');
+fname=strcat(fname,'_log');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+
 pause(0.01)
 
 
@@ -816,7 +824,7 @@ if run_pxADMM_fd_tc_sync
     lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
 end
 set(gca, 'YScale', 'log');
-set(gca, 'XScale', 'log');
+% set(gca, 'XScale', 'log');
 xlabel('iterations');
 ylabel('step size');
 % title('log plot of steps-iterations');
@@ -833,8 +841,69 @@ s.Format='png';
 hgexport(gcf,fname,s);
 s.Format='eps';
 hgexport(gcf,fname,s);
+set(gca, 'XScale', 'log');
+fname=strcat(fname,'_log');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
 pause(0.01)
 
+%% Compare convergence speed in terms of iterations pxADMMs in terms of transmission number
+
+close all
+gcf=figure;
+lgd_txt=[];
+hold on;
+lwd=1.2;
+lwd_async=1;
+tiledlayout(1,1,'TileSpacing','compact');
+nexttile(1)
+if run_pxADMM_fd_async
+    semilogy(unique(DataTransNum_pxADMM_fd_async{1}),Steps_pxADMM_fd_async,"LineWidth",lwd_async);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,async}^*"];
+end
+if run_pxADMM_fd_sync
+    semilogy(DataTransNum_pxADMM_fd_sync{1},Steps_pxADMM_fd_sync,"LineWidth",lwd);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}^*"];
+end
+if run_pxADMM_fd_tc_async
+    semilogy(unique(DataTransNum_pxADMM_fd_tc_async{1}),Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
+end
+if run_pxADMM_fd_tc_sync
+    semilogy(DataTransNum_pxADMM_fd_tc_sync{1},Steps_pxADMM_fd_tc_sync,"LineWidth",lwd);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
+end
+set(gca, 'YScale', 'log');
+% set(gca, 'XScale', 'log');
+xlabel('transmissions');
+ylabel('step size');
+% title('log plot of steps-iterations');
+lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
+lgd.NumColumns=4;
+hold off;
+s=hgexport('factorystyle');
+s.Resolution=300;
+s.Width=10;
+s.Height=7;
+s.FontSizeMin=14;
+fname=strcat(results_dir,'/HOMethodsCompare_pxADMMs_transnum');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+set(gca, 'XScale', 'log');
+fname=strcat(fname,'_log');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+pause(0.01)
 %%
 save(strcat(results_dir,'/workspaceForDebug.mat'));
 

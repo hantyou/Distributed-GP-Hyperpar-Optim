@@ -90,7 +90,7 @@ for z_i=1:(D+2)
         plot(Zs{m}(z_i,:));
     end
     xlabel('steps')
-    set(gca,'XScale','log')
+%     set(gca,'XScale','log')
     if z_i==1
         ylabel('\sigma_f');
     elseif z_i==D+2
@@ -115,11 +115,9 @@ for z_i=1:(D+2)
     hold off
 end
 s=hgexport('factorystyle');
-s.LineWidthMin=1.2;
+s.LineWidthMin=1.5;
 s.Resolution=600;
 s.Format='png';
-s.Width=5;
-s.Height=5;
 s.FontSizeMin=14;
 s.Format='png';
 top_dir_path=strcat('results/HO');
@@ -128,27 +126,34 @@ full_path=strcat(top_dir_path,'/',folder_name,'/');
 fname=strcat(full_path,'pxADMM_vars');
 % fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
+
+for z_i=1:(D+2)
+   nexttile(z_i);
+    set(gca,'XScale','log')
+end
+fname=strcat(fname,'_logx');
+hgexport(gcf,fname,s);
 close gcf
 
 gcf=figure;
 tiledlayout(1,1,'TileSpacing','Compact','Padding','Compact');
 nexttile(1);
 semilogy(Steps)
-set(gca,'XScale','log')
 xlabel('steps')
 ylabel('step size')
 title('pxADMM convergence')
 fname=strcat(full_path,'pxADMM_Steps');
 % fname=strcat(fname,'_',num2str(M),'_agents');
 s=hgexport('factorystyle');
-s.LineWidthMin=1.2;
+s.LineWidthMin=1.5;
 s.Resolution=600;
 s.Format='png';
-s.Width=5;
-s.Height=5;
 s.FontSizeMin=14;
 s.Format='png';
 hgexport(gcf,fname,s)
+set(gca,'XScale','log')
+fname=strcat(fname,'_logx');
+hgexport(gcf,fname,s);
 close gcf;
 
 

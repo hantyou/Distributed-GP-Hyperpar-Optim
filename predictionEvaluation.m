@@ -30,7 +30,7 @@ repeatNum=1;
     tempFlag=[0,0,0,1,1];
     
     maxRange=max(range(:))-min(range(:));
-    commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/7];
+    commuRange=[maxRange,maxRange/4,maxRange/5,maxRange/6,maxRange/10];
     tempFlag=tempFlag==1;
     Ms=Ms(tempFlag);
     commuRange=commuRange(tempFlag);
@@ -182,7 +182,7 @@ for exp_r_id=1:repeatNum
             if V(2)>1e-5
                 connected=1;
             else
-                commuRange(expId)=commuRange(expId)*1.2;
+                commuRange(expId)=commuRange(expId)*1.1;
                 continue;
             end
             for m=1:M

@@ -8,12 +8,12 @@
 To get started, type doc.
 For product information, visit www.mathworks.com.
  
-The code begins at 03-Aug-2022 19:01:54
+The code begins at 03-Aug-2022 21:19:37
 Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 16).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 3.694243 seconds.
+Elapsed time is 2.959773 seconds.
 
 subSize =
 
@@ -103,13 +103,129 @@ Time of GD
 
    2.0434e-05
 
-Elapsed time is 589.595834 seconds.
+Elapsed time is 598.942311 seconds.
 Time of ADMM
-Elapsed time is 53.018832 seconds.
+Elapsed time is 58.976237 seconds.
 Time of pxADMM
-Elapsed time is 34.240318 seconds.
+Elapsed time is 40.710343 seconds.
 Time of ADMM_{fd}
    500
 
     0.0021
 
+        1000
+
+   2.8399e-04
+
+Elapsed time is 198.553744 seconds.
+Time of pxADMM_{fd,sync}
+   250
+
+   3.4815e-04
+
+   500
+
+   1.1920e-05
+
+Elapsed time is 55.067036 seconds.
+Time of pxADMM_{fd,async}
+   250
+
+    0.0018
+
+   500
+
+   3.4333e-04
+
+   750
+
+   3.4043e-05
+
+Elapsed time is 54.434051 seconds.
+Time of pxADMM_{fd,tc,sync}
+   250
+
+    0.0058
+
+   500
+
+   6.1738e-04
+
+   750
+
+   2.8304e-04
+
+        1000
+
+   1.3915e-04
+
+        1250
+
+   7.0599e-05
+
+        1500
+
+   3.6370e-05
+
+        1750
+
+   1.8882e-05
+
+Elapsed time is 151.429162 seconds.
+Time of pxADMM_{fd,tc,async}
+   250
+
+    0.0063
+
+   500
+
+    0.0027
+
+   750
+
+   9.9893e-04
+
+        1000
+
+   5.5196e-04
+
+        1250
+
+   3.3929e-04
+
+        1500
+
+   2.3643e-04
+
+        1750
+
+   1.6191e-04
+
+        2000
+
+   1.0621e-04
+
+        2250
+
+   7.8432e-05
+
+        2500
+
+   6.0601e-05
+
+        2750
+
+   3.8258e-05
+
+        3000
+
+   1.7176e-05
+
+        3250
+
+   1.9938e-05
+
+Elapsed time is 152.243509 seconds.
+Code end at HO
+The code ends at 03-Aug-2022 21:42:56
+The code duration is 00:23:18

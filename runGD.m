@@ -102,7 +102,6 @@ for z_i=1:(D+2)
         plot(Zs{m}(z_i,:),'g');
     end
     xlabel('steps')
-    set(gca,'XScale','log')
     if z_i==1
         ylabel('\sigma_f');
     elseif z_i==D+2
@@ -126,16 +125,10 @@ for z_i=1:(D+2)
     sgtitle('GD - hyperparameters')
     hold off
 end
-
-
-
-
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
-s.Width=5;
-s.Height=5;
-        s.LineWidthMin=1.2;
+        s.LineWidthMin=1.5;
 s.FontSizeMin=14;
 top_dir_path=strcat('results/HO');
 folder_name=strcat(num2str(M),'_a_',num2str(Agents(1).TotalNumLevel),'_pl');
@@ -143,26 +136,34 @@ full_path=strcat(top_dir_path,'/',folder_name,'/');
 fname=strcat(full_path,'GD_vars');
 % fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
+
+for z_i=1:(D+2)
+   nexttile(z_i);
+    set(gca,'XScale','log')
+end
+fname=strcat(fname,'_logx');
+hgexport(gcf,fname,s);
 close gcf
 
 gcf=figure;
 tiledlayout(1,1,'TileSpacing','Compact','Padding','Compact');
 nexttile(1);
 semilogy(Steps)
-set(gca,'XScale','log')
 xlabel('steps')
 ylabel('step size')
 title('GD - step size')
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
-s.Width=5;
-s.Height=5;
 s.FontSizeMin=14;
-        s.LineWidthMin=1.2;
+        s.LineWidthMin=1.5;
 fname=strcat(full_path,'GD_Steps');
 % fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);
+set(gca,'XScale','log')
+fname=strcat(fname,'_logx');
+hgexport(gcf,fname,s);
+
 close gcf
 if wbVisibility
     delete(wb);
