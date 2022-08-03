@@ -54,7 +54,7 @@ else
     [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(1),range_x2(2),reso_n));
 
     %% Decide sample points
-    samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
+    samplingMethod=1; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     subSize=ones(M,1)*everyAgentsSampleNum;
     Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,M)*0.9;
         unifrnd(range_x2(1),range_x2(2),1,M)*0.9];
@@ -215,10 +215,15 @@ if realDataSet==0||temp_data==3
     colorbar
     xlim([range_x1(1) range_x1(2)])
     ylim([range_x2(1) range_x2(2)])
-    title('network topology on 2D field')
+%     title('network topology on 2D field')
     hold off
     fname=strcat(results_dir,'/topology_background');
-    saveas(gcf,fname,'png');
+    s=hgexport('factorystyle');
+    s.Resolution=600;
+    s.FontSizeMin=14;
+    s.Format='png';
+    s.Width=5;
+    hgexport(gcf,fname,s);
     close gcf;
 
 
@@ -249,19 +254,25 @@ if realDataSet==0||temp_data==3
 
     xlabel('x1')
     ylabel('x2')
-    title('network topology')
+%     title('network topology')
     hold off
     fname=strcat(results_dir,'/just_topology');
-    saveas(gcf,fname,'png');
+    s=hgexport('factorystyle');
+    s.Resolution=600;
+    s.FontSizeMin=14;
+    s.Format='png';
+    s.Width=5;
+    
+    hgexport(gcf,fname,s);
     close gcf;
 end
 
 clear Topology_method G L v posi;
 %% Experiment group setup
-run_GD=0;
-run_ADMM=0;
+run_GD=1;
+run_ADMM=1;
 run_pxADMM=1;
-run_ADMM_fd=0;
+run_ADMM_fd=1;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
 run_pxADMM_async_realSimu=0;
@@ -308,7 +319,7 @@ else
     initial_l=2*ones(1,inputDim);
 end
 
-epsilon = 1e-4; % used for stop criteria
+epsilon = 1e-5; % used for stop criteria
 rho_glb=TotalNumLevel*0.3;
 L_glb=TotalNumLevel*0.8;
 
@@ -726,12 +737,12 @@ end
 if run_pxADMM_fd_async
     semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async);
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
+    lgd_txt=[lgd_txt;"pxADMM_{fd,async}^*"];
 end
 if run_pxADMM_fd_sync
     semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd);
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
+    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}^*"];
 end
 if run_pxADMM_async_realSimu
     semilogy(Agents(1).Steps(2:end),"LineWidth",lwd);
@@ -741,18 +752,18 @@ end
 if run_pxADMM_fd_tc_async
     semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async);
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,tc,async}"];
+    lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
 end
 if run_pxADMM_fd_tc_sync
     semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd);
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,tc,sync}"];
+    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
 end
 set(gca, 'YScale', 'log');
 set(gca, 'XScale', 'log');
 xlabel('iterations');
 ylabel('step size');
-title('log plot of steps-iterations');
+% title('log plot of steps-iterations');
 lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
 lgd.NumColumns=4;
 hold off;
@@ -760,14 +771,70 @@ s=hgexport('factorystyle');
 s.Resolution=300;
 s.Width=10;
 s.Height=7;
-s.FontSizeMin=12;
+s.FontSizeMin=14;
 fname=strcat(results_dir,'/HOMethodsCompare');
 s.Format='png';
 hgexport(gcf,fname,s);
 s.Format='eps';
 hgexport(gcf,fname,s);
 pause(0.01)
-% close gcf
+
+
+%% Compare convergence speed in terms of iterations pxADMMs
+
+close all
+gcf=figure;
+lgd_txt=[];
+hold on;
+lwd=1.2;
+lwd_async=1;
+tiledlayout(1,1,'TileSpacing','compact');
+nexttile(1)
+if run_pxADMM
+    semilogy(Steps_pxADMM,"LineWidth",lwd);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM"];
+end
+if run_pxADMM_fd_async
+    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,async}^*"];
+end
+if run_pxADMM_fd_sync
+    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}^*"];
+end
+if run_pxADMM_fd_tc_async
+    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
+end
+if run_pxADMM_fd_tc_sync
+    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
+end
+set(gca, 'YScale', 'log');
+set(gca, 'XScale', 'log');
+xlabel('iterations');
+ylabel('step size');
+% title('log plot of steps-iterations');
+lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
+lgd.NumColumns=4;
+hold off;
+s=hgexport('factorystyle');
+s.Resolution=300;
+s.Width=10;
+s.Height=7;
+s.FontSizeMin=14;
+fname=strcat(results_dir,'/HOMethodsCompare_pxADMMs');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+pause(0.01)
+
 %%
 save(strcat(results_dir,'/workspaceForDebug.mat'));
 

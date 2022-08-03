@@ -139,8 +139,13 @@ if sync==1
             %     set(gca,'XScale','log')
         end
         s=hgexport('factorystyle');
-        s.Resolution=600;
-        s.Format='png';
+s.LineWidthMin=1.2;
+s.Resolution=600;
+s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
+s.Format='png';
         fname=strcat(full_path,'pxADMM_fd_tc_sync_vars');
         fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
@@ -170,13 +175,18 @@ if sync==1
 
         xlabel('steps')
         ylabel('step size')
-        title('pxADMM_{fd,sync} - step size')
+        sgtitle('pxADMM_{fd,sync} - step size')
         set(gca,'YScale','log')
         set(gca,'XScale','log')
         hold off;
         s=hgexport('factorystyle');
-        s.Resolution=600;
-        s.Format='png';
+s.LineWidthMin=1.2;
+s.Resolution=600;
+s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
+s.Format='png';
         fname=strcat(full_path,'pxADMM_fd_tc_sync_Steps');
         fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
@@ -325,8 +335,13 @@ elseif sync==0
             end
         end
         s=hgexport('factorystyle');
-        s.Resolution=600;
-        s.Format='png';
+s.LineWidthMin=1.2;
+s.Resolution=600;
+s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
+s.Format='png';
 %         s.Width=9;
         fname=strcat(full_path,'pxADMM_fd_tc_async_vars');
         %     fname=strcat(fname,'_',num2str(M),'_agents');

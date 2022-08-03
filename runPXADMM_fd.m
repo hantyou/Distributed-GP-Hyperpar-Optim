@@ -134,13 +134,18 @@ if sync==1
                 else
                     lgd=legend(y_c,'converged value','Location','northoutside','Orientation', 'Horizontal');
                 end
-                sgtitle('pxADMM_{fd,sync} - hyperparameters')
+                sgtitle('pxADMM_{fd,sync}^* - hyperparameters')
             end
             %     set(gca,'XScale','log')
         end
         s=hgexport('factorystyle');
-        s.Resolution=600;
-        s.Format='png';
+s.LineWidthMin=1.2;
+s.Resolution=600;
+s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
+s.Format='png';
         fname=strcat(full_path,'pxADMM_fd_sync_vars');
         fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
@@ -170,13 +175,18 @@ if sync==1
 
         xlabel('steps')
         ylabel('step size')
-        title('pxADMM_{fd,sync} - step size')
+        sgtitle('pxADMM_{fd,sync}^* - step size')
         set(gca,'YScale','log')
         set(gca,'XScale','log')
         hold off;
         s=hgexport('factorystyle');
-        s.Resolution=600;
-        s.Format='png';
+s.LineWidthMin=1.2;
+s.Resolution=600;
+s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
+s.Format='png';
         fname=strcat(full_path,'pxADMM_fd_sync_Steps');
         fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
@@ -322,14 +332,19 @@ elseif sync==0
                 else
                     lgd=legend(y_c,'converged value','Location','northoutside','Orientation', 'Horizontal');
                 end
-                sgtitle('pxADMM_{fd,async} - hyperparameters')
+                sgtitle('pxADMM_{fd,async}^* - hyperparameters')
             end
         end
         s=hgexport('factorystyle');
-        s.Resolution=600;
-        s.Format='png';
+s.LineWidthMin=1.2;
+s.Resolution=600;
+s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
+s.Format='png';
         fname=strcat(full_path,'pxADMM_fd_async_vars');
-        %     fname=strcat(fname,'_',num2str(M),'_agents');
+            fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
         close gcf;
 
@@ -365,13 +380,13 @@ elseif sync==0
 
         xlabel('steps')
         ylabel('step size')
-        sgtitle('pxADMM_{fd,async} - step size')
+        sgtitle('pxADMM_{fd,async}^* - step size')
         set(gca,'YScale','log')
         set(gca,'XScale','log')
         hold off;
 
         fname=strcat(full_path,'pxADMM_fd_async_Steps');
-        %     fname=strcat(fname,'_',num2str(M),'_agents');
+            fname=strcat(fname,'_',num2str(M),'_agents');
         hgexport(gcf,fname,s);
         %     saveas(gcf,fname,'png');
         close gcf;

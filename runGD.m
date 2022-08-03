@@ -133,6 +133,10 @@ end
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
+s.Width=5;
+s.Height=5;
+        s.LineWidthMin=1.2;
+s.FontSizeMin=14;
 top_dir_path=strcat('results/HO');
 folder_name=strcat(num2str(M),'_a_',num2str(Agents(1).TotalNumLevel),'_pl');
 full_path=strcat(top_dir_path,'/',folder_name,'/');
@@ -152,6 +156,10 @@ title('GD - step size')
 s=hgexport('factorystyle');
 s.Resolution=600;
 s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
+        s.LineWidthMin=1.2;
 fname=strcat(full_path,'GD_Steps');
 % fname=strcat(fname,'_',num2str(M),'_agents');
 hgexport(gcf,fname,s);

@@ -115,7 +115,12 @@ for z_i=1:(D+2)
     hold off
 end
 s=hgexport('factorystyle');
+s.LineWidthMin=1.2;
 s.Resolution=600;
+s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
 s.Format='png';
 top_dir_path=strcat('results/HO');
 folder_name=strcat(num2str(M),'_a_',num2str(Agents(1).TotalNumLevel),'_pl');
@@ -136,7 +141,12 @@ title('pxADMM convergence')
 fname=strcat(full_path,'pxADMM_Steps');
 % fname=strcat(fname,'_',num2str(M),'_agents');
 s=hgexport('factorystyle');
+s.LineWidthMin=1.2;
 s.Resolution=600;
+s.Format='png';
+s.Width=5;
+s.Height=5;
+s.FontSizeMin=14;
 s.Format='png';
 hgexport(gcf,fname,s)
 close gcf;

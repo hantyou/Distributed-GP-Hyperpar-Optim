@@ -69,6 +69,7 @@ classdef agent
         realz
         realdataset
         TotalNumLevel
+        temp
     end
 
     methods
@@ -415,10 +416,6 @@ classdef agent
 %             new_z=mean([obj.beta/obj.rho+obj.theta_n],2);
             % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
             % update theta_m
-            old_sigma=new_z(1);
-            old_l=new_z(2:(2+D-1));
-            old_sigma_n=new_z(end);
-            inputDim=length(old_l);
             obj.z=new_z;
 
 
@@ -426,9 +423,10 @@ classdef agent
             obj.pd_l=pd(2:end);
             obj.pd_sigma_f=pd(1);
 
-            old_beta=mean([obj.beta,obj.beta_mn],2);
-
+%             old_beta=mean([obj.beta,obj.beta_mn],2);
 %             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
+%             obj.temp=mean([obj.beta,obj.beta_mn],2);
+% temp_new=sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1);
             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+obj.beta)/((obj.rho+obj.L));
 %             new_theta=(obj.L*obj.z-[obj.pd_sigma_f;obj.pd_l;pdn]-sum([obj.beta_mn],2)+obj.rho*sum([obj.z_mn],2))/((obj.rho*obj.N_size+obj.L));
 %             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+mean([obj.beta,obj.beta_mn],2))/((obj.rho+obj.L));
@@ -444,7 +442,12 @@ classdef agent
                     obj.rho * ([obj.sigma_f;obj.l;obj.sigma_n]-obj.z_mn(:,n));
             end
             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z);
-            obj.beta=sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1);
+%             obj.temp=obj.beta;
+            obj.beta=mean([obj.beta,obj.beta_mn],2);
+%             disp(sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1));
+%             obj.beta=sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1);
+
+
 %             obj.beta=mean([obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z),obj.beta_mn],2);
             
 %             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-mean(obj.z_mn,2));
