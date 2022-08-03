@@ -332,6 +332,9 @@ varRMSE=mean(meanRMSEs,3);
 meanRMSE2=mean(meanRMSE2s,3);
 varRMSE2=mean(meanRMSE2s,3);
 %% plot result
+s=hgexport('factorystyle');
+s.LineWidthMin=1.2;
+s.Resolution=800;
 gcf=figure;
 for m=1:Num_expGroup
     subplot(1,Num_expGroup,m);
@@ -339,6 +342,10 @@ for m=1:Num_expGroup
 end
 fname='results/Agg/PerformanceEva/Graphs';
 saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
 close gcf;
 
 gcf=figure;
@@ -349,11 +356,15 @@ for m=1:Num_MethodsExamined
     legendTxt{m}=MethodsExamined(m);
 end
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','northoutside');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
 title('Prediction Mean RMSE')
 fname='results/Agg/PerformanceEva/MeanRMSE';
 saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
 close gcf;
 disp('meanRMSE1 PDMM saved')
 gcf=figure;
@@ -369,11 +380,15 @@ for m=1:Num_MethodsExamined
 end
 % legendTxt=legendTxt{1:size(meanRMSE2,1)};
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','NW');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
 title('Prediction Mean RMSE DTCF')
 fname='results/Agg/PerformanceEva/MeanRMSE2';
 saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
 close gcf;
 disp('meanRMSE2 DTCF saved')
 
@@ -385,11 +400,15 @@ for m=1:Num_MethodsExamined
     legendTxt{m}=MethodsExamined(m);
 end
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','NW');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
 title('Prediction Var RMSE')
 fname='results/Agg/PerformanceEva/VarRMSE';
 saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
 close gcf;
 
 gcf=figure;
@@ -402,11 +421,15 @@ for m=1:size(varRMSE2,1)
 end
 legendTxt=legendTxt{1:size(varRMSE2,1)};
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','NW');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
 title('Prediction Var RMSE DTCF')
 fname='results/Agg/PerformanceEva/VarRMSE2';
 saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
 close gcf;
 
 gcf=figure;
@@ -417,11 +440,15 @@ for m=1:Num_MethodsExamined
     legendTxt{m}=MethodsExamined(m);
 end
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','NW');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
 title('Time used')
 fname='results/Agg/PerformanceEva/Times';
 saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
 close gcf;
 
 end_time=datetime('now');
