@@ -408,7 +408,9 @@ classdef agent
             for n=1:obj.N_size
                 obj.z_mn(:,n) =((obj.beta_mn(:,n))/obj.rho +([obj.sigma_f;obj.l;obj.sigma_n])+obj.beta_nm(:,n)/obj.rho+obj.theta_n(:,n))/2;
             end
+%             theta=[obj.sigma_f;obj.l;obj.sigma_n];
             new_z=mean([obj.z,obj.z_mn],2);
+%             new_z=mean([obj.beta/obj.rho+theta,obj.beta_n/obj.rho+obj.theta_n],2);
 %             new_z=mean([obj.z_mn],2);
 %             new_z=mean([obj.beta/obj.rho+obj.theta_n],2);
             % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
@@ -427,9 +429,10 @@ classdef agent
             old_beta=mean([obj.beta,obj.beta_mn],2);
 
 %             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
+            new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+obj.beta)/((obj.rho+obj.L));
 %             new_theta=(obj.L*obj.z-[obj.pd_sigma_f;obj.pd_l;pdn]-sum([obj.beta_mn],2)+obj.rho*sum([obj.z_mn],2))/((obj.rho*obj.N_size+obj.L));
 %             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+mean([obj.beta,obj.beta_mn],2))/((obj.rho+obj.L));
-            new_theta=(1/(obj.L+obj.rho*obj.N_size))*(sum(obj.rho*obj.z_mn-obj.beta_mn,2)+obj.L*obj.z-[pd;pdn]);
+%             new_theta=(1/(obj.L+obj.rho*obj.N_size))*(sum(obj.rho*obj.z_mn-obj.beta_mn,2)+obj.L*obj.z-[pd;pdn]);
 
             obj.sigma_f=new_theta(1);
             obj.l=new_theta(2:(2+D-1));
@@ -440,9 +443,12 @@ classdef agent
                 obj.beta_mn(:,n) = obj.beta_mn(:,n) + ...
                     obj.rho * ([obj.sigma_f;obj.l;obj.sigma_n]-obj.z_mn(:,n));
             end
-%             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z);
+            obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z);
+            obj.beta=sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1);
+%             obj.beta=mean([obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-new_z),obj.beta_mn],2);
+            
 %             obj.beta=obj.beta+obj.rho*([obj.sigma_f;obj.l;obj.sigma_n]-mean(obj.z_mn,2));
-            obj.beta=mean([obj.beta,obj.beta_mn],2);
+%             obj.beta=mean([obj.beta,obj.beta_mn],2);
         end
 
         function obj=runPxADMM_fd_thetac(obj)

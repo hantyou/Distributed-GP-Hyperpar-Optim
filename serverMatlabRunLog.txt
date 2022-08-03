@@ -8,151 +8,91 @@
 To get started, type doc.
 For product information, visit www.mathworks.com.
  
-The code begins at 28-Jul-2022 23:09:10
+The code begins at 03-Aug-2022 16:14:35
 Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 16).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 2.273492 seconds.
+Elapsed time is 3.278252 seconds.
 
 subSize =
 
-    97
-   100
-    68
-   100
-    48
-    93
-    61
-    93
+    67
+    70
+    49
+    70
+    37
+    69
+    38
+    64
 
 [Warning: Directory already exists.] 
 [> In Main (line 129)] 
 The method(s) to be evaluated in this experiment is(are):
-GD
-ADMM
 pxADMM
-ADMM_fd
 pxADMM_fd_sync
 pxADMM_fd_async
 pxADMM_fd_tc_sync
 pxADMM_fd_tc_async
 
-Time of GD
-   500
-
-    0.0021
-
-        1000
-
-   1.7795e-04
-
-        1500
-
-   1.4315e-04
-
-        2000
-
-   1.1820e-04
-
-        2500
-
-   9.9006e-05
-
-        3000
-
-   8.3851e-05
-
-        3500
-
-   7.1639e-05
-
-        4000
-
-   6.1640e-05
-
-        4500
-
-   5.3344e-05
-
-        5000
-
-   4.6387e-05
-
-        5500
-
-   4.0500e-05
-
-        6000
-
-   3.5481e-05
-
-        6500
-
-   3.1175e-05
-
-        7000
-
-   2.7460e-05
-
-        7500
-
-   2.4240e-05
-
-        8000
-
-   2.1438e-05
-
-Elapsed time is 527.446447 seconds.
-Time of ADMM
-Elapsed time is 61.232927 seconds.
 Time of pxADMM
-Elapsed time is 33.517789 seconds.
-Time of ADMM_{fd}
-   500
-
-   5.0421e-04
-
-        1000
-
-   2.2620e-04
-
-Elapsed time is 197.438823 seconds.
-Time of pxADMM_{fd}
-Elapsed time is 15.589922 seconds.
-Time of pxADMM_{fd}
-Elapsed time is 10.933003 seconds.
-Time of pxADMM_{fd,tc}
+Elapsed time is 31.495662 seconds.
+Time of pxADMM_{fd,sync}
    250
 
-    0.0010
+   3.0603e-04
+
+Elapsed time is 36.788183 seconds.
+Time of pxADMM_{fd,async}
+   250
+
+    0.0025
 
    500
 
-   3.6124e-04
+   3.6655e-04
+
+Elapsed time is 29.109032 seconds.
+Time of pxADMM_{fd,tc,sync}
+   250
+
+   5.5854e-04
+
+   500
+
+   2.9694e-04
 
    750
 
-   1.4678e-04
+   1.6909e-04
+
+Elapsed time is 81.009696 seconds.
+Time of pxADMM_{fd,tc,async}
+   250
+
+    0.0151
+
+   500
+
+   5.3290e-04
+
+   750
+
+   7.0269e-04
 
         1000
 
-   6.2257e-05
+   2.3965e-04
 
         1250
 
-   2.6868e-05
+   1.9013e-04
 
         1500
 
-   1.1681e-05
+   1.6850e-04
 
-Elapsed time is 111.582335 seconds.
-Time of pxADMM_{fd,tc}
-   250
-
-   2.6891e-05
-
-The identifier was:
-MATLAB:badsubscriptThere was an error! The message was:
-Index in position 1 exceeds array bounds.
+Elapsed time is 52.779553 seconds.
+Code end at HO
+The code ends at 03-Aug-2022 16:19:46
+The code duration is 00:05:11

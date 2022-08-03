@@ -24,7 +24,7 @@ range=[range_x1;range_x2];
 
 rng(990611,'twister')
 rand(17+16,1);
-M=4;
+M=8;
 region=[];
 %% parpool setup
 delete(gcp('nocreate'))
@@ -38,7 +38,7 @@ end
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-TotalNumLevel=M*100;
+TotalNumLevel=M*70;
 everyAgentsSampleNum=floor(TotalNumLevel/M);
 Agents_measure_range=4;
 realDataSet=0;
@@ -309,7 +309,7 @@ else
 end
 
 epsilon = 1e-4; % used for stop criteria
-rho_glb=TotalNumLevel*0.2;
+rho_glb=TotalNumLevel*0.3;
 L_glb=TotalNumLevel*0.8;
 
 clear show_txt

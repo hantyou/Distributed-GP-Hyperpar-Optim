@@ -19,7 +19,7 @@ if overlapFlag==1
         ind2=find(U_n==max(U_n));
         p_ind2=U_n(ind2);
         p_ind1=p_ind1/(p_ind1+p_ind2);
-        if rand>p_ind1*0.8
+        if rand>p_ind1*0.5
             ind=ind2;
         else
             ind=ind1;

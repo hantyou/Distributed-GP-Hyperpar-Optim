@@ -17,17 +17,17 @@ range=[range_x1;range_x2];
 maxM=16;
 reso_m=256;
 reso_n=256;
-everyAgentsSampleNum=50;
-Agents_measure_range=5;
+everyAgentsSampleNum=100;
+Agents_measure_range=4;
 realDataSet=0;
 samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
 agentsScatterMethod=2; % 1. Randomly distributed accross the area; 2. K_means center
 overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
 reso=[reso_m,reso_n];
-repeatNum=3;    
+repeatNum=1;    
 %% Evaluation setup
     Ms=[2,4,8,12,16]; % different number of agents for different exp groups
-    tempFlag=[1,1,1,1,1];
+    tempFlag=[0,0,0,1,1];
     
     maxRange=max(range(:))-min(range(:));
     commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/7];
@@ -309,6 +309,17 @@ for exp_r_id=1:repeatNum
         end
         
     end
+    
+    
+gcf=figure;
+for m=1:Num_expGroup
+    subplot(1,Num_expGroup,m);
+    plot(graphs{m});
+end
+fname=strcat('results\Agg\PerformanceEva\',method,'_expRep_',num2str(exp_r_id),'_a_',num2str(M),'_maxIter_',num2str(maxIter),'_Graph');
+saveas(gcf,fname,'png');
+close gcf;
+    
     save_txt=strcat('evalueResult_',num2str(exp_r_id),'.mat');
     save(save_txt);
     meanRMSEs(:,:,exp_r_id)=meanRMSE;
@@ -338,7 +349,7 @@ for m=1:Num_MethodsExamined
     legendTxt{m}=MethodsExamined(m);
 end
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','NW');
+legend(legendTxt,'Location','northoutside');
 hold off
 title('Prediction Mean RMSE')
 fname='results/Agg/PerformanceEva/MeanRMSE';
