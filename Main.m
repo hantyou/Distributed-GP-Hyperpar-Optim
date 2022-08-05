@@ -29,7 +29,7 @@ region=[];
 %% parpool setup
 delete(gcp('nocreate'))
 try
-    parpool(16);
+    parpool(24);
 catch
     parpool(8)
 end
@@ -40,8 +40,8 @@ reso_n=256;
 reso=[reso_m,reso_n];
 TotalNumLevel=M*70;
 everyAgentsSampleNum=floor(TotalNumLevel/M);
-Agents_measure_range=4;
-realDataSet=0;
+Agents_measure_range=1;
+realDataSet=1;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
     loadRealDataset
@@ -112,7 +112,7 @@ for m=1:M
     Agents(m).N_m=localDataSetsSize(m);
     Agents(m).M=M;
     Agents(m).action_status=1;
-    Agents(m).commuRange=6;
+    Agents(m).commuRange=2;
     Agents(m).realdataset=realDataSet;
     %     Agents(m).commuRange=2.5;
     Agents(m).realz=realz;
@@ -159,7 +159,7 @@ elseif realDataSet==0
     pause(0.01)
 end
 %%
-% theta_range=[[0.1,1.1];[-1,log(5)/log(10)]];
+% theta_range=[[log(3)/log(10),log(15)/log(10)];[log(0.2)/log(10),log(6)/log(10)]];
 % LL=generateLikelihoodMap(X,Z,theta_range,sigma_n);
 %% Set topology
 Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
@@ -314,7 +314,7 @@ if realDataSet==0
     initial_sigma_n=1;
     initial_l=2*ones(1,inputDim);
 else
-    initial_sigma_f=5.5;
+    initial_sigma_f=6;
     initial_sigma_n=0.5;
     initial_l=2*ones(1,inputDim);
 end
@@ -322,6 +322,8 @@ end
 epsilon = 1e-5; % used for stop criteria
 rho_glb=TotalNumLevel*0.3;
 L_glb=TotalNumLevel*0.8;
+
+GD_step_size=0.00005;
 
 clear show_txt
 %%
@@ -333,24 +335,27 @@ clear show_txt
 % initial_l(1)=initial_l(1)*0.8;
 if run_GD
     % run GD
-    stepSize=0.00001;
-    maxIter=11000;
+    stepSize=GD_step_size;
+    maxIter=15000;
 
     disp('Time of GD')
 
     tic
-    [sigma_GD,l_GD,Steps_GD]  = runGD(Agents,M,initial_sigma_f,initial_l,initial_sigma_n,stepSize,epsilon,maxIter);
+    [sigma_GD,l_GD,sigma_n_GD,Steps_GD]  = runGD(Agents,M,initial_sigma_f,initial_l,initial_sigma_n,stepSize,epsilon,maxIter);
     toc
-
+    
+    disp('GD optimization results')
+    disp([sigma_GD,l_GD',sigma_n_GD])
+    
     pause(0.1)
 end
 %% Perform ADMM
 if run_ADMM
     % initialize ADMM
-    stepSize=0.00001; % step size of optimizing theta in inner interations
+    stepSize=GD_step_size; % step size of optimizing theta in inner interations
     initial_beta = [1;ones(length(initial_l),1);1];
     initial_z = [initial_sigma_f;initial_l';initial_sigma_n];
-    maxOutIter=1500;
+    maxOutIter=2000;
     maxInIter=50;
     for m=1:M
         Agents(m).beta=initial_beta;
@@ -368,13 +373,16 @@ if run_ADMM
     tic
     [sigma_ADMM,l_ADMM,sigma_n_ADMM,Steps_ADMM,IterCounts] = runADMM(Agents,M,stepSize,epsilon,maxOutIter,maxInIter);
     toc
+    
+    disp('ADMM optimization results')
+    disp([sigma_ADMM,l_ADMM',sigma_n_ADMM])
 
     pause(0.1)
 end
 %% Perform pxADMM
 if run_pxADMM
     % initialize pxADMM
-    maxIter=10000;
+    maxIter=15000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -393,15 +401,18 @@ if run_pxADMM
     tic
     [sigma_pxADMM,l_pxADMM,sigma_n_pxADMM,Steps_pxADMM,Zs_pxADMM] = runPXADMM(Agents,M,epsilon,maxIter);
     toc
+    
+    disp('pxADMM optimization results')
+    disp([sigma_pxADMM,l_pxADMM',sigma_n_pxADMM])
 
     pause(0.1)
 end
 %% Perform ADMM_fd
 if run_ADMM_fd
     % initialize ADMM_fd
-    maxOutIter=1500;
+    maxOutIter=2000;
     maxInIter=50;
-    stepSize=0.00001;
+    stepSize=GD_step_size;
     for m=1:M
         Agents(m).rho=rho_glb;
         Agents(m).sigma_f=initial_sigma_f;
@@ -430,13 +441,16 @@ if run_ADMM_fd
     tic
     [sigma_ADMM_fd,l_ADMM_fd,sigma_n_ADMM_fd,Steps_ADMM_fd,IterCounts_fd] = runADMM_fd(Agents,M,stepSize,epsilon,maxOutIter,maxInIter);
     toc
+    
+    disp('ADMM_{fd} optimization results')
+    disp([sigma_ADMM_fd,l_ADMM_fd',sigma_n_ADMM_fd])
 
     pause(0.1)
 end
 %% Perform pxADMM_fd_sync
 if run_pxADMM_fd_sync
     % initialize pxADMM_fd
-    maxIter=11000;
+    maxIter=15000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -451,8 +465,8 @@ if run_pxADMM_fd_sync
 
         Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
-        Agents(m).beta_mn=0.1*ones(inputDim+2,Agents(m).N_size);
-        Agents(m).beta_nm=0.1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=ones(inputDim+2,Agents(m).N_size);
 
         Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
@@ -474,6 +488,9 @@ if run_pxADMM_fd_sync
     [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,sigma_n_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync,DataTransNum_pxADMM_fd_sync] = ...
         runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
+    
+    disp('pxADMM_{fd,sync} optimization results')
+    disp([sigma_pxADMM_fd_sync,l_pxADMM_fd_sync',sigma_n_pxADMM_fd_sync])
 
     pause(0.1)
     Steps_pxADMM_fd_sync=Steps_pxADMM_fd_sync{1};
@@ -481,7 +498,7 @@ end
 %% Perform pxADMM_fd_async
 if run_pxADMM_fd_async
     % initialize pxADMM_fd
-    maxIter=11000;
+    maxIter=15000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -501,8 +518,8 @@ if run_pxADMM_fd_async
 
         Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
-        Agents(m).beta_mn=0.1*ones(inputDim+2,Agents(m).N_size);
-        Agents(m).beta_nm=0.1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=1*ones(inputDim+2,Agents(m).N_size);
 
         Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
@@ -525,6 +542,10 @@ if run_pxADMM_fd_async
     [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async,DataTransNum_pxADMM_fd_async] =...
         runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
+    
+    disp('pxADMM_{fd,async} optimization results')
+    disp([sigma_pxADMM_fd_async,l_pxADMM_fd_async',sigma_n_pxADMM_fd_async])
+    
     Agents(1).sigma_f=sigma_pxADMM_fd_async;
     Agents(1).l=l_pxADMM_fd_async;
     pause(0.1)
@@ -617,7 +638,7 @@ end
 %% run_pxADMM_fd_tc_sync
 if run_pxADMM_fd_tc_sync
     % initialize pxADMM_fd_tc_sync
-    maxIter=11000;
+    maxIter=15000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -632,8 +653,8 @@ if run_pxADMM_fd_tc_sync
 
         Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
-        Agents(m).beta_mn=0.1*ones(inputDim+2,Agents(m).N_size);
-        Agents(m).beta_nm=0.1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=1*ones(inputDim+2,Agents(m).N_size);
 
         Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
@@ -655,6 +676,9 @@ if run_pxADMM_fd_tc_sync
     [sigma_pxADMM_fd_tc_sync,l_pxADMM_fd_tc_sync,sigma_n_pxADMM_fd_tc_sync,Steps_pxADMM_fd_tc_sync,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_sync,DataTransNum_pxADMM_fd_tc_sync] = ...
         runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
     toc
+    
+    disp('pxADMM_{fd,tc,sync} optimization results')
+    disp([sigma_pxADMM_fd_tc_sync,l_pxADMM_fd_tc_sync',sigma_n_pxADMM_fd_tc_sync])
 
     pause(0.1)
     Steps_pxADMM_fd_tc_sync=Steps_pxADMM_fd_tc_sync{1};
@@ -663,7 +687,7 @@ end
 %% run_pxADMM_fd_tc_async
 if run_pxADMM_fd_tc_async
     % initialize pxADMM_fd_tc
-    maxIter=11000;
+    maxIter=15000;
     initial_z=[initial_sigma_f;initial_l';initial_sigma_n];
     initial_beta = 1*[1;ones(length(initial_l),1);1];
     for m=1:M
@@ -678,8 +702,8 @@ if run_pxADMM_fd_tc_async
 
         Agents(m).z_mn=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).z_nm=zeros(inputDim+2,Agents(m).N_size);
-        Agents(m).beta_mn=0.1*ones(inputDim+2,Agents(m).N_size);
-        Agents(m).beta_nm=0.1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_mn=1*ones(inputDim+2,Agents(m).N_size);
+        Agents(m).beta_nm=1*ones(inputDim+2,Agents(m).N_size);
 
         Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
@@ -702,6 +726,9 @@ if run_pxADMM_fd_tc_async
     [sigma_pxADMM_fd_tc_async,l_pxADMM_fd_tc_async,sigma_n_pxADMM_fd_tc_async,Steps_pxADMM_fd_tc_async,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_async,DataTransNum_pxADMM_fd_tc_async] =...
         runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
     toc
+    
+    disp('pxADMM_{fd,tc,async} optimization results')
+    disp([sigma_pxADMM_fd_tc_async,l_pxADMM_fd_tc_async',sigma_n_pxADMM_fd_tc_async])
 
     pause(0.1)
     Steps_pxADMM_fd_tc_async=Steps_pxADMM_fd_tc_async{1};

@@ -241,10 +241,10 @@ end
     Err_sigma=Errs{r_select};
     
     %resample
-        [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m));
+    [mesh_x1,mesh_x2]=meshgrid(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m));
 
     %% Decide sample points
-    samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
+    samplingMethod=1; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
     subSize=ones(M,1)*everyAgentsSampleNum;
 %     Agents_Posi=[unifrnd(range_x1(1),range_x1(2),1,M)*0.8;
 %         unifrnd(range_x2(1),range_x2(2),1,M)*0.8];

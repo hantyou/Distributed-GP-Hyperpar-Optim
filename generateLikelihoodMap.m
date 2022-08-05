@@ -59,10 +59,13 @@ gcf=figure;
 ax2=axes;
 contour(ax2,l1s,flip(sigma_fs),NLL,50);
 hold on ;
-scatter(min_l,min_sigma_f,200,'pb','filled')
+scatter(min_l,min_sigma_f,50,'^k','filled')
+text(min_l-0.11,min_sigma_f-0.15,strcat("(",num2str(min_l,3),",",num2str(min_sigma_f,3),")"),"EdgeColor","k","Color","k",'HorizontalAlignment','right','BackgroundColor','w');
 colormap(ax2,'jet');
 set(gca, 'XScale', 'log')
 set(gca, 'YScale', 'log')
+xlabel('$l$','Interpreter','latex','FontSize',17);
+ylabel('$\sigma_f$','Interpreter','latex','FontSize',17);
 colorbar;
 fname='results/LikelihoodHyperparsOnlyContour';
 saveas(gcf,fname,'png');

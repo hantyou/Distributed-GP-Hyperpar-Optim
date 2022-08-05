@@ -6,7 +6,7 @@ set(0,'DefaultFigureVisible','off')
 %%
 delete(gcp('nocreate'))
 try
-    parpool(30);
+    parpool(8);
 catch
     parpool(8)
 end
@@ -14,20 +14,20 @@ end
 range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
-maxM=16;
+maxM=8;
 reso_m=256;
 reso_n=256;
-everyAgentsSampleNum=100;
+everyAgentsSampleNum=70;
 Agents_measure_range=4;
 realDataSet=0;
 samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
-agentsScatterMethod=2; % 1. Randomly distributed accross the area; 2. K_means center
+agentsScatterMethod=1; % 1. Randomly distributed accross the area; 2. K_means center
 overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
 reso=[reso_m,reso_n];
 repeatNum=1;    
 %% Evaluation setup
     Ms=[2,4,8,12,16]; % different number of agents for different exp groups
-    tempFlag=[0,0,0,1,1];
+    tempFlag=[1,1,1,1,1];
     
     maxRange=max(range(:))-min(range(:));
     commuRange=[maxRange,maxRange/4,maxRange/5,maxRange/6,maxRange/10];
@@ -158,7 +158,8 @@ for exp_r_id=1:repeatNum
     %% Evaluate Others
     
     rng(990611,'twister')
-        commuRange=[maxRange,maxRange/2,maxRange/3,maxRange/3,maxRange/7];
+        commuRange=[maxRange,maxRange/5,maxRange/5,maxRange/5,maxRange/8];
+        commuRange(tempFlag==0)=[];
     for expId=1:Num_expGroup
         M=Ms(expId);
         maxIter=100;

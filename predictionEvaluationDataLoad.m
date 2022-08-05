@@ -224,9 +224,12 @@ dataSourceOption=2;
     G=graph(A_full(1:maxM,1:maxM));
     % figure,plot(G)
     L = laplacian(G);
-    [~,v]=svd(full(L));
-    v=diag(v);
-    if v(end-1)==0
+    
+            [~,V,~]=eig(full(L));
+            V=diag(V);
+            v=sort(V,'ascend');
+%     v=diag(v);
+    if v(end-1)<1e-5
         disp("Error: graph not connected")
     end
     clear L;

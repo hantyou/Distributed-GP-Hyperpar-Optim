@@ -1,4 +1,4 @@
-function [newSigma,newL,Steps] = runGD(Agents,M,initial_sigma_f,initial_l,sigma_n,stepSize,stopCriteria,maxIter)
+function [newSigma,newL,newSigma_n,Steps] = runGD(Agents,M,initial_sigma_f,initial_l,sigma_n,stepSize,stopCriteria,maxIter)
 %RUNGD Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -99,7 +99,7 @@ for z_i=1:(D+2)
         y_r=yline(Agents(1).realz(z_i),'r-.');
     end
     for m=1:M
-        plot(Zs{m}(z_i,:),'g');
+        plot(Zs{m}(z_i,:),'b');
     end
     xlabel('steps')
     if z_i==1
