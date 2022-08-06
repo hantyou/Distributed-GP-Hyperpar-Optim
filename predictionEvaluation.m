@@ -57,6 +57,11 @@ repeatNum=1;
         "DEC-NPAE"}';
     NNNAME={"NN-NPAE"};
     
+    IANAME={
+        "DEC-PoE";
+        "DEC-gPoE";
+        "DEC-BCM";
+        "DEC-rBCM"};
     
     
     NOAGNAME={"No-Ag"};
@@ -90,6 +95,9 @@ repeatNum=1;
     
     evaMethod='RMSE';
     
+    cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
+    pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
+
         
     meanRMSEs=zeros(Num_MethodsExamined,Num_expGroup,repeatNum);
     varRMSEs=zeros(Num_MethodsExamined,Num_expGroup,repeatNum);
@@ -336,6 +344,7 @@ varRMSE2=mean(meanRMSE2s,3);
 s=hgexport('factorystyle');
 s.LineWidthMin=1.2;
 s.Resolution=800;
+% Plot Graph Structures
 gcf=figure;
 for m=1:Num_expGroup
     subplot(1,Num_expGroup,m);
@@ -348,7 +357,7 @@ hgexport(gcf,fname,s);
 s.Format='eps';
 hgexport(gcf,fname,s);
 close gcf;
-
+% Plot PDMM based methods mean RMSE
 gcf=figure;
 hold on;
 legendTxt=cell(Num_MethodsExamined,1);
@@ -359,7 +368,7 @@ end
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
-title('Prediction Mean RMSE')
+title('Prediction Mean RMSE PDMM')
 fname='results/Agg/PerformanceEva/MeanRMSE';
 saveas(gcf,fname,'png');
 s.Format='png';
@@ -369,6 +378,7 @@ hgexport(gcf,fname,s);
 close gcf;
 disp('meanRMSE1 PDMM saved')
 
+% Plot DTCF based methods
 gcf=figure;
 hold on;
 clear legendTxt
@@ -384,7 +394,7 @@ end
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
-title('Prediction Mean RMSE DTCF')
+title('Predictive Mean RMSE DTCF')
 fname='results/Agg/PerformanceEva/MeanRMSE2';
 saveas(gcf,fname,'png');
 s.Format='png';
@@ -393,9 +403,40 @@ s.Format='eps';
 hgexport(gcf,fname,s);
 close gcf;
 disp('meanRMSE2 DTCF saved')
-
+% Compare mean RMSE of DTCF and PDMM
 gcf=figure;
 hold on;
+clear legendTxt
+legendTxt=cell(1,1);
+lgdCount=0;
+for m=1:Num_MethodsExamined
+    if any(strcmp(IANAME,MethodsExamined(m)))
+        plot(Ms,meanRMSE(m,:),strcat('-',pVec(m)),'Color',cVec(m));
+        lgdCount=lgdCount+1;
+        legendTxt{lgdCount}=strcat(MethodsExamined(m)," PDMM");
+        plot(Ms,meanRMSE2(m,:),strcat('--',pVec(m)),'Color',cVec(m));
+        lgdCount=lgdCount+1;
+        legendTxt{lgdCount}=strcat(MethodsExamined(m)," DTCF");
+    end
+end
+
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+hold off
+title('Comparison Mean RMSE DTCF and PDMM')
+fname='results/Agg/PerformanceEva/Mean_PDMM_DTCF_Cmp';
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+close gcf;
+disp('PDMM DTCF compare saved')
+
+
+% Plot PDMM based methods variance RMSE
+gcf=figure;
+hold on;
+clear legendTxt
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
     plot(Ms,varRMSE(m,:),strcat('-',pVec(m)));
@@ -404,7 +445,7 @@ end
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
-title('Prediction Var RMSE')
+title('Predictive Var RMSE PDMM')
 fname='results/Agg/PerformanceEva/VarRMSE';
 saveas(gcf,fname,'png');
 s.Format='png';
@@ -415,6 +456,7 @@ close gcf;
 
 gcf=figure;
 hold on;
+clear legendTxt
 legendTxt=cell(size(varRMSE2,1),1);
 % varRMSE2((end-2):end,:)=varRMSE((end-2):end,:);
 for m=1:size(varRMSE2,1)
@@ -434,6 +476,37 @@ s.Format='eps';
 hgexport(gcf,fname,s);
 close gcf;
 
+% Compare var RMSE of DTCF and PDMM
+gcf=figure;
+hold on;
+clear legendTxt
+legendTxt=cell(1,1);
+lgdCount=0;
+for m=1:Num_MethodsExamined
+    if any(strcmp(IANAME,MethodsExamined(m)))
+        plot(Ms,varRMSE(m,:),strcat('-',pVec(m)),'Color',cVec(m));
+        lgdCount=lgdCount+1;
+        legendTxt{lgdCount}=strcat(MethodsExamined(m)," PDMM");
+        plot(Ms,varRMSE2(m,:),strcat('--',pVec(m)),'Color',cVec(m));
+        lgdCount=lgdCount+1;
+        legendTxt{lgdCount}=strcat(MethodsExamined(m)," DTCF");
+    end
+end
+
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+hold off
+title('Comparison Variance RMSE DTCF and PDMM')
+fname='results/Agg/PerformanceEva/Var_PDMM_DTCF_Cmp';
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+close gcf;
+disp('PDMM DTCF variance compare saved')
+
+
+%
 gcf=figure;
 hold on
 legendTxt=cell(Num_MethodsExamined,1);
