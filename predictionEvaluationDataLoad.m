@@ -30,6 +30,8 @@ dataSourceOption=2;
     % If generate new data, indicate some options
 
 
+            cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
+            pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
     
     rng(rngNum,'twister')
 %     rand(3*maxM,1);
@@ -62,8 +64,6 @@ dataSourceOption=2;
             [X_temp,subSize,sampleIdx] = decideSamplePoints(1,subSize,range,Agents_Posi,Agents_measure_range);
 
             X_temp=X_temp';
-            cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
-            pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
 
             numC=maxM;
             if overlap==1

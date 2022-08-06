@@ -8,7 +8,7 @@
 To get started, type doc.
 For product information, visit www.mathworks.com.
  
-The code begins at 05-Aug-2022 03:56:16
+The code begins at 06-Aug-2022 18:14:33
 Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 8).
 Methods to be examined are:
@@ -16,20 +16,15 @@ DEC-PoE
 DEC-gPoE
 DEC-BCM
 DEC-rBCM
-DEC-NPAE
-NN-NPAE
-CON-NPAE
-No-Ag
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 2.621418 seconds.
+Elapsed time is 2.787673 seconds.
 decide agents positions
-also deciding sampling points
-Elapsed time is 4.783721 seconds.
+Elapsed time is 0.363497 seconds.
 data loading/generation end
 %%%%%%%%%%%%%%%%%%%%Examine Part Begin%%%%%%%%%%%%%%%%%%%%%%%
 Now calculating Full GP
-Elapsed time is 9.806441 seconds.
+Elapsed time is 8.695426 seconds.
 Agent number:
      2
 
@@ -37,78 +32,58 @@ DEC-POE_with_PDMM
 
 toc_agg =
 
-    0.1923
+    0.2041
 
-Elapsed time is 0.254233 seconds.
+Elapsed time is 0.273916 seconds.
 DEC-POE_with_DTCF
 
 toc_agg =
 
-    0.1405
+    0.1624
 
-Elapsed time is 0.399231 seconds.
+Elapsed time is 0.441507 seconds.
 DEC-GPOE_with_PDMM
 
 toc_agg =
 
-    0.1604
+    0.1690
 
-Elapsed time is 0.173342 seconds.
+Elapsed time is 0.175805 seconds.
 DEC-GPOE_with_DTCF
 
 toc_agg =
 
-    0.0860
+    0.1140
 
-Elapsed time is 0.261654 seconds.
+Elapsed time is 0.305943 seconds.
 DEC-BCM_with_PDMM
 
 toc_agg =
 
-    0.1464
+    0.1600
 
-Elapsed time is 0.528216 seconds.
+Elapsed time is 0.570051 seconds.
 DEC-BCM_with_DTCF
 
 toc_agg =
 
-    0.1023
+    0.1244
 
-Elapsed time is 0.866271 seconds.
+Elapsed time is 1.064226 seconds.
 DEC-RBCM_with_PDMM
 
 toc_agg =
 
-    0.1359
+    0.1644
 
-Elapsed time is 0.380168 seconds.
+Elapsed time is 0.455758 seconds.
 DEC-RBCM_with_DTCF
 
 toc_agg =
 
-    0.0892
+    0.1749
 
-Elapsed time is 0.673931 seconds.
-DEC-NPAE
-Elapsed time is 74.282827 seconds.
-NN-NPAE
-Elapsed time is 60.604272 seconds.
-CON-NPAE
-DEC-BCM_with_PDMM
-
-toc_agg =
-
-    0.1352
-
-DEC-BCM_with_DTCF
-
-toc_agg =
-
-    0.1281
-
-Elapsed time is 0.769110 seconds.
-No-Agg
-Elapsed time is 6.911501 seconds.
+Elapsed time is 0.827682 seconds.
 Agent number:
      4
 
@@ -116,78 +91,58 @@ DEC-POE_with_PDMM
 
 toc_agg =
 
-    0.5443
+    0.6377
 
-Elapsed time is 0.550166 seconds.
+Elapsed time is 0.657301 seconds.
 DEC-POE_with_DTCF
 
 toc_agg =
 
-    0.3537
+    0.4154
 
-Elapsed time is 0.908274 seconds.
+Elapsed time is 1.079828 seconds.
 DEC-GPOE_with_PDMM
 
 toc_agg =
 
-    0.4190
+    0.6718
 
-Elapsed time is 0.441391 seconds.
+Elapsed time is 0.692004 seconds.
 DEC-GPOE_with_DTCF
 
 toc_agg =
 
-    0.2912
+    0.5099
 
-Elapsed time is 0.754140 seconds.
+Elapsed time is 1.229217 seconds.
 DEC-BCM_with_PDMM
 
 toc_agg =
 
-    0.5974
+    0.5910
 
-Elapsed time is 0.975179 seconds.
+Elapsed time is 1.336997 seconds.
 DEC-BCM_with_DTCF
 
 toc_agg =
 
-    0.3908
+    0.3922
 
-Elapsed time is 1.801580 seconds.
+Elapsed time is 2.377985 seconds.
 DEC-RBCM_with_PDMM
 
 toc_agg =
 
-    0.4503
+    0.5171
 
-Elapsed time is 0.916304 seconds.
+Elapsed time is 1.126225 seconds.
 DEC-RBCM_with_DTCF
 
 toc_agg =
 
-    0.3246
+    0.4510
 
-Elapsed time is 1.639239 seconds.
-DEC-NPAE
-Elapsed time is 73.963942 seconds.
-NN-NPAE
-Elapsed time is 82.082945 seconds.
-CON-NPAE
-DEC-BCM_with_PDMM
-
-toc_agg =
-
-    0.4298
-
-DEC-BCM_with_DTCF
-
-toc_agg =
-
-    0.3540
-
-Elapsed time is 1.797200 seconds.
-No-Agg
-Elapsed time is 7.378411 seconds.
+Elapsed time is 2.047440 seconds.
 Agent number:
      8
 
@@ -195,78 +150,58 @@ DEC-POE_with_PDMM
 
 toc_agg =
 
-    1.9783
+    2.1195
 
-Elapsed time is 1.983094 seconds.
+Elapsed time is 2.126061 seconds.
 DEC-POE_with_DTCF
 
 toc_agg =
 
-    1.5669
+    1.8972
 
-Elapsed time is 3.552886 seconds.
+Elapsed time is 4.026603 seconds.
 DEC-GPOE_with_PDMM
 
 toc_agg =
 
-    1.7681
+    2.0211
 
-Elapsed time is 1.773934 seconds.
+Elapsed time is 2.029274 seconds.
 DEC-GPOE_with_DTCF
 
 toc_agg =
 
-    1.4934
+    1.6051
 
-Elapsed time is 3.270917 seconds.
+Elapsed time is 3.638923 seconds.
 DEC-BCM_with_PDMM
 
 toc_agg =
 
-    1.6908
+    2.0170
 
-Elapsed time is 2.684909 seconds.
+Elapsed time is 3.148132 seconds.
 DEC-BCM_with_DTCF
 
 toc_agg =
 
-    1.8016
+    1.6156
 
-Elapsed time is 5.186536 seconds.
+Elapsed time is 6.066432 seconds.
 DEC-RBCM_with_PDMM
 
 toc_agg =
 
-    1.6413
+    1.6636
 
-Elapsed time is 2.594273 seconds.
+Elapsed time is 2.623224 seconds.
 DEC-RBCM_with_DTCF
 
 toc_agg =
 
-    1.8996
+    2.0479
 
-Elapsed time is 5.526097 seconds.
-DEC-NPAE
-Elapsed time is 83.860696 seconds.
-NN-NPAE
-Elapsed time is 143.210952 seconds.
-CON-NPAE
-DEC-BCM_with_PDMM
-
-toc_agg =
-
-    2.1130
-
-DEC-BCM_with_DTCF
-
-toc_agg =
-
-    1.6888
-
-Elapsed time is 5.407748 seconds.
-No-Agg
-Elapsed time is 7.694407 seconds.
+Elapsed time is 5.493927 seconds.
 Agent number:
     12
 
@@ -274,78 +209,58 @@ DEC-POE_with_PDMM
 
 toc_agg =
 
-    4.5459
+    3.7983
 
-Elapsed time is 4.552838 seconds.
+Elapsed time is 3.805573 seconds.
 DEC-POE_with_DTCF
 
 toc_agg =
 
-    4.0721
+    3.9432
 
-Elapsed time is 8.628851 seconds.
+Elapsed time is 7.753192 seconds.
 DEC-GPOE_with_PDMM
 
 toc_agg =
 
-    4.7669
+    4.4531
 
-Elapsed time is 4.772881 seconds.
+Elapsed time is 4.458451 seconds.
 DEC-GPOE_with_DTCF
 
 toc_agg =
 
-    3.7372
+    4.0142
 
-Elapsed time is 8.514421 seconds.
+Elapsed time is 8.477775 seconds.
 DEC-BCM_with_PDMM
 
 toc_agg =
 
-    3.3300
+    4.0666
 
-Elapsed time is 4.568320 seconds.
+Elapsed time is 5.857736 seconds.
 DEC-BCM_with_DTCF
 
 toc_agg =
 
-    3.5760
+    4.0622
 
-Elapsed time is 9.304799 seconds.
+Elapsed time is 11.054783 seconds.
 DEC-RBCM_with_PDMM
 
 toc_agg =
 
-    4.1223
+    3.9508
 
-Elapsed time is 5.343195 seconds.
+Elapsed time is 5.504443 seconds.
 DEC-RBCM_with_DTCF
 
 toc_agg =
 
-    3.7388
+    3.9624
 
-Elapsed time is 10.756309 seconds.
-DEC-NPAE
-Elapsed time is 98.478544 seconds.
-NN-NPAE
-Elapsed time is 146.619608 seconds.
-CON-NPAE
-DEC-BCM_with_PDMM
-
-toc_agg =
-
-    4.6790
-
-DEC-BCM_with_DTCF
-
-toc_agg =
-
-    3.7378
-
-Elapsed time is 11.362796 seconds.
-No-Agg
-Elapsed time is 8.195922 seconds.
+Elapsed time is 10.970604 seconds.
 Agent number:
     16
 
@@ -353,79 +268,59 @@ DEC-POE_with_PDMM
 
 toc_agg =
 
-    9.3505
+    7.8909
 
-Elapsed time is 9.358580 seconds.
+Elapsed time is 7.898103 seconds.
 DEC-POE_with_DTCF
 
 toc_agg =
 
-    8.0986
+    7.6658
 
-Elapsed time is 17.465313 seconds.
+Elapsed time is 15.569575 seconds.
 DEC-GPOE_with_PDMM
 
 toc_agg =
 
-   10.5406
+    7.1936
 
-Elapsed time is 10.549014 seconds.
+Elapsed time is 7.200561 seconds.
 DEC-GPOE_with_DTCF
 
 toc_agg =
 
-    8.5912
+    7.8659
 
-Elapsed time is 19.145490 seconds.
+Elapsed time is 15.075727 seconds.
 DEC-BCM_with_PDMM
 
 toc_agg =
 
-    9.8576
+    6.5620
 
-Elapsed time is 11.552140 seconds.
+Elapsed time is 9.382486 seconds.
 DEC-BCM_with_DTCF
 
 toc_agg =
 
-    7.0497
+    7.9202
 
-Elapsed time is 20.198406 seconds.
+Elapsed time is 19.013425 seconds.
 DEC-RBCM_with_PDMM
 
 toc_agg =
 
-    7.0988
+    7.0600
 
-Elapsed time is 9.050880 seconds.
+Elapsed time is 8.785947 seconds.
 DEC-RBCM_with_DTCF
 
 toc_agg =
 
-    5.7057
+    7.2463
 
-Elapsed time is 16.422096 seconds.
-DEC-NPAE
-Elapsed time is 114.233654 seconds.
-NN-NPAE
-Elapsed time is 183.484415 seconds.
-CON-NPAE
-DEC-BCM_with_PDMM
-
-toc_agg =
-
-    9.9587
-
-DEC-BCM_with_DTCF
-
-toc_agg =
-
-    7.4600
-
-Elapsed time is 20.474510 seconds.
-No-Agg
-Elapsed time is 9.474850 seconds.
+Elapsed time is 17.827759 seconds.
 meanRMSE1 PDMM saved
 meanRMSE2 DTCF saved
-The code ends at 05-Aug-2022 04:22:35
-The code duration is 00:26:18
+The code ends at 06-Aug-2022 18:22:02
+The code duration is 00:07:29

@@ -77,10 +77,10 @@ repeatNum=1;
         1;
         1;
         1;
-        1;
-        1;
-        1;
-        1];
+        0;
+        0;
+        0;
+        0];
     MethodsExamined=MethodsName(MethodsFlag==1);
     Num_MethodsExamined=sum(MethodsFlag);
     disp("Methods to be examined are:")
@@ -368,6 +368,7 @@ s.Format='eps';
 hgexport(gcf,fname,s);
 close gcf;
 disp('meanRMSE1 PDMM saved')
+
 gcf=figure;
 hold on;
 clear legendTxt

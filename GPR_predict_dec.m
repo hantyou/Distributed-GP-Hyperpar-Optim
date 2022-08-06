@@ -385,7 +385,7 @@ parfor n=1:N_newX
     q_sigma_direct(:,n)=pinv(K_A(:,:,n))*k_A(:,n);
 end
 maxIterJOR=400;
-w=0.1;
+w=0.05;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
     for i=1:M
