@@ -365,9 +365,11 @@ nexttile(1);
 hold on;
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
-    plot(Ms,meanRMSE(m,:),strcat('-',pVec(m)));
+    plot(Ms,meanRMSE(m,:),'LineStyle','-','Marker',pVec(m));
     legendTxt{m}=MethodsExamined(m);
 end
+xlabel('Agents number')
+ylabel('RMSE')
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
@@ -394,9 +396,11 @@ legendTxt=cell(Num_MethodsExamined,1);
 % meanRMSE2((end-2):end,:)=meanRMSE((end-2):end,:);
 
 for m=1:Num_MethodsExamined
-    plot(Ms,meanRMSE2(m,:),strcat('-',pVec(m)));
+    plot(Ms,meanRMSE2(m,:),'LineStyle','-','Marker',pVec(m));
     legendTxt{m}=MethodsExamined(m);
 end
+xlabel('Agents number')
+ylabel('RMSE')
 % legendTxt=legendTxt{1:size(meanRMSE2,1)};
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
@@ -430,6 +434,8 @@ for m=1:Num_MethodsExamined
     end
 end
 
+xlabel('Agents number')
+ylabel('RMSE')
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
@@ -454,6 +460,8 @@ for m=1:Num_MethodsExamined
     plot(Ms,varRMSE(m,:),strcat('-',pVec(m)));
     legendTxt{m}=MethodsExamined(m);
 end
+xlabel('Agents number')
+ylabel('RMSE')
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
@@ -471,13 +479,15 @@ tiledlayout(1,1,'TileSpacing','compact','Padding','none');
 nexttile(1);
 hold on;
 clear legendTxt
-legendTxt=cell(size(varRMSE2,1),1);
+legendTxt=cell(Num_MethodsExamined,1);
 % varRMSE2((end-2):end,:)=varRMSE((end-2):end,:);
-for m=1:size(varRMSE2,1)
+for m=1:Num_MethodsExamined
     plot(Ms,varRMSE2(m,:),strcat('-',pVec(m)));
     legendTxt{m}=MethodsExamined(m);
 end
-legendTxt=legendTxt{1:size(varRMSE2,1)};
+xlabel('Agents number')
+ylabel('RMSE')
+% legendTxt=legendTxt{1:size(varRMSE2,1)};
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
@@ -509,7 +519,8 @@ for m=1:Num_MethodsExamined
         legendTxt{lgdCount}=strcat(MethodsExamined(m)," DTCF");
     end
 end
-
+xlabel('Agents number')
+ylabel('RMSE')
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
@@ -533,6 +544,8 @@ for m=1:Num_MethodsExamined
     plot(Ms,times(m,:),'-o')
     legendTxt{m}=MethodsExamined(m);
 end
+xlabel('Agents number')
+ylabel('RMSE')
 set(gca, 'YScale', 'log');
 legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
 hold off
