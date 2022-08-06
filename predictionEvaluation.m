@@ -82,10 +82,10 @@ repeatNum=1;
         1;
         1;
         1;
+        1;
         0;
-        0;
-        0;
-        0];
+        1;
+        1];
     MethodsExamined=MethodsName(MethodsFlag==1);
     Num_MethodsExamined=sum(MethodsFlag);
     disp("Methods to be examined are:")
