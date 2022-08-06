@@ -421,10 +421,10 @@ legendTxt=cell(1,1);
 lgdCount=0;
 for m=1:Num_MethodsExamined
     if any(strcmp(IANAME,MethodsExamined(m)))
-        plot(Ms,meanRMSE(m,:),strcat('-',pVec(m)),'Color',cVec(m));
+        plot(Ms,meanRMSE(m,:),'Color',cVec(m),'LineStyle','-','Marker',pVec(m));
         lgdCount=lgdCount+1;
         legendTxt{lgdCount}=strcat(MethodsExamined(m)," PDMM");
-        plot(Ms,meanRMSE2(m,:),strcat('--',pVec(m)),'Color',cVec(m));
+        plot(Ms,meanRMSE2(m,:),'Color',cVec(m),'LineStyle','--','Marker',pVec(m));
         lgdCount=lgdCount+1;
         legendTxt{lgdCount}=strcat(MethodsExamined(m)," DTCF");
     end
@@ -501,10 +501,10 @@ legendTxt=cell(1,1);
 lgdCount=0;
 for m=1:Num_MethodsExamined
     if any(strcmp(IANAME,MethodsExamined(m)))
-        plot(Ms,varRMSE(m,:),strcat('-',pVec(m)),'Color',cVec(m));
+        plot(Ms,varRMSE(m,:),'Color',cVec(m),'LineStyle','-','Marker',pVec(m));
         lgdCount=lgdCount+1;
         legendTxt{lgdCount}=strcat(MethodsExamined(m)," PDMM");
-        plot(Ms,varRMSE2(m,:),strcat('--',pVec(m)),'Color',cVec(m));
+        plot(Ms,varRMSE2(m,:),'Color',cVec(m),'LineStyle','--','Marker',pVec(m));
         lgdCount=lgdCount+1;
         legendTxt{lgdCount}=strcat(MethodsExamined(m)," DTCF");
     end
