@@ -17,7 +17,7 @@ range=[range_x1;range_x2];
 maxM=8;
 reso_m=256;
 reso_n=256;
-everyAgentsSampleNum=70;
+everyAgentsSampleNum=100;
 Agents_measure_range=4;
 realDataSet=0;
 samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
@@ -170,7 +170,6 @@ for exp_r_id=1:repeatNum
         commuRange(tempFlag==0)=[];
     for expId=1:Num_expGroup
         M=Ms(expId);
-        maxIter=100;
         disp("Agent number:")
         disp(M)
         connected=0;
@@ -209,11 +208,11 @@ for exp_r_id=1:repeatNum
         
         subMeans_precal=zeros(M,N_newX);
         subVars_precal=zeros(M,N_newX);
-        
+
         parfor m=1:M
             [subMeans_precal(m,:),subVars_precal(m,:)]=subGP(Agents(m),newX,sigma_n);
         end
-        
+
         for n=1:Num_MethodsExamined
             clear mean_1 var_1 mean_2 var_2 Means Vars Means2 Vars2
             outputPDMM_DTCF_compare=0;
@@ -221,19 +220,19 @@ for exp_r_id=1:repeatNum
             tic
             switch method
                 case DECNAME
-%                     disp(method)
+                    %                     disp(method)
                     A=A_full(1:M,1:M);
                     [Means,Vars,mean_1,var_1] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,subMeans_precal,subVars_precal,'PDMM');
-                    
-                        mean_2=[];
+
+                    mean_2=[];
                     var_2=[];
                     if method~="DEC-NPAE"
                         toc
                         [Means2,Vars2,mean_2,var_2] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,subMeans_precal,subVars_precal,'DTCF');
-                    outputPDMM_DTCF_compare=1;
+                        outputPDMM_DTCF_compare=1;
                     end
                 case NNNAME
-%                     disp(method)
+                    %                     disp(method)
                     [mean_1,var_1] = GPR_predict_NN(Agents,method,newX,sigma_n,subMeans_precal,subVars_precal);
                     mean_2=[];
                     var_2=[];
@@ -328,13 +327,13 @@ end
 fname=strcat('results\Agg\PerformanceEva\',method,'_expRep_',num2str(exp_r_id),'_a_',num2str(M),'_maxIter_',num2str(maxIter),'_Graph');
 saveas(gcf,fname,'png');
 close gcf;
-    
-    save_txt=strcat('evalueResult_',num2str(exp_r_id),'.mat');
-    save(save_txt);
-    meanRMSEs(:,:,exp_r_id)=meanRMSE;
-    varRMSEs(:,:,exp_r_id)=varRMSE;
-    meanRMSE2s(:,:,exp_r_id)=meanRMSE2;
-    varRMSE2s(:,:,exp_r_id)=meanRMSE2;
+
+save_txt=strcat('evalueResult_',num2str(exp_r_id),'.mat');
+save(save_txt);
+meanRMSEs(:,:,exp_r_id)=meanRMSE;
+varRMSEs(:,:,exp_r_id)=varRMSE;
+meanRMSE2s(:,:,exp_r_id)=meanRMSE2;
+varRMSE2s(:,:,exp_r_id)=meanRMSE2;
 end
 meanRMSE=mean(meanRMSEs,3);
 varRMSE=mean(meanRMSEs,3);
