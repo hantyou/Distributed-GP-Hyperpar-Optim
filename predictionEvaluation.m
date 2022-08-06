@@ -57,11 +57,11 @@ repeatNum=1;
         "DEC-NPAE"}';
     NNNAME={"NN-NPAE"};
     
-    IANAME={
+    IANAME=[
         "DEC-PoE";
         "DEC-gPoE";
         "DEC-BCM";
-        "DEC-rBCM"};
+        "DEC-rBCM"];
     
     
     NOAGNAME={"No-Ag"};
@@ -403,6 +403,7 @@ s.Format='eps';
 hgexport(gcf,fname,s);
 close gcf;
 disp('meanRMSE2 DTCF saved')
+%%
 % Compare mean RMSE of DTCF and PDMM
 gcf=figure;
 hold on;
