@@ -20,16 +20,16 @@ reso_n=256;
 everyAgentsSampleNum=100;
 Agents_measure_range=4;
 realDataSet=0;
-samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
-agentsScatterMethod=1; % 1. Randomly distributed accross the area; 2. K_means center
+samplingMethod=1; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
+agentsScatterMethod=2; % 1. Randomly distributed accross the area; 2. K_means center
 overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
 reso=[reso_m,reso_n];  
 %% Evaluation setup
     Ms=[maxM]; % different number of agents for different exp groups
-    sampleNums=[30,60,120,240,480];
+    sampleNums=[30,60,120,240,300];
     tempFlag=[1];
     tempFlag_outer=[1,1,1,1,1];
-    repeatNum=sum(tempFlag_outer);  
+    point_number_group=sum(tempFlag_outer);  
 
     maxRange=max(range(:))-min(range(:));
     commuRange=[maxRange,maxRange/4,maxRange/5,maxRange/6,maxRange/10];
@@ -103,42 +103,233 @@ reso=[reso_m,reso_n];
     pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
 
         
-    meanRMSEs=zeros(Num_MethodsExamined,repeatNum);
-    varRMSEs=zeros(Num_MethodsExamined,repeatNum);
-    meanRMSE2s=zeros(Num_MethodsExamined,repeatNum);
-    varRMSE2s=zeros(Num_MethodsExamined,repeatNum);
+    meanRMSEs=zeros(Num_MethodsExamined,point_number_group);
+    varRMSEs=zeros(Num_MethodsExamined,point_number_group);
+    meanRMSE2s=zeros(Num_MethodsExamined,point_number_group);
+    varRMSE2s=zeros(Num_MethodsExamined,point_number_group);
+%%
+rngNum=30;
+everyAgentsSampleNum=sampleNums(end)*1.3;
+predictionEvaluationDataLoad2
+maxIter=20;
+M=maxM;
+for i=point_number_group:-1:1
+    datasetNum=sampleNums(i);
+    % Prepare
+    for abbv=1
+        reso_x=100;
+        reso_y=100;
+        range_x1=range(1,:);
+        range_x2=range(2,:);
+        ts_1=linspace(range_x1(1),range_x1(2),reso_x);
+        ts_2=linspace(range_x2(1),range_x2(2),reso_y);
+        [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
+        vecX=mesh_x(:);
+        vecY=mesh_y(:);
+        newX=[vecX,vecY]';
+        [D,N_newX]=size(newX);
+        plotFlag=1;
+        fig_export_pix=300;
+        eps_export=0;
+        png_export=1;
+        contourFlag=0;
+
+        overlapFlag=1; %0. k-means, 1. fcm
+        theta=[5,1,1]';
+        Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
+        savePlot=0;
+    end
+    
+    %% delete points number
+    X=[];
+    Z=[];
+    for m=1:M
+        Agents(m).X=Agents(m).X(:,1:datasetNum);
+        X=[X, Agents(m).X];
+        Agents(m).Z=Agents(m).Z(1:datasetNum,:);
+        Z=[Z;Agents(m).Z];
+        Agents(m).N_m=datasetNum;
+        subSize(m)=datasetNum;
+        Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
+        Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
+        Agents(m).distXd=zeros(subSize(m),subSize(m),inputDim);
+        for d=1:inputDim
+            Agents(m).distXd(:,:,d)=dist(Agents(m).X(d,:)).^2;
+        end
+        
+    end
+
+    %% other prepare
+    meanRMSE=zeros(Num_MethodsExamined,1);
+    varRMSE=zeros(Num_MethodsExamined,1);
+    meanRMSE2=zeros(Num_MethodsExamined,1);
+    varRMSE2=zeros(Num_MethodsExamined,1);
+    times=zeros(Num_MethodsExamined,1);
+    
+    %% Evaluate Full GP
+    method='Full';
+    disp('Now calculating Full GP')
+    
+    tic
+    [Mean_total,Uncertainty_total] = GPR_predict(X,Z',theta,[range_x1;range_x2],sigma_n,plotFlag,[reso_x,reso_y]);
+    toc
+    realMean=Mean_total;
+    realMean=reshape(realMean,1,reso_x*reso_y);
+    realVar=Uncertainty_total;
+    realVar=reshape(realVar,1,reso_x*reso_y);
+    
+    %% Evaluate Other methods
+        subMeans_precal=zeros(M,N_newX);
+        subVars_precal=zeros(M,N_newX);
+
+        parfor m=1:M
+            [subMeans_precal(m,:),subVars_precal(m,:)]=subGP(Agents(m),newX,sigma_n);
+        end
+
+        for n=1:Num_MethodsExamined
+            clear mean_1 var_1 mean_2 var_2 Means Vars Means2 Vars2
+            outputPDMM_DTCF_compare=0;
+            method=MethodsExamined(n);
+            tic
+            switch method
+                case DECNAME
+                    %                     disp(method)
+                    A=A_full(1:M,1:M);
+                    [Means,Vars,mean_1,var_1] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,subMeans_precal,subVars_precal,'PDMM');
+
+                    mean_2=[];
+                    var_2=[];
+                    if method~="DEC-NPAE"
+                        toc
+                        [Means2,Vars2,mean_2,var_2] = GPR_predict_dec(Agents,method,newX,A,maxIter,sigma_n,subMeans_precal,subVars_precal,'DTCF');
+                        outputPDMM_DTCF_compare=1;
+                    end
+                case NNNAME
+                    %                     disp(method)
+                    [mean_1,var_1] = GPR_predict_NN(Agents,method,newX,sigma_n,subMeans_precal,subVars_precal);
+                    mean_2=[];
+                    var_2=[];
+                    meanNN=mean_1;
+                    varNN=var_1;
+                case NOAGNAME
+%                     disp(method)
+                    [mean_1,var_1] = GPR_predict_NoAg(Agents,newX,sigma_n);
+                    mean_2=[];
+                    var_2=[];
+                case "CON-NPAE"
+                    disp(method)
+                    method1="NN-NPAE";
+                    method2="DEC-BCM";
+                    NNFlag=0;
+                    try
+                        meanNN;
+                        varNN;
+                        NNFlag=1;
+                    catch
+                        NNFlag=0;
+                    end
+                    
+                    if NNFlag==0
+                        [mean_temp,var_temp] = GPR_predict_NN(Agents,method1,newX,sigma_n);
+                        [~,~,mean_1,var_1] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,mean_temp,var_temp,'PDMM');
+                        [~,~,mean_2,var_2] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,mean_temp,var_temp,'DTCF');
+                    elseif NNFlag==1
+                        [~,~,mean_1,var_1] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,meanNN,varNN,'PDMM');
+                        [~,~,mean_2,var_2] = GPR_predict_dec(Agents,method2,newX,A,maxIter,sigma_n,meanNN,varNN,'DTCF');
+                    end
+                    
+                case CENTER
+                    disp(method)
+                    disp("!!!!!!!!!!!!!!!!!Evaluation Under Construction!!!!!!!!!!!!!!!!!!!!")
+            end
+            toc
+            TOC=toc;
+            times(n,1)=TOC;
+            [meanRMSE(n,1),varRMSE(n,1)] = ...
+                evaluatePredictionPerformanceMetrices(realMean,realVar,mean_1,var_1,evaMethod);
+            if ~isempty(mean_2)
+                [meanRMSE2(n,1),varRMSE2(n,1)] = ...
+                    evaluatePredictionPerformanceMetrices(realMean,realVar,mean_2,var_2,evaMethod);
+                clear mean_2 var_2
+            else
+                [meanRMSE2(n,1),varRMSE2(n,1)] = ...
+                    evaluatePredictionPerformanceMetrices(realMean,realVar,mean_1,var_1,evaMethod);
+            end
+            if outputPDMM_DTCF_compare==1
+                gcf=figure;
+                [pm2,pv2] = ...
+                    evaluatePredictionPerformanceMetrices(realMean,realVar,Means2,Vars2,'consensusRMSE');
+                [pm,pv] = ...
+                    evaluatePredictionPerformanceMetrices(realMean,realVar,Means,Vars,'consensusRMSE');
+                tiledlayout(2,1,'Padding','none','TileSpacing','compact');
+                nexttile(1);
+                plot(pm2),hold on,plot(pm),title('Mean Error'),hold off;
+                legend(['DTCF';'PDMM'],'Location','northoutside','Orientation','horizontal')
+                set(gca,'XScale','log','YScale','log');
+                xlabel('iterations')
+                ylabel('consensus error')
+                nexttile(2);
+                plot(pv2),hold on,plot(pv),title('Variance Error'),hold off;
+                set(gca,'XScale','log','YScale','log');
+                xlabel('iterations')
+                ylabel('consensus error')
+                
+                sgtitle(strcat(method,' Mean and Variance consensus error'));
+                fname=strcat('results\Agg\PerformanceEva2\',method,'_expRep_',num2str(exp_r_id),'_a_',num2str(M),'_maxIter_',num2str(maxIter),'_PDMM_DTCF_Compare');
+                s=hgexport('factorystyle');
+                s.Format='eps';
+                s.FontSizeMin=10;
+                s.Resolution=600;
+                s.width=8;
+                s.height=6;
+                hgexport(gcf,fname,s);
+                s.Format='png';
+                hgexport(gcf,fname,s);
+                close 
+            end
+        end
+meanRMSEs(i,:)=meanRMSE;
+varRMSEs(i,:)=varRMSE;
+meanRMSE2s(i,:)=meanRMSE2;
+varRMSE2s(i,:)=meanRMSE2;
+end
+
+
+return;
     %%
-for exp_r_id=1:repeatNum
+for exp_r_id=1:point_number_group
     rngNum=exp_r_id*10;
     everyAgentsSampleNum=sampleNums(exp_r_id);
     predictionEvaluationDataLoad
-
+    meanRMSE=zeros(Num_MethodsExamined,1);
+    varRMSE=zeros(Num_MethodsExamined,1);
+    meanRMSE2=zeros(Num_MethodsExamined,1);
+    varRMSE2=zeros(Num_MethodsExamined,1);
     %% Pre-exp pars
-    reso_x=100;
-    reso_y=100;
-    range_x1=range(1,:);
-    range_x2=range(2,:);
-    
-    ts_1=linspace(range_x1(1),range_x1(2),reso_x);
-    ts_2=linspace(range_x2(1),range_x2(2),reso_y);
-    [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
-    
-    vecX=mesh_x(:);
-    
-    vecY=mesh_y(:);
-    newX=[vecX,vecY]';
-    [D,N_newX]=size(newX);
-    
-    plotFlag=1;
-    fig_export_pix=300;
-    eps_export=0;
-    png_export=1;
-    contourFlag=0;
-    
-    overlapFlag=1; %0. k-means, 1. fcm
-    theta=[5,1,1]';
-    Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
-    savePlot=0;
+    for abbv=1
+        reso_x=100;
+        reso_y=100;
+        range_x1=range(1,:);
+        range_x2=range(2,:);
+        ts_1=linspace(range_x1(1),range_x1(2),reso_x);
+        ts_2=linspace(range_x2(1),range_x2(2),reso_y);
+        [mesh_x,mesh_y]=meshgrid(ts_1,ts_2);
+        vecX=mesh_x(:);
+        vecY=mesh_y(:);
+        newX=[vecX,vecY]';
+        [D,N_newX]=size(newX);
+        plotFlag=1;
+        fig_export_pix=300;
+        eps_export=0;
+        png_export=1;
+        contourFlag=0;
+
+        overlapFlag=1; %0. k-means, 1. fcm
+        theta=[5,1,1]';
+        Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
+        savePlot=0;
+    end
+
     maxIter=20;
     
     meanRMSE=zeros(Num_MethodsExamined,1);
@@ -577,6 +768,3 @@ parfor n=1:N_newX
 end
 
 end
-
-
-

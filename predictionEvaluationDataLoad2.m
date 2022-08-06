@@ -171,6 +171,8 @@ dataSourceOption=2;
         Agents(m).idx=idx(m,1:subSize(m));
         Agents(m).N_m=localDataSetsSize(m);
         Agents(m).M=maxM;
+        Agents(m).sigma_f=theta(1);
+        Agents(m).l=theta(2:3);
         Agents(m).action_status=1;
         Agents(m).commuRange=3.5;
         %     Agents(m).commuRange=2.5;
@@ -240,6 +242,7 @@ while(topoNotConnected)
 end
 
     clear L Topology_method
+    mkdir('results/Agg/','PerformanceEva2');
     if realDataSet==0||temp_data==3
         gcf=figure('visible','off');
         hold on;
@@ -274,8 +277,7 @@ end
         ylim([range_x2(1) range_x2(2)])
         title('network topology on 2D field')
         hold off
-        fname='results/Agg/PerformanceEva/topology_background';
-        fname=strcat(fname,'_exp_',num2str(exp_r_id));
+        fname='results/Agg/PerformanceEva2/topology_background';
         saveas(gcf,fname,'png');
         close gcf;
 
@@ -309,8 +311,7 @@ end
         ylabel('x2')
         title('network topology')
         hold off
-        fname='results/Agg/PerformanceEva/just_topology';
-        fname=strcat(fname,'_exp_',num2str(exp_r_id));
+        fname='results/Agg/PerformanceEva2/just_topology';
         saveas(gcf,fname,'png');
         close gcf;
     end
