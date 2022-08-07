@@ -346,6 +346,8 @@ s=hgexport('factorystyle');
 s.LineWidthMin=1.2;
 s.Resolution=800;
 s.FontSizeMin=14;
+s.Width=8;
+s.Height=6;
 % Plot Graph Structures
 gcf=figure;
 tiledlayout(1,1,'TileSpacing','compact','Padding','none');
