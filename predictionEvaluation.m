@@ -345,6 +345,7 @@ varRMSE2=mean(meanRMSE2s,3);
 s=hgexport('factorystyle');
 s.LineWidthMin=1.2;
 s.Resolution=800;
+s.FontSizeMin=14;
 % Plot Graph Structures
 gcf=figure;
 tiledlayout(1,1,'TileSpacing','compact','Padding','none');
