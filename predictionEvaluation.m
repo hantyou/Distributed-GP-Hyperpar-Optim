@@ -370,6 +370,8 @@ nexttile(1);
 for m=1:Num_expGroup
     subplot(1,Num_expGroup,m);
     plot(graphs{m});
+    pbaspect([1 1 1]);
+    title(strcat("M=",num2str(Ms(m))));
 end
 fname='results/Agg/PerformanceEva/Graphs';
 saveas(gcf,fname,'png');
