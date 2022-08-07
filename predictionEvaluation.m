@@ -317,7 +317,7 @@ for exp_r_id=1:repeatNum
                 xlabel('iterations')
                 ylabel('consensus error')
                 
-                sgtitle(strcat(method,' Mean and Variance consensus error'));
+                sgtitle(strcat(MethodsExamined2(n),' Mean and Variance consensus error'));
                 fname=strcat('results\Agg\PerformanceEva\',method,'_expRep_',num2str(exp_r_id),'_a_',num2str(M),'_maxIter_',num2str(maxIter),'_PDMM_DTCF_Compare');
                 s=hgexport('factorystyle');
                 s.Format='eps';
