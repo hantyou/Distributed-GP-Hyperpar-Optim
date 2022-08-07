@@ -117,7 +117,7 @@ for m=1:M
     d_max=max(sum(A(m,:)),d_max);
 end
 
-[~,v,~]=full(laplacian(graph(A)));
+[~,v,~]=eig(full(laplacian(graph(A))));
 v=diag(v);
 v=sort(v,'descend');
 epsilon=1/(v(end-1)+v(1));
