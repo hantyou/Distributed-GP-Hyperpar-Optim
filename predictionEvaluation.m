@@ -49,6 +49,19 @@ repeatNum=1;
         "NN-NPAE";
         "CON-NPAE";
         "No-Ag"];
+        MethodsName2=[
+        "PoE";
+        "BCM";
+        "gPoE";
+        "rBCM";
+        "PoE_{fd}";
+        "gPoE_{fd}";
+        "BCM_{fd}";
+        "rBCM_fd";
+        "NPAE-JOR}";
+        "NN-NPAE";
+        "CON-NPAE";
+        "No-Ag"];
     DECNAME={
         "DEC-PoE";
         "DEC-gPoE";
@@ -87,6 +100,7 @@ repeatNum=1;
         1;
         0];
     MethodsExamined=MethodsName(MethodsFlag==1);
+    MethodsExamined2=MethodsName2(MethodsFlag==1);
     Num_MethodsExamined=sum(MethodsFlag);
     disp("Methods to be examined are:")
     for n=1:Num_MethodsExamined
@@ -371,7 +385,7 @@ hold on;
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
     plot(Ms,meanRMSE(m,:),'LineStyle','-','Marker',pVec(m));
-    legendTxt{m}=MethodsExamined(m);
+    legendTxt{m}=MethodsExamined2(m);
 end
 xlabel('Agents number')
 ylabel('RMSE')
@@ -402,7 +416,7 @@ legendTxt=cell(Num_MethodsExamined,1);
 
 for m=1:Num_MethodsExamined
     plot(Ms,meanRMSE2(m,:),'LineStyle','-','Marker',pVec(m));
-    legendTxt{m}=MethodsExamined(m);
+    legendTxt{m}=MethodsExamined2(m);
 end
 xlabel('Agents number')
 ylabel('RMSE')
@@ -432,10 +446,10 @@ for m=1:Num_MethodsExamined
     if any(strcmp(IANAME,MethodsExamined(m)))
         plot(Ms,meanRMSE(m,:),'Color',cVec(m),'LineStyle','-','Marker',pVec(m));
         lgdCount=lgdCount+1;
-        legendTxt{lgdCount}=strcat(MethodsExamined(m)," PDMM");
+        legendTxt{lgdCount}=strcat(MethodsExamined2(m)," PDMM");
         plot(Ms,meanRMSE2(m,:),'Color',cVec(m),'LineStyle','--','Marker',pVec(m));
         lgdCount=lgdCount+1;
-        legendTxt{lgdCount}=strcat(MethodsExamined(m)," DTCF");
+        legendTxt{lgdCount}=strcat(MethodsExamined2(m)," DTCF");
     end
 end
 
@@ -463,7 +477,7 @@ clear legendTxt
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
     plot(Ms,varRMSE(m,:),'LineStyle','-','Marker',pVec(m));
-    legendTxt{m}=MethodsExamined(m);
+    legendTxt{m}=MethodsExamined2(m);
 end
 xlabel('Agents number')
 ylabel('RMSE')
@@ -488,7 +502,7 @@ legendTxt=cell(Num_MethodsExamined,1);
 % varRMSE2((end-2):end,:)=varRMSE((end-2):end,:);
 for m=1:Num_MethodsExamined
     plot(Ms,varRMSE2(m,:),'LineStyle','-','Marker',pVec(m));
-    legendTxt{m}=MethodsExamined(m);
+    legendTxt{m}=MethodsExamined2(m);
 end
 xlabel('Agents number')
 ylabel('RMSE')
@@ -518,10 +532,10 @@ for m=1:Num_MethodsExamined
     if any(strcmp(IANAME,MethodsExamined(m)))
         plot(Ms,varRMSE(m,:),'Color',cVec(m),'LineStyle','-','Marker',pVec(m));
         lgdCount=lgdCount+1;
-        legendTxt{lgdCount}=strcat(MethodsExamined(m)," PDMM");
+        legendTxt{lgdCount}=strcat(MethodsExamined2(m)," PDMM");
         plot(Ms,varRMSE2(m,:),'Color',cVec(m),'LineStyle','--','Marker',pVec(m));
         lgdCount=lgdCount+1;
-        legendTxt{lgdCount}=strcat(MethodsExamined(m)," DTCF");
+        legendTxt{lgdCount}=strcat(MethodsExamined2(m)," DTCF");
     end
 end
 xlabel('Agents number')
@@ -547,7 +561,7 @@ hold on
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
     plot(Ms,times(m,:),'-o')
-    legendTxt{m}=MethodsExamined(m);
+    legendTxt{m}=MethodsExamined2(m);
 end
 xlabel('Agents number')
 ylabel('RMSE')
