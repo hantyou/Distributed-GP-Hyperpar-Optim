@@ -19,7 +19,7 @@ reso_m=256;
 reso_n=256;
 everyAgentsSampleNum=200;
 Agents_measure_range=4;
-realDataSet=0;
+realDataSet=1;
 samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
 agentsScatterMethod=1; % 1. Randomly distributed accross the area; 2. K_means center
 overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
@@ -119,7 +119,7 @@ repeatNum=1;
     varRMSE2s=zeros(Num_MethodsExamined,Num_expGroup,repeatNum);
     %%
 for exp_r_id=1:repeatNum
-    rngNum=exp_r_id*10;
+    rngNum=exp_r_id*11;
     predictionEvaluationDataLoad
 
     %% Pre-parpool reset
