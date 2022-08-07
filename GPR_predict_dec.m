@@ -120,7 +120,8 @@ end
 [~,v,~]=eig(full(laplacian(graph(A))));
 v=diag(v);
 v=sort(v,'descend');
-epsilon=1/(v(end-1)+v(1));
+% epsilon=1/(v(end-1)+v(1));
+epsilon=0.9/d_max;
 
 % epsilon=1/d_max*0.9;
 switch consensusSolver
@@ -391,7 +392,7 @@ parfor n=1:N_newX
     q_sigma_direct(:,n)=pinv(K_A(:,:,n))*k_A(:,n);
 end
 maxIterJOR=400;
-w=0.05;
+w=0.9*2/Agents.M;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
     for i=1:M
