@@ -116,7 +116,13 @@ d_max=0;
 for m=1:M
     d_max=max(sum(A(m,:)),d_max);
 end
-epsilon=1/d_max*0.9;
+
+[~,v,~]=full(laplacian(graph(A)));
+v=diag(v);
+v=sort(v,'descend');
+epsilon=1/(v(end-1)+v(1));
+
+% epsilon=1/d_max*0.9;
 switch consensusSolver
     case 'DTCF'
         [inv_Vars,Means]=DTCF_solver(inv_Vars,Means,M,A,N_newX,maxIter,epsilon);
