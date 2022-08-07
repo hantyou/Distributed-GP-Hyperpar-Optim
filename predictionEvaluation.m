@@ -166,7 +166,7 @@ for exp_r_id=1:repeatNum
     %% Evaluate Others
     
     rng(990611,'twister')
-        commuRange=[maxRange,maxRange/5,maxRange/5,maxRange/5,maxRange/8];
+    commuRange=[maxRange,maxRange/4,maxRange/5,maxRange/6,maxRange/10,maxRange/30];
         commuRange(tempFlag==0)=[];
     for expId=1:Num_expGroup
         M=Ms(expId);
