@@ -27,7 +27,7 @@ reso=[reso_m,reso_n];
 repeatNum=1;    
 %% Evaluation setup
     Ms=[2,4,8,12,16,32]; % different number of agents for different exp groups
-    tempFlag=[1,1,1,1,0,0];
+    tempFlag=[1,1,1,1,1,1];
     
     maxRange=max(range(:))-min(range(:));
     commuRange=[maxRange,maxRange/4,maxRange/5,maxRange/6,maxRange/10,maxRange/30];
@@ -97,7 +97,7 @@ repeatNum=1;
         1;
         1;
         0;
-        0;
+        1;
         0];
     MethodsExamined=MethodsName(MethodsFlag==1);
     MethodsExamined2=MethodsName2(MethodsFlag==1);
