@@ -292,12 +292,14 @@ for exp_r_id=1:repeatNum
                 nexttile(1);
                 plot(pm2),hold on,plot(pm),title('Mean Error'),hold off;
                 legend(['DTCF';'PDMM'],'Location','northoutside','Orientation','horizontal')
-                set(gca,'XScale','log','YScale','log');
+%                 set(gca,'XScale','log','YScale','log');
+                set(gca,'YScale','log');
                 xlabel('iterations')
                 ylabel('consensus error')
                 nexttile(2);
                 plot(pv2),hold on,plot(pv),title('Variance Error'),hold off;
-                set(gca,'XScale','log','YScale','log');
+%                 set(gca,'XScale','log','YScale','log');
+                set(gca,'YScale','log');
                 xlabel('iterations')
                 ylabel('consensus error')
                 
