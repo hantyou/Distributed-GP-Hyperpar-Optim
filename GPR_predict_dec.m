@@ -391,7 +391,7 @@ parfor n=1:N_newX
     q_mu_direct(:,n)=pinv(K_A(:,:,n))*subMean(:,n);
     q_sigma_direct(:,n)=pinv(K_A(:,:,n))*k_A(:,n);
 end
-maxIterJOR=400;
+maxIterJOR=200;
 w=0.9*2/Agents.M;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;

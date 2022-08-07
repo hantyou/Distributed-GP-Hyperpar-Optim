@@ -84,7 +84,7 @@ repeatNum=1;
         1;
         1;
         0;
-        0;
+        1;
         0];
     MethodsExamined=MethodsName(MethodsFlag==1);
     Num_MethodsExamined=sum(MethodsFlag);
