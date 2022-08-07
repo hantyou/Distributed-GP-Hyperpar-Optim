@@ -15,6 +15,7 @@ range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
 maxM=8;
+M=maxM;
 reso_m=256;
 reso_n=256;
 everyAgentsSampleNum=200;
