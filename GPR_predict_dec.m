@@ -392,7 +392,7 @@ parfor n=1:N_newX
     q_sigma_direct(:,n)=pinv(K_A(:,:,n))*k_A(:,n);
 end
 maxIterJOR=200;
-w=0.9*2/Agents.M;
+w=0.9*2/Agents(m).M;
 while maxIterJOR>0
     maxIterJOR=maxIterJOR-1;
     for i=1:M
