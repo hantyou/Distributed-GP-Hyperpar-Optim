@@ -6,7 +6,7 @@ set(0,'DefaultFigureVisible','off')
 %%
 delete(gcp('nocreate'))
 try
-    parpool(8);
+    parpool(20);
 catch
     parpool(8)
 end
@@ -26,8 +26,8 @@ overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
 reso=[reso_m,reso_n];
 repeatNum=1;    
 %% Evaluation setup
-    Ms=[2,4,8,12,16,32]; % different number of agents for different exp groups
-    tempFlag=[1,1,1,1,1,0];
+    Ms=[2,4,8,12,16,20]; % different number of agents for different exp groups
+    tempFlag=[1,1,1,1,1,1];
     
     maxRange=max(range(:))-min(range(:));
     commuRange=[maxRange,maxRange/4,maxRange/5,maxRange/6,maxRange/10,maxRange/30];
