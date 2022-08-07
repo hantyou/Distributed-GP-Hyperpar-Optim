@@ -26,11 +26,11 @@ overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
 reso=[reso_m,reso_n];
 repeatNum=1;    
 %% Evaluation setup
-    Ms=[2,4,8,12,16]; % different number of agents for different exp groups
-    tempFlag=[1,1,1,1,1];
+    Ms=[2,4,8,12,16,32]; % different number of agents for different exp groups
+    tempFlag=[1,1,1,1,1,1];
     
     maxRange=max(range(:))-min(range(:));
-    commuRange=[maxRange,maxRange/4,maxRange/5,maxRange/6,maxRange/10];
+    commuRange=[maxRange,maxRange/4,maxRange/5,maxRange/6,maxRange/10,maxRange/30];
     tempFlag=tempFlag==1;
     Ms=Ms(tempFlag);
     commuRange=commuRange(tempFlag);
