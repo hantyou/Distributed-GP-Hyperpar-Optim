@@ -459,7 +459,7 @@ hold on;
 clear legendTxt
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
-    plot(Ms,varRMSE(m,:),strcat('-',pVec(m)));
+    plot(Ms,varRMSE(m,:),'LineStyle','-','Marker',pVec(m));
     legendTxt{m}=MethodsExamined(m);
 end
 xlabel('Agents number')
@@ -484,7 +484,7 @@ clear legendTxt
 legendTxt=cell(Num_MethodsExamined,1);
 % varRMSE2((end-2):end,:)=varRMSE((end-2):end,:);
 for m=1:Num_MethodsExamined
-    plot(Ms,varRMSE2(m,:),strcat('-',pVec(m)));
+    plot(Ms,varRMSE2(m,:),'LineStyle','-','Marker',pVec(m));
     legendTxt{m}=MethodsExamined(m);
 end
 xlabel('Agents number')
