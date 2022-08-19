@@ -18,14 +18,14 @@ maxM=8;
 M=maxM;
 reso_m=256;
 reso_n=256;
-everyAgentsSampleNum=200;
+everyAgentsSampleNum=50;
 Agents_measure_range=4;
 realDataSet=1;
 samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
 agentsScatterMethod=1; % 1. Randomly distributed accross the area; 2. K_means center
 overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
 reso=[reso_m,reso_n];
-repeatNum=1;    
+repeatNum=3;    
 %% Evaluation setup
     Ms=[2,4,8,12,16,20]; % different number of agents for different exp groups
     tempFlag=[1,1,1,1,1,0];
@@ -55,10 +55,10 @@ repeatNum=1;
         "BCM";
         "gPoE";
         "rBCM";
-        "PoE_{fd}";
-        "gPoE_{fd}";
-        "BCM_{fd}";
-        "rBCM_{fd}";
+        "PoE";
+        "gPoE";
+        "BCM";
+        "rBCM";
         "NPAE-{JOR}";
         "NN-NPAE";
         "CON-NPAE";
@@ -111,7 +111,7 @@ repeatNum=1;
     evaMethod='RMSE';
     
     cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
-    pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
+    pVec='*o+xsd^p*o+xsd^p*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
 
         
     meanRMSEs=zeros(Num_MethodsExamined,Num_expGroup,repeatNum);
@@ -122,7 +122,8 @@ repeatNum=1;
 for exp_r_id=1:repeatNum
     rngNum=exp_r_id*11;
     predictionEvaluationDataLoad
-
+    cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
+    pVec='*o+xsd^p*o+xsd^p*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
     %% Pre-parpool reset
     % delete(gcp('nocreate'))
     %
@@ -154,7 +155,12 @@ for exp_r_id=1:repeatNum
     contourFlag=0;
     
     overlapFlag=1; %0. k-means, 1. fcm
+    if realDataSet==0
     theta=[5,1,1]';
+    elseif realDataSet==1
+    theta=[8.5,1.6,1.2]';
+    sigma_n=0.7;
+    end
     Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
     savePlot=0;
     maxIter=20;
@@ -337,12 +343,29 @@ for exp_r_id=1:repeatNum
     
     
 gcf=figure;
+tiledlayout(1,Num_expGroup,'TileSpacing','compact','Padding','none');
+s=hgexport('factorystyle');
+tinyFontSize=10;
+largeFontSize=17;
+s.LineWidthMin=1.6;
+s.Resolution=300;
+s.FontSizeMin=tinyFontSize;
+s.Width=8;
+s.Height=5.5;
 for m=1:Num_expGroup
-    subplot(1,Num_expGroup,m);
+    nexttile(m);
+%     subplot(1,Num_expGroup,m);
     plot(graphs{m});
+    xlabel(num2str(mean(degree(graphs{m})),3));
+    pbaspect([1 1 1]);
+    title(strcat("M=",num2str(Ms(m))),'FontSize',largeFontSize);
 end
 fname=strcat('results\Agg\PerformanceEva\',method,'_expRep_',num2str(exp_r_id),'_a_',num2str(M),'_maxIter_',num2str(maxIter),'_Graph');
 saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
 close gcf;
 
 save_txt=strcat('evalueResult_',num2str(exp_r_id),'.mat');
@@ -358,20 +381,23 @@ meanRMSE2=mean(meanRMSE2s,3);
 varRMSE2=mean(meanRMSE2s,3);
 %% plot result
 s=hgexport('factorystyle');
-s.LineWidthMin=1.2;
-s.Resolution=800;
-s.FontSizeMin=14;
-s.Width=8;
-s.Height=6;
+tinyFontSize=10;
+largeFontSize=17;
+s.LineWidthMin=1.6;
+s.Resolution=300;
+s.FontSizeMin=tinyFontSize;
+s.Width=10;
+s.Height=6.5;
+lwd=2;
 % Plot Graph Structures
 gcf=figure;
-tiledlayout(1,1,'TileSpacing','compact','Padding','none');
-nexttile(1);
+tiledlayout(1,Num_expGroup,'TileSpacing','compact','Padding','none');
 for m=1:Num_expGroup
-    subplot(1,Num_expGroup,m);
+    nexttile(m);
+%     subplot(1,Num_expGroup,m);
     plot(graphs{m});
     pbaspect([1 1 1]);
-    title(strcat("M=",num2str(Ms(m))));
+    title(strcat("M=",num2str(Ms(m))),'FontSize',largeFontSize);
 end
 fname='results/Agg/PerformanceEva/Graphs';
 saveas(gcf,fname,'png');
@@ -387,18 +413,19 @@ nexttile(1);
 hold on;
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
-    plot(Ms,meanRMSE(m,:),'LineStyle','-','Marker',pVec(m));
+    plot(Ms,meanRMSE(m,:),'LineStyle','-','Marker',pVec(m),'LineWidth',lwd);
     legendTxt{m}=MethodsExamined2(m);
 end
-xlabel('Agents number')
-ylabel('RMSE')
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+legend(legendTxt,'Location','northoutside','Orientation','horizontal',...
+    'NumColumns',3,'FontSize',tinyFontSize);
 hold off
-sgtitle('RMSE of predictive means - PDMM')
+sgtitle('RMSE of predictive means - PDMM (proposed)','FontSize',largeFontSize)
 fname='results/Agg/PerformanceEva/MeanRMSE_PDMM';
-xlabel('number of agents');
-ylabel('RMSE')
+xlabel('number of agents','FontSize',largeFontSize);
+ylabel('RMSE','FontSize',largeFontSize)
 saveas(gcf,fname,'png');
 s.Format='png';
 hgexport(gcf,fname,s);
@@ -418,16 +445,16 @@ legendTxt=cell(Num_MethodsExamined,1);
 % meanRMSE2((end-2):end,:)=meanRMSE((end-2):end,:);
 
 for m=1:Num_MethodsExamined
-    plot(Ms,meanRMSE2(m,:),'LineStyle','-','Marker',pVec(m));
+    plot(Ms,meanRMSE2(m,:),'LineStyle','-','Marker',pVec(m),'LineWidth',lwd);
     legendTxt{m}=MethodsExamined2(m);
 end
-xlabel('Agents number')
-ylabel('RMSE')
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
 % legendTxt=legendTxt{1:size(meanRMSE2,1)};
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3,'FontSize',tinyFontSize);
 hold off
-sgtitle('RMSE of predictive means - DTCF')
+% sgtitle('RMSE of predictive means - DTCF','FontSize',largeFontSize)
 fname='results/Agg/PerformanceEva/MeanRMSE2_DTCF';
 saveas(gcf,fname,'png');
 s.Format='png';
@@ -436,6 +463,96 @@ s.Format='eps';
 hgexport(gcf,fname,s);
 close gcf;
 disp('meanRMSE2 DTCF saved')
+
+%% Plot in one Figure - Mean
+% Plot PDMM based methods mean RMSE
+gcf=figure;
+tiledlayout(1,1,'TileSpacing','compact','Padding','none');
+nexttile(1);
+hold on;
+legendTxt=cell(Num_MethodsExamined,1);
+lgd_count=1;
+co=get(gca,'ColorOrder');
+for m=1:Num_MethodsExamined
+    method_name=MethodsExamined(m);
+    gco=plot(Ms,meanRMSE(m,:),'LineStyle','-','Marker',pVec(m),'LineWidth',lwd,'Color',co(m,:));
+%     currentColor = get(gco,'Color')
+    legendTxt{lgd_count}=MethodsExamined2(m);
+    lgd_count=lgd_count+1;
+    if any(strcmp(method_name,IANAME))
+        plot(Ms,meanRMSE2(m,:),'LineStyle','--','Marker',pVec(m),'LineWidth',lwd,'Color',co(m,:));
+        legendTxt{lgd_count-1}=strcat("PDMM-",legendTxt{lgd_count-1},"(proposed)");
+        legendTxt{lgd_count}=MethodsExamined2(m);
+        legendTxt{lgd_count}=strcat("DTCF-",legendTxt{lgd_count});
+        lgd_count=lgd_count+1;
+    end
+    
+    if any(strcmp(method_name,'CON-NPAE'))
+        legendTxt{lgd_count-1}=strcat(legendTxt{lgd_count-1},"(proposed)");
+    end
+end
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal',...
+    'NumColumns',3,'FontSize',tinyFontSize);
+hold off
+% sgtitle('RMSE of predictive means','FontSize',largeFontSize)
+fname='results/Agg/PerformanceEva/MeanRMSE_Total';
+xlabel('number of agents','FontSize',largeFontSize);
+ylabel('RMSE','FontSize',largeFontSize)
+saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+close gcf;
+disp('meanRMSE Total saved')
+
+%% Plot in one Figure - Var
+% Plot PDMM based methods var RMSE
+gcf=figure;
+tiledlayout(1,1,'TileSpacing','compact','Padding','none');
+nexttile(1);
+hold on;
+legendTxt=cell(Num_MethodsExamined,1);
+lgd_count=1;
+co=get(gca,'ColorOrder');
+for m=1:Num_MethodsExamined
+    method_name=MethodsExamined(m);
+    gco=plot(Ms,varRMSE(m,:),'LineStyle','-','Marker',pVec(m),'LineWidth',lwd,'Color',co(m,:));
+%     currentColor = get(gco,'Color')
+    legendTxt{lgd_count}=MethodsExamined2(m);
+    lgd_count=lgd_count+1;
+    if any(strcmp(method_name,IANAME))
+        plot(Ms,varRMSE2(m,:),'LineStyle','--','Marker',pVec(m),'LineWidth',lwd,'Color',co(m,:));
+        legendTxt{lgd_count-1}=strcat("PDMM-",legendTxt{lgd_count-1},"(proposed)");
+        legendTxt{lgd_count}=MethodsExamined2(m);
+        legendTxt{lgd_count}=strcat("DTCF-",legendTxt{lgd_count});
+        lgd_count=lgd_count+1;
+    end
+    
+    if any(strcmp(method_name,'CON-NPAE'))
+        legendTxt{lgd_count-1}=strcat(legendTxt{lgd_count-1},"(proposed)");
+    end
+end
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
+set(gca, 'YScale', 'log');
+legend(legendTxt,'Location','northoutside','Orientation','horizontal',...
+    'NumColumns',3,'FontSize',tinyFontSize);
+hold off
+% sgtitle('RMSE of predictive variances','FontSize',largeFontSize)
+fname='results/Agg/PerformanceEva/VarRMSE_Total';
+xlabel('number of agents','FontSize',largeFontSize);
+ylabel('RMSE','FontSize',largeFontSize)
+saveas(gcf,fname,'png');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+close gcf;
+disp('varRMSE Total saved')
 %%
 % Compare mean RMSE of DTCF and PDMM
 gcf=figure;
@@ -447,21 +564,21 @@ legendTxt=cell(1,1);
 lgdCount=0;
 for m=1:Num_MethodsExamined
     if any(strcmp(IANAME,MethodsExamined(m)))
-        plot(Ms,meanRMSE(m,:),'Color',cVec(m),'LineStyle','-','Marker',pVec(m));
+        plot(Ms,meanRMSE(m,:),'Color',cVec(m),'LineStyle','-','Marker',pVec(m),'LineWidth',lwd);
         lgdCount=lgdCount+1;
-        legendTxt{lgdCount}=strcat(MethodsExamined2(m)," PDMM");
-        plot(Ms,meanRMSE2(m,:),'Color',cVec(m),'LineStyle','--','Marker',pVec(m));
+        legendTxt{lgdCount}=strcat("PDMM-",MethodsExamined2(m));
+        plot(Ms,meanRMSE2(m,:),'Color',cVec(m),'LineStyle','--','Marker',pVec(m),'LineWidth',lwd);
         lgdCount=lgdCount+1;
-        legendTxt{lgdCount}=strcat(MethodsExamined2(m)," DTCF");
+        legendTxt{lgdCount}=strcat("DTCF-",MethodsExamined2(m));
     end
 end
 
-xlabel('Agents number')
-ylabel('RMSE')
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3,'FontSize',tinyFontSize);
 hold off
-sgtitle('RMSE comparison of DTCF and PDMM - predictive means')
+% sgtitle('RMSE comparison of DTCF and PDMM - predictive means')
 fname='results/Agg/PerformanceEva/Mean_PDMM_DTCF_Cmp';
 s.Format='png';
 hgexport(gcf,fname,s);
@@ -479,15 +596,15 @@ hold on;
 clear legendTxt
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
-    plot(Ms,varRMSE(m,:),'LineStyle','-','Marker',pVec(m));
+    plot(Ms,varRMSE(m,:),'LineStyle','-','Marker',pVec(m),'LineWidth',lwd);
     legendTxt{m}=MethodsExamined2(m);
 end
-xlabel('Agents number')
-ylabel('RMSE')
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3,'FontSize',tinyFontSize);
 hold off
-sgtitle('RMSE of predictive variances - PDMM')
+% sgtitle('RMSE of predictive variances - PDMM (proposed)','FontSize',largeFontSize)
 fname='results/Agg/PerformanceEva/VarRMSE_PDMM';
 saveas(gcf,fname,'png');
 s.Format='png';
@@ -504,16 +621,16 @@ clear legendTxt
 legendTxt=cell(Num_MethodsExamined,1);
 % varRMSE2((end-2):end,:)=varRMSE((end-2):end,:);
 for m=1:Num_MethodsExamined
-    plot(Ms,varRMSE2(m,:),'LineStyle','-','Marker',pVec(m));
+    plot(Ms,varRMSE2(m,:),'LineStyle','-','Marker',pVec(m),'LineWidth',lwd);
     legendTxt{m}=MethodsExamined2(m);
 end
-xlabel('Agents number')
-ylabel('RMSE')
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
 % legendTxt=legendTxt{1:size(varRMSE2,1)};
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3,'FontSize',tinyFontSize);
 hold off
-sgtitle('RMSE of predictive variances - DTCF')
+% sgtitle('RMSE of predictive variances - DTCF','FontSize',largeFontSize)
 fname='results/Agg/PerformanceEva/VarRMSE2_DTCF';
 saveas(gcf,fname,'png');
 s.Format='png';
@@ -533,20 +650,20 @@ legendTxt=cell(1,1);
 lgdCount=0;
 for m=1:Num_MethodsExamined
     if any(strcmp(IANAME,MethodsExamined(m)))
-        plot(Ms,varRMSE(m,:),'Color',cVec(m),'LineStyle','-','Marker',pVec(m));
+        plot(Ms,varRMSE(m,:),'Color',cVec(m),'LineStyle','-','Marker',pVec(m),'LineWidth',lwd);
         lgdCount=lgdCount+1;
-        legendTxt{lgdCount}=strcat(MethodsExamined2(m)," PDMM");
-        plot(Ms,varRMSE2(m,:),'Color',cVec(m),'LineStyle','--','Marker',pVec(m));
+        legendTxt{lgdCount}=strcat("PDMM-",MethodsExamined2(m));
+        plot(Ms,varRMSE2(m,:),'Color',cVec(m),'LineStyle','--','Marker',pVec(m),'LineWidth',lwd);
         lgdCount=lgdCount+1;
-        legendTxt{lgdCount}=strcat(MethodsExamined2(m)," DTCF");
+        legendTxt{lgdCount}=strcat("DTCF-",MethodsExamined2(m));
     end
 end
-xlabel('Agents number')
-ylabel('RMSE')
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3,'FontSize',tinyFontSize);
 hold off
-sgtitle('RMSE comparison of DTCF and PDMM - predictive variances')
+% sgtitle('RMSE comparison of DTCF and PDMM - predictive variances')
 fname='results/Agg/PerformanceEva/Var_PDMM_DTCF_Cmp';
 s.Format='png';
 hgexport(gcf,fname,s);
@@ -563,15 +680,15 @@ nexttile(1);
 hold on
 legendTxt=cell(Num_MethodsExamined,1);
 for m=1:Num_MethodsExamined
-    plot(Ms,times(m,:),'-o')
+    plot(Ms,times(m,:),'-o','LineWidth',lwd)
     legendTxt{m}=MethodsExamined2(m);
 end
-xlabel('Agents number')
-ylabel('RMSE')
+xlabel('Agents number','FontSize',largeFontSize)
+ylabel('RMSE','FontSize',largeFontSize)
 set(gca, 'YScale', 'log');
-legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3);
+legend(legendTxt,'Location','northoutside','Orientation','horizontal','NumColumns',3,'FontSize',tinyFontSize);
 hold off
-title('Time used')
+title('Time used','FontSize',largeFontSize)
 fname='results/Agg/PerformanceEva/Times';
 saveas(gcf,fname,'png');
 s.Format='png';

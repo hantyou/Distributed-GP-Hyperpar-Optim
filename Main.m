@@ -40,8 +40,8 @@ reso_n=256;
 reso=[reso_m,reso_n];
 TotalNumLevel=M*70;
 everyAgentsSampleNum=floor(TotalNumLevel/M);
-Agents_measure_range=1;
-realDataSet=1;
+Agents_measure_range=3.5;
+realDataSet=0;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
     loadRealDataset
@@ -114,7 +114,7 @@ for m=1:M
     Agents(m).action_status=1;
     Agents(m).commuRange=2;
     Agents(m).realdataset=realDataSet;
-    %     Agents(m).commuRange=2.5;
+        Agents(m).commuRange=4;
     Agents(m).realz=realz;
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
@@ -130,7 +130,10 @@ mkdir(top_dir_path,folder_name);
 results_dir=strcat(top_dir_path,'/',folder_name);
 clear idx1 idx idexedZ idexedX subDataSetsX
 %% Plot field and sampled points and noisy sample points
-    gcf=figure;
+    gcf=figure('visible','off');
+ 
+tiledlayout(1,1,'TileSpacing','compact','Padding','none');
+nexttile(1);
 if realDataSet==1&&temp_data==1
     hold on;
     for i=1:cityNum
@@ -150,17 +153,39 @@ elseif realDataSet==0
 
     surf(mesh_show_x,mesh_show_y,F_true_show,'EdgeColor','interp','FaceColor','interp','FaceAlpha',0.3) % plot the field
     hold on;
-    scatter3(X1,X2,Y,'r*')
-    scatter3(X1,X2,Z,'b.')
-    scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
-    xlabel('x1')
-    ylabel('x2')
-    zlabel('environmental scalar value')
+%     scatter3(X1,X2,Y,'r*')
+%     scatter3(X1,X2,Z,'b.')
+%     scatter3(Agents_Posi(1,:),Agents_Posi(2,:),agentsPosiY+1,'k^','filled')
+%     xlabel('x1')
+%     ylabel('x2')
+%     zlabel('environmental scalar value')
     pause(0.01)
 end
+axis off;
+
+pbaspect([1 1 1]);
+[caz,cel] = view;
+view(caz,40);
+fname=strcat('results/coverImage');
+s=hgexport('factorystyle');
+s.Resolution=800;
+s.FontSizeMin=14;
+% s.Format='png';
+% hgexport(gcf,fname,s);
+% s.Format='eps';
+% hgexport(gcf,fname,s);
+close gcf;
+
 %%
-% theta_range=[[log(3)/log(10),log(15)/log(10)];[log(0.2)/log(10),log(6)/log(10)]];
+% theta_range=[[log(3)/log(10),log(7)/log(10)];[log(0.5)/log(10),log(2)/log(10)]];
 % LL=generateLikelihoodMap(X,Z,theta_range,sigma_n);
+% Xs=cell(M,1);
+% Zs=cell(M,1);
+% for m=1:M
+%     Xs{m}=Agents(m).X;
+%     Zs{m}=Agents(m).Z;
+% end
+% LL2 = generateLikelihoodMap2(Xs,Zs,theta_range,sigma_n);
 %% Set topology
 Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
 A_full=generateTopology(Agents,Topology_method);
@@ -376,7 +401,7 @@ if run_ADMM
     
     disp('ADMM optimization results')
     disp([sigma_ADMM,l_ADMM',sigma_n_ADMM])
-
+%     Steps_ADMM=Steps_ADMM{1};
     pause(0.1)
 end
 %% Perform pxADMM
@@ -410,7 +435,7 @@ end
 %% Perform ADMM_fd
 if run_ADMM_fd
     % initialize ADMM_fd
-    maxOutIter=2000;
+    maxOutIter=4000;
     maxInIter=50;
     stepSize=GD_step_size;
     for m=1:M
@@ -444,7 +469,7 @@ if run_ADMM_fd
     
     disp('ADMM_{fd} optimization results')
     disp([sigma_ADMM_fd,l_ADMM_fd',sigma_n_ADMM_fd])
-
+%     Steps_ADMM_fd=Steps_ADMM_fd{1};
     pause(0.1)
 end
 %% Perform pxADMM_fd_sync
@@ -738,53 +763,56 @@ close all
 gcf=figure;
 lgd_txt=[];
 hold on;
-lwd=1.2;
-lwd_async=1;
+lwd=1.8;
+lwd_thick=1.8;
+lwd_async=0.8;
 tiledlayout(1,1,'TileSpacing','compact');
 nexttile(1)
 if run_GD
-    semilogy(Steps_GD,"LineWidth",lwd,'LineStyle','--');
+    semilogy(Steps_GD,"LineWidth",lwd_thick,'LineStyle','-','Color','k');
     hold on;
     lgd_txt=[lgd_txt;"GD"];
 end
 if run_ADMM
-    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd,'LineStyle','--');
+    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-');
+%     semilogy(Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"ADMM"];
 end
 if run_pxADMM
-    semilogy(Steps_pxADMM,"LineWidth",lwd);
+    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"pxADMM"];
 end
 if run_ADMM_fd
     IterCounts_fd{1}(1)=1;
-    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','--');
+    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-');
+%     semilogy(Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"ADMM_{fd}"];
 end
 if run_pxADMM_fd_async
-    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async);
+    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,async}^*"];
 end
 if run_pxADMM_fd_sync
-    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd);
+    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,sync}^*"];
 end
 if run_pxADMM_async_realSimu
-    semilogy(Agents(1).Steps(2:end),"LineWidth",lwd);
+    semilogy(Agents(1).Steps(2:end),"LineWidth",lwd_async);
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{async,realSimu}"];
 end
 if run_pxADMM_fd_tc_async
-    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async);
+    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
 end
 if run_pxADMM_fd_tc_sync
-    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd);
+    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
 end
@@ -799,7 +827,7 @@ s=hgexport('factorystyle');
 s.Resolution=300;
 s.Width=10;
 s.Height=7;
-s.FontSizeMin=14;
+s.FontSizeMin=15;
 fname=strcat(results_dir,'/HOMethodsCompare');
 s.Format='png';
 hgexport(gcf,fname,s);
@@ -821,17 +849,15 @@ close all
 gcf=figure;
 lgd_txt=[];
 hold on;
-lwd=1.2;
-lwd_async=1;
 tiledlayout(1,1,'TileSpacing','compact');
 nexttile(1)
 if run_pxADMM
-    semilogy(Steps_pxADMM,"LineWidth",lwd);
+    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'Color','k');
     hold on;
     lgd_txt=[lgd_txt;"pxADMM"];
 end
 if run_pxADMM_fd_async
-    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async);
+    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,async}^*"];
 end
@@ -841,7 +867,7 @@ if run_pxADMM_fd_sync
     lgd_txt=[lgd_txt;"pxADMM_{fd,sync}^*"];
 end
 if run_pxADMM_fd_tc_async
-    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async);
+    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
 end
@@ -862,7 +888,7 @@ s=hgexport('factorystyle');
 s.Resolution=300;
 s.Width=10;
 s.Height=7;
-s.FontSizeMin=14;
+s.FontSizeMin=15;
 fname=strcat(results_dir,'/HOMethodsCompare_pxADMMs');
 s.Format='png';
 hgexport(gcf,fname,s);

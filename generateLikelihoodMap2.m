@@ -1,10 +1,11 @@
-function LL=generateLikelihoodMap(X,Z,theta_range,sigma_n)
+function LL=generateLikelihoodMap2(Xs,Zs,theta_range,sigma_n)
 %GENERATELIKELIHOODMAP Summary of this function goes here
 %   Detailed explanation goes here
 
 [H_Num,~]=size(theta_range);
 
-[Dim,D_Num]=size(X);
+% [Dim,D_Num]=size(X);
+M=length(Xs);
 
 sigma_fs=linspace(theta_range(1,1),theta_range(1,2),40);
 l1s=linspace(theta_range(2,1),theta_range(2,2),40);
@@ -22,8 +23,13 @@ for m=1:sf_Num
         sigma_f=sigma_fs(sf_Num-m+1);
         l1=l1s(n);
         theta=[sigma_f;l1;l1];
-        K=getK(X,theta,sigma_n);
-        LL(m,n)=-1/2*Z/K*Z'-1/2*log(det(K))-D_Num/2*log(2*pi);
+        for i=1:M
+            X=Xs{i};
+            [~,D_Num]=size(X);
+            Z=Zs{i}';
+            K=getK(X,theta,sigma_n);
+            LL(m,n)=LL(m,n)-1/2*Z/K*Z'-1/2*log(det(K))-D_Num/2*log(2*pi);
+        end
     end
 end
 
@@ -49,6 +55,7 @@ min_l=l1s(min_y);
 % fname='results/LikelihoodHyperpars';
 % saveas(gcf,fname,'png');
 % close gcf;
+
 NLL=real(NLL);
 gcf=figure;
 % ax1=axes;
@@ -67,7 +74,7 @@ set(gca, 'YScale', 'log')
 xlabel('$l$','Interpreter','latex','FontSize',17);
 ylabel('$\sigma_f$','Interpreter','latex','FontSize',17);
 colorbar;
-fname='results/LikelihoodHyperparsOnlyContour';
+fname='results/LikelihoodHyperparsOnlyContour2';
 saveas(gcf,fname,'png');
 close gcf;
 % linkaxes([ax1,ax2])

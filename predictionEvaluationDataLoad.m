@@ -31,7 +31,7 @@ dataSourceOption=2;
 
 
             cVec = 'bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy';
-            pVec='.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
+            pVec='*o+xsd^p*o+xsd^p*o+xsd^p.*o+xsd^p.*o+xsd^p.*o+xsd^p';
     
     rng(rngNum,'twister')
 %     rand(3*maxM,1);

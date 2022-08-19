@@ -137,36 +137,8 @@ classdef agent
             while localGDflag
                 inIterCount=inIterCount+1;
                 %%%%GD Iter START%%%%
-                %                 distX = dist((diag(old_l)\eye(D))*obj.X).^2;%distX=(X-X^')^T Sigma^-1(X-X^')
-                %             K_s=obj.sigma_f^(2)*exp(-0.5*distX./obj.l^(2));
-                %                 K_n=old_sigma_n^2*eye(obj.N_m);
-                %                 K_s=old_sigma^(2)*exp(-0.5*distX);
-                %                 obj.K=K_s+K_n;
-
-                %                                 choL = chol(obj.K, 'lower');
-                %                                 alpha = choL'\(choL\obj.Z);
-                %                             invK=inv(obj.K);
-                %                                 invChoL=inv(choL);
-                %                                 constant_1=invChoL'*invChoL-alpha*alpha';
-                % %                                 K_div_sigma_f=2/old_sigma*K_s;
-                %                             K_div_sigma_f=2*obj.sigma_f*exp(-0.5*distX/obj.l^2);
-                %                                 obj.pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f)+...
-                %                                     obj.beta(1)*(1+obj.rho/obj.beta(1)*(old_sigma-obj.z(1)));
-                %
-                %                                 %             K_div_l=obj.sigma_f^2*distX*exp(-distX./2./obj.l^(2))*obj.l^(-3);
-                %
-                %                                 K_div_l_1=obj.distX1.*K_s*old_l(1)^(-3);
-                %                                 obj.pd_l(1) = 0.5*trace(constant_1*K_div_l_1)+...
-                %                                     obj.beta(2)*(1+obj.rho/obj.beta(2)*(old_l(1)-obj.z(2)));
-                %
-                %                                 K_div_l_2=obj.distX2.*K_s*old_l(2)^(-3);
-                %                                 obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2)+...
-                %                                     obj.beta(3)*(1+obj.rho/obj.beta(3)*(old_l(2)-obj.z(3)));
-                %
-                %                                 K_div_l=[obj.pd_l(1);obj.pd_l(2)];
-                %                                 obj.pd_l=K_div_l;
                 old_z=[old_sigma;old_l;old_sigma_n];
-
+                
                 [pd,pdn] = getDiv(obj,old_z);
                 pd(1)=pd(1)+...
                     obj.beta(1)*(1+obj.rho/obj.beta(1)*(old_sigma-obj.z(1)));
@@ -174,18 +146,18 @@ classdef agent
                     pd(i)=pd(i)+obj.beta(i)*(1+obj.rho/obj.beta(i)*(old_l(i-1)-obj.z(i)));
                 end
                 pdn=pdn+obj.beta(end)*(1+obj.rho/obj.beta(end)*(old_sigma_n-obj.z(end)));
-
-
-
+                
+                
+                
                 obj.pd_l=pd(2:end);
                 obj.pd_sigma_f=pd(1);
                 obj.pd_sigma_n=pdn;
-
+                
                 % update hyperparameters
                 new_sigma=old_sigma-mu_temp*obj.pd_sigma_f;
                 new_l=old_l-mu_temp*obj.pd_l;
                 new_sigma_n=old_sigma_n-mu_temp*pdn;
-
+                
                 % calculate maximum update step
                 step=norm([new_sigma;new_l;new_sigma_n]-[old_sigma;old_l;old_sigma_n]);
                 % now the new sigma and l will be out dated in the next
@@ -193,11 +165,11 @@ classdef agent
                 old_sigma=new_sigma;
                 old_l=new_l;
                 old_sigma_n=new_sigma_n;
-
+                
                 obj.sigma_f=new_sigma;
                 obj.l=new_l;
                 obj.sigma_n=new_sigma_n;
-
+                
                 % adjust stepSize
                 %                 mu_temp=0.9999999*mu_temp;
                 % store intermediate results
