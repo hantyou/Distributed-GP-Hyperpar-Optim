@@ -18,9 +18,9 @@ maxM=8;
 M=maxM;
 reso_m=256;
 reso_n=256;
-everyAgentsSampleNum=50;
+everyAgentsSampleNum=200;
 Agents_measure_range=4;
-realDataSet=1;
+realDataSet=0;
 samplingMethod=2; % 1. uniformly distirbuted accross region; 2. near agents position, could lose some points if out of range
 agentsScatterMethod=1; % 1. Randomly distributed accross the area; 2. K_means center
 overlap=1; % 1. overlap allowed (fuzzy c-means), 2. disjoint clusters
@@ -156,10 +156,10 @@ for exp_r_id=1:repeatNum
     
     overlapFlag=1; %0. k-means, 1. fcm
     if realDataSet==0
-    theta=[5,1,1]';
+        theta=[5,1,1]';
     elseif realDataSet==1
-    theta=[8.5,1.6,1.2]';
-    sigma_n=0.7;
+        theta=[8.5,1.6,1.2]';
+        sigma_n=0.7;
     end
     Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
     savePlot=0;
@@ -208,7 +208,7 @@ for exp_r_id=1:repeatNum
             [~,V,~]=eig(full(Lap));
             V=diag(V);
             V=sort(V,'ascend');
-            if V(2)>1e-5
+            if V(2)>1e-4
                 connected=1;
             else
                 commuRange(expId)=commuRange(expId)*1.1;
