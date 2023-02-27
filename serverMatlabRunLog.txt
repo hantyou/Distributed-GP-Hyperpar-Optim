@@ -8,215 +8,43 @@
 To get started, type doc.
 For product information, visit www.mathworks.com.
  
-The code begins at 18-Aug-2022 03:47:16
+The code begins at 27-Feb-2023 13:50:15
 Starting parallel pool (parpool) using the 'local' profile ...
-
-Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 8).
-
-ans = 
-
- Pool with properties: 
-
-            Connected: true
-           NumWorkers: 8
-              Cluster: local
-        AttachedFiles: {}
-    AutoAddClientPath: true
-          IdleTimeout: Inf (no automatic shut down)
-          SpmdEnabled: true
-
+Connected to the parallel pool (number of workers: 24).
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 2.311066 seconds.
+Elapsed time is 2.078988 seconds.
 
 subSize =
 
-    70
-    70
-    70
-    70
-    70
-    70
-    70
-    70
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
 
 [Warning: Directory already exists.] 
 [> In Main (line 129)] 
 The method(s) to be evaluated in this experiment is(are):
-GD
-ADMM
 pxADMM
-ADMM_fd
 pxADMM_fd_sync
 pxADMM_fd_async
 pxADMM_fd_tc_sync
 pxADMM_fd_tc_async
 
-Time of GD
-   500
-
-    0.0019
-
-        1000
-
-   2.8119e-04
-
-        1500
-
-   1.2034e-04
-
-        2000
-
-   5.4979e-05
-
-        2500
-
-   2.5824e-05
-
-        3000
-
-   1.2283e-05
-
-Elapsed time is 211.901067 seconds.
-GD optimization results
-    4.2587    0.9895    0.9535    0.3690
-
-Time of ADMM
-Elapsed time is 59.050870 seconds.
-ADMM optimization results
-    4.2650    0.9901    0.9541    0.3691
-
 Time of pxADMM
-Elapsed time is 33.784462 seconds.
-pxADMM optimization results
-    4.2650    0.9901    0.9541    0.3691
-
-Time of ADMM_{fd}
    500
 
-   3.4293e-04
+   6.8380e-04
 
-        1000
-
-   3.2188e-05
-
-Elapsed time is 200.182532 seconds.
-ADMM_{fd} optimization results
-    4.2633    0.9899    0.9539    0.3691
-
-Time of pxADMM_{fd,sync}
-   250
-
-   5.3153e-04
-
-   500
-
-   3.3995e-05
-
-Elapsed time is 51.929430 seconds.
-pxADMM_{fd,sync} optimization results
-    4.2572    0.9886    0.9462    0.3822
-
-Time of pxADMM_{fd,async}
-   250
-
-    0.0022
-
-   500
-
-   6.1939e-04
-
-   750
-
-   8.5911e-05
-
-        1000
-
-   1.9762e-05
-
-Elapsed time is 29.810002 seconds.
-pxADMM_{fd,async} optimization results
-    4.2574    0.9886    0.9462    0.3822
-
-Time of pxADMM_{fd,tc,sync}
-   250
-
-    0.0016
-
-   500
-
-   4.9312e-04
-
-   750
-
-   1.9113e-04
-
-        1000
-
-   7.8597e-05
-
-        1250
-
-   3.3071e-05
-
-        1500
-
-   1.4046e-05
-
-Elapsed time is 113.688120 seconds.
-pxADMM_{fd,tc,sync} optimization results
-    4.2625    0.9898    0.9538    0.3691
-
-Time of pxADMM_{fd,tc,async}
-   250
-
-    0.0119
-
-   500
-
-    0.0011
-
-   750
-
-   6.6420e-04
-
-        1000
-
-   5.1671e-04
-
-        1250
-
-   2.7628e-04
-
-        1500
-
-   1.5888e-04
-
-        1750
-
-   1.0534e-04
-
-        2000
-
-   5.8899e-05
-
-        2250
-
-   3.3236e-05
-
-        2500
-
-   2.6423e-05
-
-        2750
-
-   1.4159e-05
-
-Elapsed time is 51.164555 seconds.
-pxADMM_{fd,tc,async} optimization results
-    4.2631    0.9899    0.9539    0.3691
-
-Code end at HO
-The code ends at 18-Aug-2022 04:03:48
-The code duration is 00:16:32
