@@ -22,14 +22,14 @@ range_x1=[-5,5];
 range_x2=[-5,5];
 range=[range_x1;range_x2];
 
-rng(990611,'twister')
+rng(100,'twister') 
 rand(17+16,1);
-M=8;
+M=16;
 region=[];
 %% parpool setup
 delete(gcp('nocreate'))
 try
-    parpool(24);
+    parpool(M);
 catch
     parpool(8)
 end
@@ -38,9 +38,15 @@ end
 reso_m=256;
 reso_n=256;
 reso=[reso_m,reso_n];
-TotalNumLevel=M*70;
+TotalNumLevel=M*250;
+
+M
+TotalNumLevel
+
+
+
 everyAgentsSampleNum=floor(TotalNumLevel/M);
-Agents_measure_range=3.5;
+Agents_measure_range=3;
 realDataSet=0;
 if realDataSet==1
     disp('This exp is down with real dataset loaded')
@@ -111,10 +117,11 @@ for m=1:M
     Agents(m).idx=idx(m,1:subSize(m));
     Agents(m).N_m=localDataSetsSize(m);
     Agents(m).M=M;
+    Agents(m).NLL=0;
     Agents(m).action_status=1;
-    Agents(m).commuRange=2;
+    Agents(m).commuRange=1.2;
     Agents(m).realdataset=realDataSet;
-        Agents(m).commuRange=4;
+        Agents(m).commuRange=3;
     Agents(m).realz=realz;
     Agents(m).distX1=dist(Agents(m).X(1,:)).^2;
     Agents(m).distX2=dist(Agents(m).X(2,:)).^2;
@@ -214,7 +221,7 @@ if realDataSet==0||temp_data==3
         imagesc(linspace(range_x1(1),range_x1(2),reso_m),linspace(range_x2(2),range_x2(1),reso_n),F_true);
         %        contour(linspace(range_x1(1),range_x1(2),reso_n),linspace(range_x2(2),range_x2(1),reso_m),F_true,linspace(0,25,10),'-k','LineWidth',0.6);
     end
-    scatter(X1,X2,'k*');
+%     scatter(X1,X2,'k*');
     scatter(Agents_Posi(1,:),Agents_Posi(2,:))
     for m=1:M
         for n=m:M
@@ -294,10 +301,10 @@ end
 
 clear Topology_method G L v posi;
 %% Experiment group setup
-run_GD=1;
-run_ADMM=1;
+run_GD=0;
+run_ADMM=0;
 run_pxADMM=1;
-run_ADMM_fd=1;
+run_ADMM_fd=0;
 run_pxADMM_fd_sync=1;
 run_pxADMM_fd_async=1;
 run_pxADMM_async_realSimu=0;
@@ -344,9 +351,13 @@ else
     initial_l=2*ones(1,inputDim);
 end
 
-epsilon = 1e-5; % used for stop criteria
-rho_glb=TotalNumLevel*0.3;
-L_glb=TotalNumLevel*0.8;
+epsilon = 1e-4; % used for stop criteria
+rho_glb=400;
+L_glb=4000;
+
+rho_glb
+L_glb
+sigma_n
 
 GD_step_size=0.00005;
 
@@ -366,7 +377,7 @@ if run_GD
     disp('Time of GD')
 
     tic
-    [sigma_GD,l_GD,sigma_n_GD,Steps_GD]  = runGD(Agents,M,initial_sigma_f,initial_l,initial_sigma_n,stepSize,epsilon,maxIter);
+    [sigma_GD,l_GD,sigma_n_GD,Steps_GD,NLLs_GD]  = runGD(Agents,M,initial_sigma_f,initial_l,initial_sigma_n,stepSize,epsilon,maxIter);
     toc
     
     disp('GD optimization results')
@@ -424,7 +435,7 @@ if run_pxADMM
     disp('Time of pxADMM')
 
     tic
-    [sigma_pxADMM,l_pxADMM,sigma_n_pxADMM,Steps_pxADMM,Zs_pxADMM] = runPXADMM(Agents,M,epsilon,maxIter);
+    [sigma_pxADMM,l_pxADMM,sigma_n_pxADMM,Steps_pxADMM,Zs_pxADMM,NLLs_pxADMM] = runPXADMM(Agents,M,epsilon,maxIter);
     toc
     
     disp('pxADMM optimization results')
@@ -510,7 +521,7 @@ if run_pxADMM_fd_sync
     disp('Time of pxADMM_{fd,sync}')
 
     tic
-    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,sigma_n_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync,DataTransNum_pxADMM_fd_sync] = ...
+    [sigma_pxADMM_fd_sync,l_pxADMM_fd_sync,sigma_n_pxADMM_fd_sync,Steps_pxADMM_fd_sync,Zs_pxADMM_fd,thetas_pxADMM_fd_sync,DataTransNum_pxADMM_fd_sync,NLLs_pxADMM_fd_sync] = ...
         runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
     
@@ -549,7 +560,7 @@ if run_pxADMM_fd_async
         Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).updatedVars=ones(1,Agents(m).N_size);
-        Agents(m).updatedVarsNumberThreshold=3;
+        Agents(m).updatedVarsNumberThreshold=2;
         Agents(m).updatedVarsNumberThreshold=min(Agents(m).updatedVarsNumberThreshold,Agents(m).N_size);
     end
     for m=1:M
@@ -564,7 +575,7 @@ if run_pxADMM_fd_async
     disp('Time of pxADMM_{fd,async}')
 
     tic
-    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async,DataTransNum_pxADMM_fd_async] =...
+    [sigma_pxADMM_fd_async,l_pxADMM_fd_async,sigma_n_pxADMM_fd_async,Steps_pxADMM_fd_async,Zs_pxADMM_fd_async,thetas_pxADMM_fd_async,DataTransNum_pxADMM_fd_async,NLLs_pxADMM_fd_async] =...
         runPXADMM_fd(Agents,M,epsilon,maxIter,sync);
     toc
     
@@ -575,6 +586,7 @@ if run_pxADMM_fd_async
     Agents(1).l=l_pxADMM_fd_async;
     pause(0.1)
     Steps_pxADMM_fd_async=Steps_pxADMM_fd_async{1};
+    NLLs_pxADMM_fd_async=NLLs_pxADMM_fd_async{1};
 end
 %% Perform pxADMM_async_realSimu
 if run_pxADMM_async_realSimu
@@ -698,7 +710,7 @@ if run_pxADMM_fd_tc_sync
     disp('Time of pxADMM_{fd,tc,sync}')
 
     tic
-    [sigma_pxADMM_fd_tc_sync,l_pxADMM_fd_tc_sync,sigma_n_pxADMM_fd_tc_sync,Steps_pxADMM_fd_tc_sync,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_sync,DataTransNum_pxADMM_fd_tc_sync] = ...
+    [sigma_pxADMM_fd_tc_sync,l_pxADMM_fd_tc_sync,sigma_n_pxADMM_fd_tc_sync,Steps_pxADMM_fd_tc_sync,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_sync,DataTransNum_pxADMM_fd_tc_sync,NLLs_pxADMM_fd_tc_sync] = ...
         runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
     toc
     
@@ -733,7 +745,7 @@ if run_pxADMM_fd_tc_async
         Agents(m).theta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).beta_n=zeros(inputDim+2,Agents(m).N_size);
         Agents(m).updatedVars=zeros(1,Agents(m).N_size);
-        Agents(m).updatedVarsNumberThreshold=3;
+        Agents(m).updatedVarsNumberThreshold=2;
         Agents(m).updatedVarsNumberThreshold=min(Agents(m).updatedVarsNumberThreshold,Agents(m).N_size);
     end
     for m=1:M
@@ -748,7 +760,7 @@ if run_pxADMM_fd_tc_async
     disp('Time of pxADMM_{fd,tc,async}')
 
     tic
-    [sigma_pxADMM_fd_tc_async,l_pxADMM_fd_tc_async,sigma_n_pxADMM_fd_tc_async,Steps_pxADMM_fd_tc_async,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_async,DataTransNum_pxADMM_fd_tc_async] =...
+    [sigma_pxADMM_fd_tc_async,l_pxADMM_fd_tc_async,sigma_n_pxADMM_fd_tc_async,Steps_pxADMM_fd_tc_async,Zs_pxADMM_fd_tc,thetas_pxADMM_fd_tc_async,DataTransNum_pxADMM_fd_tc_async,NLLs_pxADMM_fd_tc_async] =...
         runPXADMM_fd_tc(Agents,M,epsilon,maxIter,sync);
     toc
     
@@ -757,64 +769,89 @@ if run_pxADMM_fd_tc_async
 
     pause(0.1)
     Steps_pxADMM_fd_tc_async=Steps_pxADMM_fd_tc_async{1};
+    NLLs_pxADMM_fd_tc_async=NLLs_pxADMM_fd_tc_async{1};
 end
+
+
+save(strcat(results_dir,'/forPlot.mat'));
 %% Compare convergence speed in terms of iterations
+vec_color='krgbmykrgbmykrgbmyrgbcmyrgbcmy';
+color_ind=1;
 close all
 gcf=figure;
 lgd_txt=[];
 hold on;
-lwd=1.8;
-lwd_thick=1.8;
-lwd_async=0.8;
+lwd=3;
+lwd_thick=3;
+lwd_async=0.6;
 tiledlayout(1,1,'TileSpacing','compact');
 nexttile(1)
 if run_GD
+disp('GD steps')
+length(Steps_GD)
     semilogy(Steps_GD,"LineWidth",lwd_thick,'LineStyle','-','Color','k');
     hold on;
     lgd_txt=[lgd_txt;"GD"];
 end
 if run_ADMM
-    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-');
+    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
 %     semilogy(Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"ADMM"];
 end
 if run_pxADMM
-    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'LineStyle','-');
+    disp('pxADMM steps')
+    length(Steps_pxADMM)
+    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM"];
 end
 if run_ADMM_fd
     IterCounts_fd{1}(1)=1;
-    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-');
+    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
 %     semilogy(Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-');
     hold on;
     lgd_txt=[lgd_txt;"ADMM_{fd}"];
 end
 if run_pxADMM_fd_async
-    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','-');
+disp('pxADMM_afd_fast steps')
+length(Steps_pxADMM_fd_async)
+    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,async}^*"];
+    lgd_txt=[lgd_txt;"pxADMM_{afd,fast}"];
+end
+if run_pxADMM_fd_tc_async
+disp('pxADMM_afd steps')
+length(Steps_pxADMM_fd_tc_async)
+    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{afd}"];
 end
 if run_pxADMM_fd_sync
-    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-');
+disp('pxADMM_fd_fast steps')
+length(Steps_pxADMM_fd_sync)
+    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}^*"];
+    lgd_txt=[lgd_txt;"pxADMM_{fd,fast}"];
 end
 if run_pxADMM_async_realSimu
     semilogy(Agents(1).Steps(2:end),"LineWidth",lwd_async);
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{async,realSimu}"];
 end
-if run_pxADMM_fd_tc_async
-    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','-');
-    hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
-end
 if run_pxADMM_fd_tc_sync
-    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-');
+disp('pxADMM_fd steps')
+length(Steps_pxADMM_fd_tc_sync)
+    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
+    lgd_txt=[lgd_txt;"pxADMM_{fd}"];
 end
 set(gca, 'YScale', 'log');
 xlabel('iterations');
@@ -822,17 +859,83 @@ ylabel('step size');
 % title('log plot of steps-iterations');
 lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
 lgd.NumColumns=4;
+
+
+ax1=gca;
+ax2=axes('Position',[.5 .5 .3 .3]);
+hold on;
+box on;
+color_ind=1;
+mag_range=400;
+if run_GD
+disp('GD steps')
+length(Steps_GD)
+    semilogy(Steps_GD,"LineWidth",lwd_thick,'LineStyle','-','Color','k');
+end
+if run_ADMM
+    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+end
+if run_pxADMM
+    disp('pxADMM steps')
+    length(Steps_pxADMM)
+    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+end
+if run_ADMM_fd
+    IterCounts_fd{1}(1)=1;
+    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+end
+if run_pxADMM_fd_async
+disp('pxADMM_afd_fast steps')
+length(Steps_pxADMM_fd_async)
+    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+end
+if run_pxADMM_fd_tc_async
+disp('pxADMM_afd steps')
+length(Steps_pxADMM_fd_tc_async)
+    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+end
+if run_pxADMM_fd_sync
+disp('pxADMM_fd_fast steps')
+length(Steps_pxADMM_fd_sync)
+    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+end
+if run_pxADMM_async_realSimu
+    semilogy(Agents(1).Steps(2:end),"LineWidth",lwd_async);
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{async,realSimu}"];
+end
+if run_pxADMM_fd_tc_sync
+disp('pxADMM_fd steps')
+length(Steps_pxADMM_fd_tc_sync)
+    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+end
+set(gca, 'YScale', 'log');
+xlim([0,mag_range])
+xinner_lim=xlim;
+yinner_lim=ylim;
+set(gcf,'CurrentAxes',ax1);
+rectangle('Position',[xinner_lim(1) yinner_lim(1) xinner_lim(2) yinner_lim(2)],'Curvature',0)
 hold off;
 s=hgexport('factorystyle');
 s.Resolution=300;
 s.Width=10;
-s.Height=7;
+s.Height=6;
 s.FontSizeMin=15;
 fname=strcat(results_dir,'/HOMethodsCompare');
 s.Format='png';
 hgexport(gcf,fname,s);
 s.Format='eps';
 hgexport(gcf,fname,s);
+
+savefig(gcf,strcat(fname,'.fig'))
+
 set(gca, 'XScale', 'log');
 fname=strcat(fname,'_log');
 s.Format='png';
@@ -840,7 +943,90 @@ hgexport(gcf,fname,s);
 s.Format='eps';
 hgexport(gcf,fname,s);
 
+savefig(gcf,strcat(fname,'.fig'))
 pause(0.01)
+
+%% Compare convergence speed in terms of iterations NLL
+vec_color='krgbmykrgbmykrgbmyrgbcmyrgbcmy';
+color_ind=1;
+close all
+gcf=figure;
+lgd_txt=[];
+hold on;
+lwd=1.5;
+lwd_thick=1.5;
+lwd_async=1.5;
+tiledlayout(1,1,'TileSpacing','compact');
+nexttile(1)
+if run_pxADMM
+    disp('pxADMM NLLs')
+    length(NLLs_pxADMM)
+    semilogy(NLLs_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM"];
+end
+if run_pxADMM_fd_async
+disp('pxADMM_afd_fast NLLs')
+length(NLLs_pxADMM_fd_async)
+    semilogy(NLLs_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{afd,fast}"];
+end
+if run_pxADMM_fd_tc_async
+disp('pxADMM_afd NLLs')
+length(NLLs_pxADMM_fd_tc_async)
+    semilogy(NLLs_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{afd}"];
+end
+if run_pxADMM_fd_sync
+disp('pxADMM_fd_fast NLLs')
+length(NLLs_pxADMM_fd_sync)
+    semilogy(NLLs_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd,fast}"];
+end
+if run_pxADMM_fd_tc_sync
+disp('pxADMM_fd NLLs')
+length(NLLs_pxADMM_fd_tc_sync)
+    semilogy(NLLs_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    color_ind=color_ind+1;
+    hold on;
+    lgd_txt=[lgd_txt;"pxADMM_{fd}"];
+end
+set(gca, 'YScale', 'log');
+xlabel('iterations');
+ylabel('NLL');
+% title('log plot of steps-iterations');
+% lgd=legend(lgd_txt,'Location','northoutside','Orientation', 'Horizontal');
+% lgd.NumColumns=4;
+hold off;
+s=hgexport('factorystyle');
+s.Resolution=300;
+s.Width=9;
+s.Height=4;
+s.FontSizeMin=15;
+fname=strcat(results_dir,'/HOMethodsCompare_NLL');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+savefig(gcf,strcat(fname,'.fig'))
+
+set(gca, 'XScale', 'log');
+fname=strcat(fname,'_log');
+s.Format='png';
+hgexport(gcf,fname,s);
+s.Format='eps';
+hgexport(gcf,fname,s);
+savefig(gcf,strcat(fname,'.fig'))
+
+pause(0.01)
+
 
 
 %% Compare convergence speed in terms of iterations pxADMMs
@@ -859,23 +1045,24 @@ end
 if run_pxADMM_fd_async
     semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','-');
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,async}^*"];
+    lgd_txt=[lgd_txt;"pxADMM_{afd,fast}"];
 end
 if run_pxADMM_fd_sync
     semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd);
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}^*"];
+    lgd_txt=[lgd_txt;"pxADMM_{fd,fast}"];
 end
 if run_pxADMM_fd_tc_async
     semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','-');
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,async}"];
+    lgd_txt=[lgd_txt;"pxADMM_{afd}"];
 end
 if run_pxADMM_fd_tc_sync
     semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd);
     hold on;
-    lgd_txt=[lgd_txt;"pxADMM_{fd,sync}"];
+    lgd_txt=[lgd_txt;"pxADMM_{fd}"];
 end
+
 set(gca, 'YScale', 'log');
 % set(gca, 'XScale', 'log');
 xlabel('iterations');

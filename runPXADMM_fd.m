@@ -1,4 +1,4 @@
-function [sigma_pxADMM_fd,l_pxADMM_fd,sigma_n_pxADMM_fd,outSteps,Zs,thetas,DataTransNum] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync)
+function [sigma_pxADMM_fd,l_pxADMM_fd,sigma_n_pxADMM_fd,outSteps,Zs,thetas,DataTransNum,NLLs] = runPXADMM_fd(Agents,M,epsilon,maxIter,sync)
 %RUNPXADMM_FD Summary of this function goes here
 %   Detailed explanation goes here
 D=length(Agents(1).l);
@@ -38,6 +38,13 @@ Steps=cell(M,1);
 for m=1:M
     Steps{m}=[];
 end
+NLLs=[];
+NLL=0;
+subNLLs=cell(M,1);
+for m=1:M
+    [~,~,Agents(m).NLL]=getDiv(Agents(m),[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]);
+    subNLLs{m}=[];
+end
 outSteps=[];
 sub_old_z=zeros(inputDim+2,M);
 for m=1:M
@@ -55,6 +62,7 @@ if sync==1
         if mod(iterCount,250)==0
             disp(iterCount);
             disp(step);
+            disp(NLL);
         end
 
         Agents=Agents.obtain_data_from_Neighbor_ADMM_fd;
@@ -81,6 +89,11 @@ if sync==1
         updated_z=updated_z/M;
         step = max(vecnorm(global_step,2,2));
 %         step = max(vecnorm(updated_z(1:end)-old_z(1:end),2,2));
+    NLL=0;
+    for m=1:M
+        NLL=NLL+Agents(m).NLL;
+    end
+    NLLs=[NLLs,NLL];
         outSteps=[outSteps,step];
 
         if wbVisibility
@@ -108,9 +121,11 @@ if sync==1
                 ylabel('\sigma_f')
             elseif i==D+2
                 ylabel('\sigma_n')
+        ylim([0 inf]);
             else
                 txt=strcat('l_',num2str(i-1));
                 ylabel(txt)
+        ylim([0 inf]);
             end
             hold on
             for m=1:M
@@ -248,6 +263,7 @@ elseif sync==0
         if ~mod(iterCount,250)
             disp(iterCount);
             disp(step);
+            disp(NLL);
         end
         Agents=Agents.obtain_data_from_Neighbor_ADMM_fd;
         old_z=updated_z;
@@ -267,14 +283,23 @@ elseif sync==0
             step_m=max(vecnorm([Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]-sub_old_z(:,m),2,2));
             %             step_m=max(vecnorm(Agents(m).l-sub_old_z(2:end,m),2,2));
             SubSteps{m}=[SubSteps{m},step_m];
+            subNLLm=0;
+            for n=1:M
+                subNLLm=subNLLm+Agents(n).NLL;
+            end
+            subNLLs{m}=[subNLLs{m},subNLLm];
             global_step=max(global_step,step_m);
         end
+        NLL=0;
         for m=1:M
             updated_z=updated_z+[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
 
             sub_old_z(:,m)=[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n];
             %     Agents(m).rho=Agents(m).rho*0.9999;
+            NLL=NLL+Agents(m).NLL;
         end
+        
+        NLLs=[NLLs,NLL];
         updated_z=updated_z/M;
 %         step = max(vecnorm(global_step,2,2));
         step = max(vecnorm(global_step,2,2));
@@ -298,6 +323,7 @@ elseif sync==0
         end
     end
     outSteps=stepForStops;
+    NLLs=subNLLs;
     sigma_pxADMM_fd=updated_z(1);
     l_pxADMM_fd=updated_z(2:(2+inputDim-1));
     sigma_n_pxADMM_fd=updated_z(end);
@@ -314,9 +340,11 @@ elseif sync==0
                 ylabel('\sigma_f')
             elseif i==D+2
                 ylabel('\sigma_n')
+        ylim([0 inf]);
             else
                 txt=strcat('l_',num2str(i-1));
                 ylabel(txt)
+        ylim([0 inf]);
             end
             hold on
             for m=1:M

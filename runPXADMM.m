@@ -1,4 +1,4 @@
-function [sigma_pxADMM,l_pxADMM,sigma_n_pxADMM,Steps,Zs] = runPXADMM(Agents,M,epsilon,maxIter)
+function [sigma_pxADMM,l_pxADMM,sigma_n_pxADMM,Steps,Zs,NLLs] = runPXADMM(Agents,M,epsilon,maxIter)
 %RUNPXADMM Summary of this function goes here
 %   Detailed explanation goes here
 if usejava('desktop')
@@ -12,12 +12,14 @@ Sigmas=[];
 Sigmas=[Sigmas;Agents(1).sigma_f];
 Ls=[];
 Ls=[Ls,Agents(1).l];
+NLLs=[];
 Steps=[];
 Likelihood=[];
 iterCount=0;
 % the outer iteration begains here
 updated_z=Agents(1).z;
 Zs=cell(M,1);
+NLL=0;
 for m=1:M
     Zs{m}=[];
 end
@@ -31,6 +33,7 @@ while pxADMMflag
     if ~mod(iterCount,500)
     disp(iterCount);
     disp(step);
+    disp(NLL);
     end
     % Calculate z from agents' data
     old_z=updated_z;
@@ -52,6 +55,12 @@ while pxADMMflag
         Agents(m)=Agents(m).runLocalPxADMM;
         Zs{m}=[Zs{m},[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]];
     end
+    NLL=0;
+    for m=1:M
+        [~,~,Agents(m).NLL]=getDiv(Agents(m),[Agents(m).sigma_f;Agents(m).l;Agents(m).sigma_n]);
+        NLL=NLL+Agents(m).NLL;
+    end
+    NLLs=[NLLs,NLL];
     step = norm(updated_z(1:end)-old_z(1:end));
     Steps=[Steps,step];
     
@@ -95,8 +104,10 @@ for z_i=1:(D+2)
         ylabel('\sigma_f');
     elseif z_i==D+2
         ylabel('\sigma_n');
+        ylim([0 inf]);
     else
         ylabel(strcat('l_',num2str(z_i-1)));
+        ylim([0 inf]);
     end
     if z_i==1
 

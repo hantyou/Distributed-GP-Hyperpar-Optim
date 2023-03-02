@@ -1,4 +1,4 @@
-function [pd,pdn] = getDiv(obj,z)
+function [pd,pdn,NLL] = getDiv(obj,z)
 %GETDIV Summary of this function goes here
 %   Detailed explanation goes here
 D=length(obj.l);
@@ -15,6 +15,7 @@ choL = chol(obj.K, 'lower');
 alpha = choL'\(choL\obj.Z);
 invChoL=inv(choL);
 constant_1=invChoL'*invChoL-alpha*alpha';
+NLL=obj.Z'*invChoL'*invChoL*obj.Z+log(det(obj.K));
 %% div sigma_f
 K_div_sigma_f=2/sigma_old*K_s;
 pd_sigma_f = 0.5*trace(constant_1*K_div_sigma_f);

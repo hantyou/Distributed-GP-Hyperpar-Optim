@@ -70,6 +70,7 @@ classdef agent
         realdataset
         TotalNumLevel
         temp
+        NLL
     end
 
     methods
@@ -110,10 +111,11 @@ classdef agent
             %             K_div_l_2=obj.distX2.*K_s*obj.l(2)^(-3);
             %             obj.pd_l(2) = 0.5*trace(constant_1*K_div_l_2);
 
-            [pd,pdn] = getDiv(obj,obj.z);
+            [pd,pdn,NLL] = getDiv(obj,obj.z);
             obj.pd_sigma_f=pd(1);
             obj.pd_l=pd(2:(2+length(obj.pd_l)-1));
             obj.pd_sigma_n=pdn;
+            obj.NLL=NLL;
 
             %             obj.mu=0.999999*obj.mu;
         end
@@ -234,9 +236,10 @@ classdef agent
             %             K_div_l=[obj.pd_l(1);obj.pd_l(2)];
             %             obj.pd_l=K_div_l;
             %
-            [pd,pdn] = getDiv(obj,obj.z);
+            [pd,pdn,NLL] = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
             obj.pd_sigma_f=pd(1);
+            obj.NLL=NLL;
 
             % update hyperparameters
             new_sigma=obj.z(1)-(obj.pd_sigma_f+obj.beta(1))/(obj.rho+obj.L);
@@ -391,9 +394,10 @@ classdef agent
             obj.z=new_z;
 
 
-            [pd,pdn] = getDiv(obj,obj.z);
+            [pd,pdn,NLL] = getDiv(obj,obj.z);
             obj.pd_l=pd(2:end);
             obj.pd_sigma_f=pd(1);
+            obj.NLL=NLL;
 
 %             old_beta=mean([obj.beta,obj.beta_mn],2);
 %             new_theta=new_z-([obj.pd_sigma_f;obj.pd_l;pdn]+sum([obj.beta,obj.beta_mn],2)/(obj.N_size+1))/((obj.rho+obj.L));
@@ -450,9 +454,10 @@ classdef agent
             obj.z(end)=old_sigma_n;
 
 
-            [pd,pdn] = getDiv(obj,old_theta);
+            [pd,pdn,NLL] = getDiv(obj,old_theta);
             obj.pd_l=pd(2:end);
             obj.pd_sigma_f=pd(1);
+            obj.NLL=NLL;
 
             old_beta=mean([obj.beta,obj.beta_mn],2);
 

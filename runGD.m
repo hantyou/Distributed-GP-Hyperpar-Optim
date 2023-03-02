@@ -1,4 +1,4 @@
-function [newSigma,newL,newSigma_n,Steps] = runGD(Agents,M,initial_sigma_f,initial_l,sigma_n,stepSize,stopCriteria,maxIter)
+function [newSigma,newL,newSigma_n,Steps,NLLs] = runGD(Agents,M,initial_sigma_f,initial_l,sigma_n,stepSize,stopCriteria,maxIter)
 %RUNGD Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -24,6 +24,7 @@ Zs=cell(M,1);
 for m=1:M
     Zs{m}=[];
 end
+NLLs=[];
 for m=1:M
     Agents(m) = Agents(m).initLocalGD(initial_sigma_f,initial_l',sigma_n,stepSize);
     Agents(m).sigma_n=sigma_n;
@@ -65,17 +66,22 @@ while GDflag
     Ls(:,iterCount)=newL;
     Sigma_ns(iterCount)=newSigma_n;
 %     Likelihoods(iterCount)=-0.5*newLikelihood+0.5*sampleSize*log(2*pi);
+    NLL=0;
     for m=1:M
         Agents(m).sigma_f=newSigma;
         Agents(m).l=newL;
         Agents(m).sigma_n=newSigma_n;
         Agents(m).z=[newSigma;newL;newSigma_n];
         Zs{m}=[Zs{m},Agents(m).z];
+        NLL=NLL+Agents(m).NLL;
     end
     %         step=max(abs(Sigmas(iterCount)-Sigmas(iterCount-1)),abs(Ls(1,iterCount)-Ls(1,iterCount-1)));
     step=max(vecnorm([newSigma;newL;newSigma_n]-[oldSigma;oldL;oldSigma_n],2,2))  ;
     Steps(iterCount-1)=step;
-
+    NLLs=[NLLs,NLL];
+    
+    
+    
     if wbVisibility
         waitbar(iterCount/maxIter,wb,sprintf('%s %.2f %s %f','GD: ',iterCount/maxIter*100,'% , step:', step))
     end
@@ -106,9 +112,12 @@ for z_i=1:(D+2)
         ylabel('\sigma_f');
     elseif z_i==D+2
         ylabel('\sigma_n');
+        ylim([0 inf]);
     else
         ylabel(strcat('l_',num2str(z_i-1)));
+        ylim([0 inf]);
     end
+    
     if z_i==1
 % nexttile(1);
         if realDataSet==0
@@ -116,6 +125,7 @@ for z_i=1:(D+2)
             legendTxt{1}='converged value';
             legendTxt{2}='real hyperparameter value';
             lgd=legend([y_c;y_r],legendTxt,'Location','northoutside','Orientation', 'Horizontal');
+            
         else
             lgd=legend(y_c,'converged value','Location','northoutside','Orientation', 'Horizontal');
         end

@@ -1,5 +1,6 @@
 
 
+% ncFname="./SSTdata/20220402090000-JPL-L4_GHRSST-SSTfnd-MUR25-GLOB-v02.0-fv04.2.nc";
 ncFname="./SSTdata/20220402090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc";
 
 onlyReadNeccessaryData=1;

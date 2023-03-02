@@ -8,215 +8,456 @@
 To get started, type doc.
 For product information, visit www.mathworks.com.
  
-The code begins at 18-Aug-2022 03:47:16
+Setting CVX paths...done.
+The code begins at 01-Mar-2023 18:40:21
 Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 16).
 
-Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 8).
+M =
 
-ans = 
+    16
 
- Pool with properties: 
 
-            Connected: true
-           NumWorkers: 8
-              Cluster: local
-        AttachedFiles: {}
-    AutoAddClientPath: true
-          IdleTimeout: Inf (no automatic shut down)
-          SpmdEnabled: true
+TotalNumLevel =
+
+        4000
 
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 2.311066 seconds.
+Elapsed time is 4.384816 seconds.
 
 subSize =
 
-    70
-    70
-    70
-    70
-    70
-    70
-    70
-    70
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
+   250
 
 [Warning: Directory already exists.] 
-[> In Main (line 129)] 
+[> In Main (line 136)] 
 The method(s) to be evaluated in this experiment is(are):
-GD
-ADMM
 pxADMM
-ADMM_fd
 pxADMM_fd_sync
 pxADMM_fd_async
 pxADMM_fd_tc_sync
 pxADMM_fd_tc_async
 
-Time of GD
-   500
 
-    0.0019
+rho_glb =
 
-        1000
+   400
 
-   2.8119e-04
 
-        1500
+L_glb =
 
-   1.2034e-04
+        4000
 
-        2000
 
-   5.4979e-05
+sigma_n =
 
-        2500
-
-   2.5824e-05
-
-        3000
-
-   1.2283e-05
-
-Elapsed time is 211.901067 seconds.
-GD optimization results
-    4.2587    0.9895    0.9535    0.3690
-
-Time of ADMM
-Elapsed time is 59.050870 seconds.
-ADMM optimization results
-    4.2650    0.9901    0.9541    0.3691
+    0.3162
 
 Time of pxADMM
-Elapsed time is 33.784462 seconds.
+Elapsed time is 466.590971 seconds.
 pxADMM optimization results
-    4.2650    0.9901    0.9541    0.3691
-
-Time of ADMM_{fd}
-   500
-
-   3.4293e-04
-
-        1000
-
-   3.2188e-05
-
-Elapsed time is 200.182532 seconds.
-ADMM_{fd} optimization results
-    4.2633    0.9899    0.9539    0.3691
+    5.0777    1.0070    1.0313    0.3165
 
 Time of pxADMM_{fd,sync}
    250
 
-   5.3153e-04
+    0.0020
+
+   4.0536e+03
 
    500
 
-   3.3995e-05
+   7.1146e-04
 
-Elapsed time is 51.929430 seconds.
+   4.0380e+03
+
+   750
+
+   3.0057e-04
+
+   4.0359e+03
+
+        1000
+
+   1.3552e-04
+
+   4.0356e+03
+
+Elapsed time is 264.399898 seconds.
 pxADMM_{fd,sync} optimization results
-    4.2572    0.9886    0.9462    0.3822
+    5.0690    1.0120    1.0335    0.3160
 
 Time of pxADMM_{fd,async}
    250
 
-    0.0022
+    0.0069
+
+   4.0834e+03
 
    500
 
-   6.1939e-04
+    0.0023
+
+   4.0479e+03
 
    750
 
-   8.5911e-05
+    0.0013
+
+   4.0394e+03
 
         1000
 
-   1.9762e-05
+   7.3569e-04
 
-Elapsed time is 29.810002 seconds.
+   4.0368e+03
+
+        1250
+
+   4.9847e-04
+
+   4.0360e+03
+
+        1500
+
+   2.9885e-04
+
+   4.0357e+03
+
+        1750
+
+   1.5373e-04
+
+   4.0356e+03
+
+Elapsed time is 1581.052837 seconds.
 pxADMM_{fd,async} optimization results
-    4.2574    0.9886    0.9462    0.3822
+    5.0758    1.0124    1.0338    0.3160
 
 Time of pxADMM_{fd,tc,sync}
    250
 
     0.0016
 
+   4.1965e+03
+
    500
 
-   4.9312e-04
+   9.9675e-04
+
+   4.1156e+03
 
    750
 
-   1.9113e-04
+   6.9338e-04
+
+   4.0810e+03
 
         1000
 
-   7.8597e-05
+   5.1335e-04
+
+   4.0632e+03
 
         1250
 
-   3.3071e-05
+   3.9472e-04
+
+   4.0531e+03
 
         1500
 
-   1.4046e-05
+   3.1128e-04
 
-Elapsed time is 113.688120 seconds.
+   4.0470e+03
+
+        1750
+
+   2.4992e-04
+
+   4.0431e+03
+
+        2000
+
+   2.0335e-04
+
+   4.0406e+03
+
+        2250
+
+   1.6714e-04
+
+   4.0389e+03
+
+        2500
+
+   1.3846e-04
+
+   4.0377e+03
+
+        2750
+
+   1.1543e-04
+
+   4.0369e+03
+
+Elapsed time is 517.717485 seconds.
 pxADMM_{fd,tc,sync} optimization results
-    4.2625    0.9898    0.9538    0.3691
+    4.9341    0.9985    1.0240    0.3161
 
 Time of pxADMM_{fd,tc,async}
    250
 
-    0.0119
+    0.0038
+
+   4.2642e+03
 
    500
 
-    0.0011
+    0.0014
+
+   4.1734e+03
 
    750
 
-   6.6420e-04
+    0.0016
+
+   4.1261e+03
 
         1000
 
-   5.1671e-04
+    0.0024
+
+   4.0985e+03
 
         1250
 
-   2.7628e-04
+    0.0011
+
+   4.0809e+03
 
         1500
 
-   1.5888e-04
+   7.4514e-04
+
+   4.0689e+03
 
         1750
 
-   1.0534e-04
+   6.4177e-04
+
+   4.0606e+03
 
         2000
 
-   5.8899e-05
+   5.6309e-04
+
+   4.0545e+03
 
         2250
 
-   3.3236e-05
+   4.1944e-04
+
+   4.0501e+03
 
         2500
 
-   2.6423e-05
+   3.1236e-04
+
+   4.0469e+03
 
         2750
 
-   1.4159e-05
+   3.3096e-04
 
-Elapsed time is 51.164555 seconds.
+   4.0444e+03
+
+        3000
+
+   3.3073e-04
+
+   4.0424e+03
+
+        3250
+
+   3.0314e-04
+
+   4.0409e+03
+
+        3500
+
+   2.3692e-04
+
+   4.0397e+03
+
+        3750
+
+   3.2936e-04
+
+   4.0388e+03
+
+        4000
+
+   1.6922e-04
+
+   4.0381e+03
+
+        4250
+
+   1.4665e-04
+
+   4.0375e+03
+
+        4500
+
+   1.5367e-04
+
+   4.0370e+03
+
+        4750
+
+   1.1375e-04
+
+   4.0366e+03
+
+        5000
+
+   1.2443e-04
+
+   4.0363e+03
+
+IdleTimeout has been reached.
+Parallel pool using the 'local' profile is shutting down.
+Elapsed time is 3307.466697 seconds.
 pxADMM_{fd,tc,async} optimization results
-    4.2631    0.9899    0.9539    0.3691
+    4.9486    0.9994    1.0247    0.3161
+
+pxADMM steps
+
+ans =
+
+   433
+
+pxADMM_afd_fast steps
+
+ans =
+
+        1112
+
+pxADMM_afd steps
+
+ans =
+
+        2624
+
+pxADMM_fd_fast steps
+
+ans =
+
+        1098
+
+pxADMM_fd steps
+
+ans =
+
+        2952
+
+pxADMM steps
+
+ans =
+
+   433
+
+pxADMM_afd_fast steps
+
+ans =
+
+        1112
+
+pxADMM_afd steps
+
+ans =
+
+        2624
+
+pxADMM_fd_fast steps
+
+ans =
+
+        1098
+
+pxADMM_fd steps
+
+ans =
+
+        2952
+
+[Warning: Error updating Rectangle.
+
+ DataSpace or ColorSpace transform method failed
+] 
+[> In defaulterrorcallback (line 12)
+  In hgexport
+  In Main (line 939)] 
+[Warning: Error updating Rectangle.
+
+ DataSpace or ColorSpace transform method failed
+] 
+[> In defaulterrorcallback (line 12)
+  In hgexport
+  In Main (line 941)] 
+[Warning: Error updating Rectangle.
+
+ DataSpace or ColorSpace transform method failed
+] 
+[> In defaulterrorcallback (line 12)
+  In Main (line 943)] 
+pxADMM NLLs
+
+ans =
+
+   433
+
+pxADMM_afd_fast NLLs
+
+ans =
+
+        1112
+
+pxADMM_afd NLLs
+
+ans =
+
+        2624
+
+pxADMM_fd_fast NLLs
+
+ans =
+
+        1098
+
+pxADMM_fd NLLs
+
+ans =
+
+        2952
 
 Code end at HO
-The code ends at 18-Aug-2022 04:03:48
-The code duration is 00:16:32
+The code ends at 01-Mar-2023 20:23:55
+The code duration is 01:43:34
