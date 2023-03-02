@@ -156,10 +156,10 @@ for exp_r_id=1:repeatNum
     
     overlapFlag=1; %0. k-means, 1. fcm
     if realDataSet==0
-    theta=[5,1,1]';
+        theta=[5,1,1]';
     elseif realDataSet==1
-    theta=[8.5,1.6,1.2]';
-    sigma_n=0.7;
+        theta=[8.5,1.6,1.2]';
+        sigma_n=0.7;
     end
     Topology_method=2; % 1: stacking squares; 2: nearest link with minimum link; 3: No link
     savePlot=0;

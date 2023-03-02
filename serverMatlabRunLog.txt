@@ -8,6 +8,7 @@
 To get started, type doc.
 For product information, visit www.mathworks.com.
  
+<<<<<<< HEAD
 Setting CVX paths...done.
 The code begins at 01-Mar-2023 18:40:21
 Starting parallel pool (parpool) using the 'local' profile ...
@@ -25,6 +26,14 @@ TotalNumLevel =
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
 Elapsed time is 4.384816 seconds.
+=======
+The code begins at 27-Feb-2023 13:50:15
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 24).
+This exp is down with artificial dataset loaded
+Generate GP according to given GP_hyperpar
+Elapsed time is 2.078988 seconds.
+>>>>>>> f97d6bc1d4acb48d9d8ffaa4ff9535a5dd5c9957
 
 subSize =
 
@@ -54,6 +63,7 @@ pxADMM_fd_async
 pxADMM_fd_tc_sync
 pxADMM_fd_tc_async
 
+<<<<<<< HEAD
 
 rho_glb =
 
@@ -461,3 +471,10 @@ ans =
 Code end at HO
 The code ends at 01-Mar-2023 20:23:55
 The code duration is 01:43:34
+=======
+Time of pxADMM
+   500
+
+   6.8380e-04
+
+>>>>>>> f97d6bc1d4acb48d9d8ffaa4ff9535a5dd5c9957
