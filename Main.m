@@ -772,7 +772,11 @@ end
 
 save(strcat(results_dir,'/forPlot.mat'));
 %% Compare convergence speed in terms of iterations
-vec_color='krgbmykrgbmykrgbmyrgbcmyrgbcmy';
+vec_color='krgcmbykrgcmbykrgcmbykrgcmby';
+vec_color=[0 0 0; 0 0 1; 
+   1 0 0; 1 0.1034 0.7241;0 1 0 ;
+    0 1 0.7586;0.6207 0.3103 0.2759;1 0.8276 0;0.5127 0.5127 1;
+    0 0.3448 0];
 color_ind=1;
 close all
 gcf=figure;
@@ -791,7 +795,7 @@ length(Steps_GD)
     lgd_txt=[lgd_txt;"GD"];
 end
 if run_ADMM
-    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 %     semilogy(Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-');
     hold on;
@@ -800,14 +804,14 @@ end
 if run_pxADMM
     disp('pxADMM steps')
     length(Steps_pxADMM)
-    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM"];
 end
 if run_ADMM_fd
     IterCounts_fd{1}(1)=1;
-    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 %     semilogy(Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-');
     hold on;
@@ -816,7 +820,9 @@ end
 if run_pxADMM_fd_async
 disp('pxADMM_afd_fast steps')
 length(Steps_pxADMM_fd_async)
-    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,...
+        'LineStyle','--','Color',vec_color(color_ind,:),'HandleVisibility','off');
+    semilogy(NaN,"LineWidth",lwd_thick,'LineStyle','--','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{afd,fast}"];
@@ -824,7 +830,9 @@ end
 if run_pxADMM_fd_tc_async
 disp('pxADMM_afd steps')
 length(Steps_pxADMM_fd_tc_async)
-    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,...
+        'LineStyle','--','Color',vec_color(color_ind,:),'HandleVisibility','off');
+    semilogy(NaN,"LineWidth",lwd_thick,'LineStyle','--','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{afd}"];
@@ -832,7 +840,7 @@ end
 if run_pxADMM_fd_sync
 disp('pxADMM_fd_fast steps')
 length(Steps_pxADMM_fd_sync)
-    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,fast}"];
@@ -845,7 +853,7 @@ end
 if run_pxADMM_fd_tc_sync
 disp('pxADMM_fd steps')
 length(Steps_pxADMM_fd_tc_sync)
-    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd}"];
@@ -860,6 +868,7 @@ lgd.NumColumns=4;
 
 ax1=gca;
 ax2=axes('Position',[.5 .5 .3 .3]);
+ax1.FontSize = 15; 
 hold on;
 box on;
 color_ind=1;
@@ -870,36 +879,36 @@ length(Steps_GD)
     semilogy(Steps_GD,"LineWidth",lwd_thick,'LineStyle','-','Color','k');
 end
 if run_ADMM
-    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(IterCounts{1}(1:end-1),Steps_ADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 end
 if run_pxADMM
     disp('pxADMM steps')
     length(Steps_pxADMM)
-    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 end
 if run_ADMM_fd
     IterCounts_fd{1}(1)=1;
-    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(IterCounts_fd{1}(1:end-1),Steps_ADMM_fd,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 end
 if run_pxADMM_fd_async
 disp('pxADMM_afd_fast steps')
 length(Steps_pxADMM_fd_async)
-    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 end
 if run_pxADMM_fd_tc_async
 disp('pxADMM_afd steps')
 length(Steps_pxADMM_fd_tc_async)
-    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 end
 if run_pxADMM_fd_sync
 disp('pxADMM_fd_fast steps')
 length(Steps_pxADMM_fd_sync)
-    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 end
 if run_pxADMM_async_realSimu
@@ -910,7 +919,7 @@ end
 if run_pxADMM_fd_tc_sync
 disp('pxADMM_fd steps')
 length(Steps_pxADMM_fd_tc_sync)
-    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(Steps_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
 end
 set(gca, 'YScale', 'log');
@@ -924,7 +933,7 @@ s=hgexport('factorystyle');
 s.Resolution=300;
 s.Width=10;
 s.Height=6;
-s.FontSizeMin=15;
+s.FontSizeMin=17;
 fname=strcat(results_dir,'/HOMethodsCompare');
 s.Format='png';
 hgexport(gcf,fname,s);
@@ -944,7 +953,11 @@ savefig(gcf,strcat(fname,'.fig'))
 pause(0.01)
 
 %% Compare convergence speed in terms of iterations NLL
-vec_color='krgbmykrgbmykrgbmyrgbcmyrgbcmy';
+vec_color='krgcmbykrgcmbykrgcmbykrgcmby';
+vec_color=[0 0 0; 0 0 1; 
+   1 0 0; 1 0.1034 0.7241;0 1 0 ;
+    0 1 0.7586;0.6207 0.3103 0.2759;1 0.8276 0;0.5127 0.5127 1;
+    0 0.3448 0];
 color_ind=1;
 close all
 gcf=figure;
@@ -958,7 +971,7 @@ nexttile(1)
 if run_pxADMM
     disp('pxADMM NLLs')
     length(NLLs_pxADMM)
-    semilogy(NLLs_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(NLLs_pxADMM,"LineWidth",lwd_thick,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM"];
@@ -966,7 +979,7 @@ end
 if run_pxADMM_fd_async
 disp('pxADMM_afd_fast NLLs')
 length(NLLs_pxADMM_fd_async)
-    semilogy(NLLs_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(NLLs_pxADMM_fd_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{afd,fast}"];
@@ -974,7 +987,7 @@ end
 if run_pxADMM_fd_tc_async
 disp('pxADMM_afd NLLs')
 length(NLLs_pxADMM_fd_tc_async)
-    semilogy(NLLs_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(NLLs_pxADMM_fd_tc_async,"LineWidth",lwd_async,'LineStyle','--','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{afd}"];
@@ -982,7 +995,7 @@ end
 if run_pxADMM_fd_sync
 disp('pxADMM_fd_fast NLLs')
 length(NLLs_pxADMM_fd_sync)
-    semilogy(NLLs_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(NLLs_pxADMM_fd_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd,fast}"];
@@ -990,7 +1003,7 @@ end
 if run_pxADMM_fd_tc_sync
 disp('pxADMM_fd NLLs')
 length(NLLs_pxADMM_fd_tc_sync)
-    semilogy(NLLs_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind));
+    semilogy(NLLs_pxADMM_fd_tc_sync,"LineWidth",lwd,'LineStyle','-','Color',vec_color(color_ind,:));
     color_ind=color_ind+1;
     hold on;
     lgd_txt=[lgd_txt;"pxADMM_{fd}"];
@@ -1006,7 +1019,7 @@ s=hgexport('factorystyle');
 s.Resolution=300;
 s.Width=9;
 s.Height=4;
-s.FontSizeMin=15;
+s.FontSizeMin=17;
 fname=strcat(results_dir,'/HOMethodsCompare_NLL');
 s.Format='png';
 hgexport(gcf,fname,s);
@@ -1015,6 +1028,8 @@ hgexport(gcf,fname,s);
 savefig(gcf,strcat(fname,'.fig'))
 
 set(gca, 'XScale', 'log');
+set(gca, 'FontSize', 15);
+
 fname=strcat(fname,'_log');
 s.Format='png';
 hgexport(gcf,fname,s);
