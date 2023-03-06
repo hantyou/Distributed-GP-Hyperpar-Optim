@@ -8,9 +8,8 @@
 To get started, type doc.
 For product information, visit www.mathworks.com.
  
-<<<<<<< HEAD
 Setting CVX paths...done.
-The code begins at 01-Mar-2023 18:40:21
+The code begins at 02-Mar-2023 13:11:31
 Starting parallel pool (parpool) using the 'local' profile ...
 Connected to the parallel pool (number of workers: 16).
 
@@ -25,15 +24,7 @@ TotalNumLevel =
 
 This exp is down with artificial dataset loaded
 Generate GP according to given GP_hyperpar
-Elapsed time is 4.384816 seconds.
-=======
-The code begins at 27-Feb-2023 13:50:15
-Starting parallel pool (parpool) using the 'local' profile ...
-Connected to the parallel pool (number of workers: 24).
-This exp is down with artificial dataset loaded
-Generate GP according to given GP_hyperpar
-Elapsed time is 2.078988 seconds.
->>>>>>> f97d6bc1d4acb48d9d8ffaa4ff9535a5dd5c9957
+Elapsed time is 2.535763 seconds.
 
 subSize =
 
@@ -55,7 +46,7 @@ subSize =
    250
 
 [Warning: Directory already exists.] 
-[> In Main (line 136)] 
+[> In Main (line 133)] 
 The method(s) to be evaluated in this experiment is(are):
 pxADMM
 pxADMM_fd_sync
@@ -63,7 +54,6 @@ pxADMM_fd_async
 pxADMM_fd_tc_sync
 pxADMM_fd_tc_async
 
-<<<<<<< HEAD
 
 rho_glb =
 
@@ -80,7 +70,7 @@ sigma_n =
     0.3162
 
 Time of pxADMM
-Elapsed time is 466.590971 seconds.
+Elapsed time is 206.445228 seconds.
 pxADMM optimization results
     5.0777    1.0070    1.0313    0.3165
 
@@ -109,7 +99,7 @@ Time of pxADMM_{fd,sync}
 
    4.0356e+03
 
-Elapsed time is 264.399898 seconds.
+Elapsed time is 161.836051 seconds.
 pxADMM_{fd,sync} optimization results
     5.0690    1.0120    1.0335    0.3160
 
@@ -156,7 +146,7 @@ Time of pxADMM_{fd,async}
 
    4.0356e+03
 
-Elapsed time is 1581.052837 seconds.
+Elapsed time is 321.286354 seconds.
 pxADMM_{fd,async} optimization results
     5.0758    1.0124    1.0338    0.3160
 
@@ -227,7 +217,7 @@ Time of pxADMM_{fd,tc,sync}
 
    4.0369e+03
 
-Elapsed time is 517.717485 seconds.
+Elapsed time is 406.355623 seconds.
 pxADMM_{fd,tc,sync} optimization results
     4.9341    0.9985    1.0240    0.3161
 
@@ -352,9 +342,7 @@ Time of pxADMM_{fd,tc,async}
 
    4.0363e+03
 
-IdleTimeout has been reached.
-Parallel pool using the 'local' profile is shutting down.
-Elapsed time is 3307.466697 seconds.
+Elapsed time is 806.284985 seconds.
 pxADMM_{fd,tc,async} optimization results
     4.9486    0.9994    1.0247    0.3161
 
@@ -437,6 +425,7 @@ ans =
  DataSpace or ColorSpace transform method failed
 ] 
 [> In defaulterrorcallback (line 12)
+  In savefig (line 36)
   In Main (line 943)] 
 pxADMM NLLs
 
@@ -469,12 +458,5 @@ ans =
         2952
 
 Code end at HO
-The code ends at 01-Mar-2023 20:23:55
-The code duration is 01:43:34
-=======
-Time of pxADMM
-   500
-
-   6.8380e-04
-
->>>>>>> f97d6bc1d4acb48d9d8ffaa4ff9535a5dd5c9957
+The code ends at 02-Mar-2023 13:44:15
+The code duration is 00:32:43
