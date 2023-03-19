@@ -10,4 +10,8 @@ generateLikelihoodMap.m		% Containing a function that generate real NLL map;
 generateLikelihoodMap2.m	% Containing a function that generate real NLL map;
 gen2D_GP.m					% Containing a function that generate 2D GP field for use;
 getDiv.m					% Containing a function that get the derivative of target function toward hyperparameters;
-getK.m
+getK.m						% Containing a function that get the covariance matrix;
+loadDataset.m 				% Containing a function that load 2D-GP dataset;
+run*.m						% Containing functions that manage the simulation of corresponding methods;
+							% Note that PXADMM_fd correspond to pxADMM_fd,fast;
+							% and PXADMM_fd_tc correspond to pxADMM_fd;
