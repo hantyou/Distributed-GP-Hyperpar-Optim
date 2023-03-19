@@ -1,0 +1,5 @@
+Main.m 			% Containing the main code for the experiment setup and parameters;
+agent.m 		% Containing the data structure of each agent. The things an agent can do are described by functions;
+loadRealDataset.m 	% Containing a function loading SST dataset and take samples in the field;
+SSTdataRead.m 		% Containing a function reading SST dataset data from original *.nfc format file;
+generateTopology.m	% Containing a function generating topology for the MAS;
