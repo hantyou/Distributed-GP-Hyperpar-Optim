@@ -1,5 +1,8 @@
-Main.m 			% Containing the main code for the experiment setup and parameters;
-agent.m 		% Containing the data structure of each agent. The things an agent can do are described by functions;
-loadRealDataset.m 	% Containing a function loading SST dataset and take samples in the field;
-SSTdataRead.m 		% Containing a function reading SST dataset data from original *.nfc format file;
-generateTopology.m	% Containing a function generating topology for the MAS;
+Main.m 				% Containing the main code for the experiment setup and parameters;
+agent.m 			% Containing the data structure of each agent. The things an agent can do are described by functions;
+loadRealDataset.m 		% Containing a function loading SST dataset and take samples in the field;
+SSTdataRead.m 			% Containing a function reading SST dataset data from original *.nfc format file;
+generateTopology.m		% Containing a function generating topology for the MAS;
+decideSamplePoints.m		% Containing a function that decides where to take samples in the field;
+distinguishable_colors.m	% Containing a function that generate maximumly distinguishable colors for plot; The code is from the following site:
+				% https://nl.mathworks.com/matlabcentral/fileexchange/29702-generate-maximally-perceptually-distinct-colors?requestedDomain=

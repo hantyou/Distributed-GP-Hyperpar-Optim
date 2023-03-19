@@ -76,7 +76,7 @@ else % initial hyperpar for SST
     initial_l=2*ones(1,inputDim);
 end
 
-epsilon = 1e-3; % used for stop criteria
+epsilon = 1e-2; % used for stop criteria
 rho_glb=400;
 L_glb=4000;
 GD_step_size=0.00005; % If gradient descent is simulated, the step size is defined here
