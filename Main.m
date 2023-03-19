@@ -43,7 +43,7 @@ realz(end)=sigma_n;
 %%%%%%%%%%%%%% Agent Properties %%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 M=16; % number of agents
-TotalNumLevel=M*50; % Total number of measurement points
+TotalNumLevel=M*250; % Total number of measurement points
 everyAgentsSampleNum=floor(TotalNumLevel/M); % Equally distribute measurements to the agents
 Agents_measure_range=3; % The range of how far the agent can take measurement
 
@@ -76,7 +76,7 @@ else % initial hyperpar for SST
     initial_l=2*ones(1,inputDim);
 end
 
-epsilon = 1e-2; % used for stop criteria
+epsilon = 1e-4; % used for stop criteria
 rho_glb=400;
 L_glb=4000;
 GD_step_size=0.00005; % If gradient descent is simulated, the step size is defined here
